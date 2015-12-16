@@ -4,5 +4,5 @@
  ----------------------------------------------------------------------------*/
 angular.module('ninesWeb')
 .factory('Urls', ['$resource', function($resource) {
-    return $resource('/urls/:id', null, { 'update': { 'method': 'PUT' } });
+    return $resource('http://localhost:3000/urls/:id', null, { 'update': { 'method': 'PUT' } });
 }]);
