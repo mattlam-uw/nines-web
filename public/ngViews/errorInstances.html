@@ -1,0 +1,19 @@
+<div class="container-fluid">
+    <h1>HTTPinger</h1>
+    <div id="content">
+        <h2>Instances for Status Code: {{statusCode}}</h2>
+        <p>Count of errors: {{count}}</p>
+        <table class="table table-striped table-condensed table-responsive">
+            <thead>
+                <th>#</th><th>Code</th><th>Instance</th><th>test</th>
+            </thead>
+            <tbody>
+                <tr ng-repeat="(code, error) in errors">
+                    <td>$index</td>
+                    <td>{{code}}</td>
+                    <td>{{error}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

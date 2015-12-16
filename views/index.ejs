@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html ng-app="ninesWeb">
+<head>
+    <title><%= title %></title>
+
+    <script src="/modules/angular.js"></script>
+    <script src="/modules/angular-route.js"></script>
+    <script src="/modules/angular-resource.js"></script>
+    <script src="/modules/jquery.js"></script>
+    <script src="/modules/bootstrap.js"></script>
+
+    <link href="/modules/bootstrap.css" rel="stylesheet" />
+    <link href="/modules/bootstrap-theme.css" rel="stylesheet" />
+    <link href="/stylesheets/style.css" rel="stylesheet"/>
+
+    <!-------------------------------------------------------------------------
+      AngularJS Module definition and related services, routes, and controllers
+    -------------------------------------------------------------------------->
+    <script>
+        angular.module('ninesWeb', ['ngRoute', 'ngResource']);
+    </script>
+    <script src="/ngServices/urlsService.js"></script>
+    <script src="/ngServices/errorsService.js"></script>
+    <script src="/ngRoutes/httpingRoutes.js"></script>
+    <script src="/ngControllers/httpingController.js"></script>
+</head>
+<body>
+     <ng-view></ng-view>
+</body>
+</html>
