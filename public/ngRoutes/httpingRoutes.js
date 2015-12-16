@@ -4,13 +4,13 @@
 angular.module('ninesWeb').config(function($routeProvider) {
     // For non-specified URL, render httpingMain.html
     $routeProvider.when('/', {
-        templateUrl: 'ngViews/httpingMain.html',
+        templateUrl: 'ngViews/ninesWebMain.html',
         controller: 'HttpingCtrl'
     }, true);
 
     // When specifying a status code (e.g. 404) then render errorInstances.html
     $routeProvider.when('/:id', {
-        templateUrl: 'ngViews/errorInstances.html',
+        templateUrl: 'ngViews/ninesWebErrors.html',
         controller: 'HttpingCtrl'
     }, true);
 
