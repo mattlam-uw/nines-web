@@ -5,7 +5,7 @@
  Main httping Controller
  ----------------------------------------------------------------------------*/
 angular.module('ninesWeb')
-.controller('HttpingCtrl', ['$scope', '$routeParams', 'Urls', 'Errors',
+.controller('ninesWebCtrl', ['$scope', '$routeParams', 'Urls', 'Errors',
         'StatusCodes', 'ErrorCount',
         function($scope, $routeParams, Urls, Errors, StatusCodes, ErrorCount) {
 
