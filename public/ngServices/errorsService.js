@@ -27,8 +27,8 @@ angular.module('ninesWeb')
     }])
     // Service to get HTML of resulting pages from request errors for a given
     // status code
-    .factory('ErrorPages', ['$resource', function($resource) {
-        return $resource('http://localhost:3000/errors/:statusCode/pages', null, {
+    .factory('ErrorFiles', ['$resource', function($resource) {
+        return $resource('http://localhost:3000/errors/:statusCode/files', null, {
             'query': { method: 'GET', isArray: true },
             'update': { 'method': 'PUT' }
         });

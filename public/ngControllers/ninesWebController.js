@@ -6,8 +6,9 @@
  ----------------------------------------------------------------------------*/
 angular.module('ninesWeb')
 .controller('ninesWebCtrl', ['$scope', '$routeParams', 'Urls', 'Errors',
-        'StatusCodes', 'ErrorCount',
-        function($scope, $routeParams, Urls, Errors, StatusCodes, ErrorCount) {
+        'StatusCodes', 'ErrorCount', 'ErrorFiles',
+        function($scope, $routeParams, Urls, Errors, StatusCodes, ErrorCount,
+            ErrorFiles) {
 
         /*-----------------------------------------------------------------------
          Initialize $scope variables
@@ -26,10 +27,12 @@ angular.module('ninesWeb')
         if ($routeParams.id) {
             $scope.statusCode = $routeParams.id;
             $scope.count = ErrorCount.query({ statusCode: $routeParams.id });
+            $scope.files = ErrorFiles.query({ statusCode: $routeParams.id });
 
             // +++++ DEBUG CODE START +++++
             console.log('++Status Code: ', $scope.statusCode);
             console.log('++Error Count: ', $scope.count);
+            console.log('++Error Files: ', $scope.files);
             // +++++ DEBUG CODE END +++++++
 
         }
