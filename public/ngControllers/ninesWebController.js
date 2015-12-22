@@ -14,13 +14,24 @@ angular.module('ninesWeb')
          ------------------------------------------------------------------------*/
         $scope.urls = Urls.query();
         $scope.errors = Errors.query();
+        $scope.statusCodes = StatusCodes.query();
 
+        
+
+        // +++++ DEBUG CODE START +++++
+        console.log('++Parameter: ', $routeParams.id);
+        console.log('++Status Codes: ', $scope.statusCodes)
+        // +++++ DEBUG CODE END +++++++
 
         if ($routeParams.id) {
             $scope.statusCode = $routeParams.id;
-            $scope.count = 'blah';
-            // $scope.count = ErrorCount.query();
-            console.log(count);
+            $scope.count = ErrorCount.query({ statusCode: $routeParams.id });
+
+            // +++++ DEBUG CODE START +++++
+            console.log('++Status Code: ', $scope.statusCode);
+            console.log('++Error Count: ', $scope.count);
+            // +++++ DEBUG CODE END +++++++
+
         }
 
         /*-------------------------------------------------------------------------

@@ -1,6 +1,22 @@
 <div class="container-fluid">
     <h1>nines</h1>
     <div id="content">
+        <h2>Total Request Errors</h2>
+        <p>Click a number for details</p>
+        <table class="table table-striped table-condensed table-responsive">
+            <thead>
+            <th>Status Code</th>
+            <th>Error Count</th>
+            </thead>
+            <tbody>
+            <tr ng-repeat="(statusCode, instances) in errors">
+
+                <td><a href="#/{{statusCode}}">{{statusCode}}</a></td>
+                <td><a href="#/{{statusCode}}">{{instances.count}}</a></td>
+            </tr>
+            </tbody>
+        </table>
+
         <h2>URLs to Ping</h2>
         <table class="table table-striped table-condensed table-responsive">
             <thead>
@@ -17,20 +33,5 @@
             </tbody>
         </table>
 
-        <h2>Total Request Errors</h2>
-        <p>Click a number for details</p>
-        <table class="table table-striped table-condensed table-responsive">
-            <thead>
-                <th>Status Code</th>
-                <th>Error Count</th>
-            </thead>
-            <tbody>
-                <tr ng-repeat="(statusCode, instances) in errors">
-
-                    <td><a href="#/{{statusCode}}">{{statusCode}}</a></td>
-                    <td><a href="#/{{statusCode}}">{{instances.count}}</a></td>
-                </tr>
-            </tbody>
-        </table>
     </div>
 </div>

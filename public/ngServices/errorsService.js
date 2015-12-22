@@ -18,7 +18,8 @@ angular.module('ninesWeb')
         });
     }])
     .factory('ErrorCount', ['$resource', function($resource) {
-        return $resource('http://localhost:3000/errors/:id/count', null, {
+        return $resource('http://localhost:3000/errors/:statusCode/count', null, {
+            'query': { method: 'GET', isArray: true },
             'update': { 'method': 'PUT' }
         });
     }]);
