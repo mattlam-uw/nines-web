@@ -12,13 +12,23 @@ angular.module('ninesWeb')
             }
         );
     }])
+    // Service to get the status codes resulting from request errors
     .factory('StatusCodes', ['$resource', function($resource) {
         return $resource('http://localhost:3000/errors/codes/:id', null, {
             'update': { 'method': 'PUT' }
         });
     }])
+    // Service to get the error count for a given error status code
     .factory('ErrorCount', ['$resource', function($resource) {
         return $resource('http://localhost:3000/errors/:statusCode/count', null, {
+            'query': { method: 'GET', isArray: true },
+            'update': { 'method': 'PUT' }
+        });
+    }])
+    // Service to get HTML of resulting pages from request errors for a given
+    // status code
+    .factory('ErrorPages', ['$resource', function($resource) {
+        return $resource('http://localhost:3000/errors/:statusCode/pages', null, {
             'query': { method: 'GET', isArray: true },
             'update': { 'method': 'PUT' }
         });

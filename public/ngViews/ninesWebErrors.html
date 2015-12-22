@@ -9,9 +9,9 @@
             </thead>
             <tbody>
                 <tr ng-repeat="(code, error) in errors">
-                    <td>$index</td>
+                    <td>{{$index + 1}}</td>
                     <td>{{code}}</td>
-                    <td>{{error}}</td>
+                    <td>{{error.files}}</td>
                 </tr>
             </tbody>
         </table>
