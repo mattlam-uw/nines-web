@@ -17,12 +17,13 @@
       AngularJS Module definition and related services, routes, and controllers
     -------------------------------------------------------------------------->
     <script>
-        angular.module('ninesWeb', ['ngRoute', 'ngResource']);
+        angular.module('ninesWeb', ['ngRoute', 'ngResource', 'customFilters']);
     </script>
     <script src="/ngServices/urlsService.js"></script>
     <script src="/ngServices/errorsService.js"></script>
     <script src="/ngRoutes/ninesWebRoutes.js"></script>
     <script src="/ngControllers/ninesWebController.js"></script>
+    <script src="/ngFilters/customFilters.js"></script>
 </head>
 <body>
      <ng-view></ng-view>

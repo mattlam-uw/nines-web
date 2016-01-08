@@ -1,27 +1,15 @@
 <div class="container-fluid">
     <h1>nines</h1>
     <div id="content">
-        <h2>Total Request Errors</h2>
-        <p>Click a number for details</p>
-        <table class="table table-striped table-condensed table-responsive">
-            <thead>
-            <th>Status Code</th>
-            <th>Error Count</th>
-            </thead>
-            <tbody>
-            <tr ng-repeat="error in errors">
-
-                <td><a href="#/{{error.status_code}}">{{error.status_code}}</a></td>
-                <td><a href="#/{{error._id}}">{{error._id}}</a></td>
-            </tr>
-            </tbody>
-        </table>
-
-        <h2>URLs to Ping</h2>
+        <h2>Response Stats</h2>
         <table class="table table-striped table-condensed table-responsive">
             <thead>
                 <th>Name</th>
                 <th>URL</th>
+                <th ng-repeat="(code, count) in getStatusCodesAndCounts()" id="{{code}}">{{code}}</th>
+                <th>Supergeil</th>
+                <th>Wunderschoen</th>
+                <th>Formidable</th>
             </thead>
             <tbody>
                 <tr ng-repeat="url in urls">
@@ -29,6 +17,12 @@
                     <td><a href="http://{{url.host}}{{url.path}}" target="_blank">
                         {{url.host}}{{url.path}}</a>
                     </td>
+                    <td ng-repeat="(code, count) in getStatusCodesAndCounts()" headers="code">
+                        {{count}}
+                    </td>
+                    <td>Doch</td>
+                    <td>Immer</td>
+                    <td>Oui</td>
                 </tr>
             </tbody>
         </table>

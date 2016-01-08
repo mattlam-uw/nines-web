@@ -8,20 +8,33 @@ angular.module('ninesWeb')
 .controller('ninesWebCtrl', ['$scope', '$routeParams', 'Urls', 'Errors',
         function($scope, $routeParams, Urls, Errors) {
 
-        /*-----------------------------------------------------------------------
-         First take a look at what we can do with bulk select of errors data
-         ------------------------------------------------------------------------*/
-        var errors = Errors.query()[0];
-        console.log(errors);
-
-        /*-----------------------------------------------------------------------
+        /*-------------------------------------------------------------------
          Initialize $scope variables
-         ------------------------------------------------------------------------*/
+         --------------------------------------------------------------------*/
+
         $scope.urls = Urls.query();
         $scope.errors = Errors.query();
-        // $scope.statusCodes = StatusCodes.query();
 
+        /*-------------------------------------------------------------------
+         $scope methods for views
+        --------------------------------------------------------------------*/
 
+        // Returns object where properties are unique status codes from /errors
+        // and value for each property is count of occurrences for status code
+        $scope.getStatusCodesAndCounts = function() {
+            console.log("CODES AND COUNTS has been called");
+            var objCodesAndCounts = {};
+            for (var i = 0; i < $scope.errors.length; i++) {
+                var statusCode = $scope.errors[i].status_code;
+                if (objCodesAndCounts[statusCode] === undefined) {
+                    objCodesAndCounts[statusCode] = 1;
+                } else {
+                    objCodesAndCounts[statusCode] += 1;
+                }
+            }
+            console.log(objCodesAndCounts);
+            return objCodesAndCounts;
+        }
 
         // +++++ DEBUG CODE START +++++
         // console.log('++Parameter: ', $routeParams.id);
