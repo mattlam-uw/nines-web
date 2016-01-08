@@ -4,14 +4,20 @@
  ----------------------------------------------------------------------------*/
 angular.module('ninesWeb')
     .factory('Errors', ['$resource', function($resource) {
+        return $resource('http://localhost:3000/errors/:id', null, {}
+        );
+    }])
+    /*
+    .factory('Errors', ['$resource', function($resource) {
         return $resource('http://localhost:3000/errors/:id', null, {
             // Need to specify isArray=false on query action to signal that
             // response should be returned as an object, not an array
-            'query': { method: 'GET', isArray: false },
+            'query': { method: 'GET', isArray: true },
             'update': { 'method': 'PUT' }
             }
         );
     }])
+
     // Service to get the status codes resulting from request errors
     .factory('StatusCodes', ['$resource', function($resource) {
         return $resource('http://localhost:3000/errors/codes/:id', null, {
@@ -33,3 +39,5 @@ angular.module('ninesWeb')
             'update': { 'method': 'PUT' }
         });
     }]);
+
+    */

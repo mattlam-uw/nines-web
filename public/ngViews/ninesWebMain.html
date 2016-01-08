@@ -9,10 +9,10 @@
             <th>Error Count</th>
             </thead>
             <tbody>
-            <tr ng-repeat="(statusCode, instances) in errors">
+            <tr ng-repeat="error in errors">
 
-                <td><a href="#/{{statusCode}}">{{statusCode}}</a></td>
-                <td><a href="#/{{statusCode}}">{{instances.count}}</a></td>
+                <td><a href="#/{{error.status_code}}">{{error.status_code}}</a></td>
+                <td><a href="#/{{error._id}}">{{error._id}}</a></td>
             </tr>
             </tbody>
         </table>
