@@ -5,36 +5,58 @@
  Main httping Controller
  ----------------------------------------------------------------------------*/
 angular.module('ninesWeb')
-.controller('ninesWebCtrl', ['$scope', '$routeParams', 'Urls', 'Errors',
-        function($scope, $routeParams, Urls, Errors) {
+.controller('ninesWebCtrl', ['$scope', '$routeParams', 'Urls', 'Heads',
+        function($scope, $routeParams, Urls, Heads) {
 
         /*-------------------------------------------------------------------
          Initialize $scope variables
          --------------------------------------------------------------------*/
 
         $scope.urls = Urls.query();
-        $scope.errors = Errors.query();
+        $scope.heads = Heads.query();
 
-        /*-------------------------------------------------------------------
-         $scope methods for views
-        --------------------------------------------------------------------*/
-
-        // Returns object where properties are unique status codes from /errors
-        // and value for each property is count of occurrences for status code
-        $scope.getStatusCodesAndCounts = function() {
-            console.log("CODES AND COUNTS has been called");
-            var objCodesAndCounts = {};
-            for (var i = 0; i < $scope.errors.length; i++) {
-                var statusCode = $scope.errors[i].status_code;
-                if (objCodesAndCounts[statusCode] === undefined) {
-                    objCodesAndCounts[statusCode] = 1;
-                } else {
-                    objCodesAndCounts[statusCode] += 1;
+        $scope.getStatusCodes = function() {
+            var results = [];
+            var keys = {};
+            for (var i = 0; i < $scope.heads.length; i++) {
+                var val = $scope.heads[i].status_code;
+                if (angular.isUndefined(keys[val])) {
+                    keys[val] = true;
+                    results.push(val);
                 }
             }
-            console.log(objCodesAndCounts);
+            return results;
+        };
+
+        $scope.getStatusCodesForURL = function(urlID) {
+            var objCodesAndCounts = {};
+            for (var i = 0; i < $scope.heads.length; i++) {
+                var statusCode = $scope.heads[i].status_code;
+                if ($scope.heads[i].url_id === urlID) {
+                    if (objCodesAndCounts[statusCode] === undefined) {
+                        objCodesAndCounts[statusCode] = 1;
+                    } else {
+                        objCodesAndCounts[statusCode] += 1;
+                    }
+                }
+            }
             return objCodesAndCounts;
-        }
+        };
+
+        $scope.getStatusCodesAndCounts = function(urlID) {
+            var objCodesAndCounts = {};
+            for (var i = 0; i < $scope.heads.length; i++) {
+                var statusCode = $scope.heads[i].status_code;
+                if ($scope.heads[i].url_id === urlID) {
+                    if (objCodesAndCounts[statusCode] === undefined) {
+                        objCodesAndCounts[statusCode] = 1;
+                    } else {
+                        objCodesAndCounts[statusCode] += 1;
+                    }
+                }
+            }
+            return objCodesAndCounts;
+        };
 
         // +++++ DEBUG CODE START +++++
         // console.log('++Parameter: ', $routeParams.id);

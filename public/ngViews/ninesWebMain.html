@@ -6,7 +6,7 @@
             <thead>
                 <th>Name</th>
                 <th>URL</th>
-                <th ng-repeat="(code, count) in getStatusCodesAndCounts()" id="{{code}}">{{code}}</th>
+                <th ng-repeat="statusCode in getStatusCodes()" id="{{statusCode}}">{{statusCode}}</th>
                 <th>Supergeil</th>
                 <th>Wunderschoen</th>
                 <th>Formidable</th>
@@ -17,7 +17,7 @@
                     <td><a href="http://{{url.host}}{{url.path}}" target="_blank">
                         {{url.host}}{{url.path}}</a>
                     </td>
-                    <td ng-repeat="(code, count) in getStatusCodesAndCounts()" headers="code">
+                    <td ng-repeat="(code, count) in getStatusCodesAndCounts(url._id)" headers="code">
                         {{count}}
                     </td>
                     <td>Doch</td>
