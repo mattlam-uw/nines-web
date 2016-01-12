@@ -25,38 +25,30 @@ angular.module('ninesWeb')
                     results.push(val);
                 }
             }
+            results.sort();
             return results;
         };
 
-        $scope.getStatusCodesForURL = function(urlID) {
-            var objCodesAndCounts = {};
+        $scope.getCodesAndCountsByUrlID = function(urlID) {
+            var results = {};
+            var allStatusCodes = $scope.getStatusCodes();
+            for (var i = 0; i < allStatusCodes.length; i++) {
+                results[allStatusCodes[i]] = 0;
+            }
             for (var i = 0; i < $scope.heads.length; i++) {
-                var statusCode = $scope.heads[i].status_code;
                 if ($scope.heads[i].url_id === urlID) {
-                    if (objCodesAndCounts[statusCode] === undefined) {
-                        objCodesAndCounts[statusCode] = 1;
-                    } else {
-                        objCodesAndCounts[statusCode] += 1;
-                    }
+                    var statusCode = $scope.heads[i].status_code;
+                    results[statusCode] += 1;
                 }
             }
-            return objCodesAndCounts;
+            console.log(urlID);
+            console.log(results);
+            return results;
         };
 
-        $scope.getStatusCodesAndCounts = function(urlID) {
-            var objCodesAndCounts = {};
-            for (var i = 0; i < $scope.heads.length; i++) {
-                var statusCode = $scope.heads[i].status_code;
-                if ($scope.heads[i].url_id === urlID) {
-                    if (objCodesAndCounts[statusCode] === undefined) {
-                        objCodesAndCounts[statusCode] = 1;
-                    } else {
-                        objCodesAndCounts[statusCode] += 1;
-                    }
-                }
-            }
-            return objCodesAndCounts;
-        };
+        $scope.test = function() {
+            return "Supergeil!"
+        }
 
         // +++++ DEBUG CODE START +++++
         // console.log('++Parameter: ', $routeParams.id);

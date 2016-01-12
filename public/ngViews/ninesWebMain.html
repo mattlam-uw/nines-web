@@ -6,23 +6,17 @@
             <thead>
                 <th>Name</th>
                 <th>URL</th>
-                <th ng-repeat="statusCode in getStatusCodes()" id="{{statusCode}}">{{statusCode}}</th>
-                <th>Supergeil</th>
-                <th>Wunderschoen</th>
-                <th>Formidable</th>
+                <th ng-repeat="statusCode in getStatusCodes()" id="{{statusCode}}">
+                    {{statusCode}}
+                </th>
+                <th>Testing</th>
             </thead>
             <tbody>
                 <tr ng-repeat="url in urls">
                     <td>{{url.name}}</td>
-                    <td><a href="http://{{url.host}}{{url.path}}" target="_blank">
-                        {{url.host}}{{url.path}}</a>
-                    </td>
-                    <td ng-repeat="(code, count) in getStatusCodesAndCounts(url._id)" headers="code">
-                        {{count}}
-                    </td>
-                    <td>Doch</td>
-                    <td>Immer</td>
-                    <td>Oui</td>
+                    <td><a href="http://{{url.host}}{{url.path}}" target="_blank">{{url.host}}{{url.path}}</a></td>
+                    <td ng-repeat="count in getCodesAndCountsByUrlID(url._id)">{{count}}</td>
+                    <td>{{test()}}</td>
                 </tr>
             </tbody>
         </table>
