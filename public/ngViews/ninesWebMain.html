@@ -9,14 +9,17 @@
                 <th ng-repeat="statusCode in getStatusCodes()" id="{{statusCode}}">
                     {{statusCode}}
                 </th>
-                <th>Testing</th>
+                <th>1</th>
+                <th>2</th>
+                <th>3</th>
+                <th>4</th>
+                <th>5</th>
             </thead>
             <tbody>
                 <tr ng-repeat="url in urls">
                     <td>{{url.name}}</td>
                     <td><a href="http://{{url.host}}{{url.path}}" target="_blank">{{url.host}}{{url.path}}</a></td>
-                    <td ng-repeat="count in getCodesAndCountsByUrlID(url._id)">{{count}}</td>
-                    <td>{{test()}}</td>
+                    <td ng-repeat="count in getResponseStatsByUrlId(url._id)">{{count}}</td>
                 </tr>
             </tbody>
         </table>
