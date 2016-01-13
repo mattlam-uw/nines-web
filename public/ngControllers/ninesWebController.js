@@ -24,7 +24,11 @@ angular.module('ninesWeb')
         $scope.numDigits = numDigits; // Expose numDigits constant to views
 
         // Initialize variables for controlling view properties
-        $scope.formAddUrl = false; // Hide form to add new URL by default
+        $scope.showFormAddUrl = false; // Hide form to add new URL by default
+        $scope.addUrlFormMessage = ""; // Provide feedback for add URL form
+        $scope.newUrl = {}; // Object bound to Add URL form for conveying form data
+        $scope.newUrl.protocol = "http"; // Set protocol to "http" by default
+
 
         // Returns an ordered array off
         $scope.getStatusCodes = function() {
@@ -84,9 +88,6 @@ angular.module('ninesWeb')
                 // Assign the digit to the property
                 results[propertyName] = availRating[i];
             }
-
-            console.log(urlId);
-            console.log(results);
 
             return results;
         };
@@ -173,10 +174,68 @@ angular.module('ninesWeb')
         /*-------------------------------------------------------------------------
          Event Handlers
          ------------------------------------------------------------------------*/
-        /*-- Handler for showing form for adding new URL ------------------------*/
+        /*-- Handlers for showing and hiding form for adding new URL ------------*/
         $scope.showAddUrlForm = function() {
-            $scope.formAddUrl = true;
+            $scope.showFormAddUrl = true;
         };
 
+        $scope.hideAddUrlForm = function() {
+            $scope.showFormAddUrl = false;
+            $scope.addUrlFormMessage = "";
+            $scope.newUrl.protocol = "http";
+        }
+
+        /*-- Handler for adding a new URL -------------*/
+        $scope.addUrl = function(newUrl) {
+            // Take no action if either the name or the host fields have no data
+            if (!newUrl.name || !newUrl.host) {
+                $scope.addUrlFormMessage = "Please provide values for both URL " +
+                    "Name and URL Host";
+                return;
+            }
+
+            // Remove trailing slash from the Host value if it exists
+            newUrl.host = removeAllTrailingSlashes(newUrl.host.trim());
+
+            // Add leading and trailing slashes to the Path value if needed
+            newUrl.path = addForeAndAftSlashes(newUrl.path.trim());
+
+            // Add the new URL to the Urls model
+            var addUrl = new Urls(newUrl);
+
+            addUrl.$save(function() {
+                // Update the local model with the new URL
+                $scope.urls.push(addUrl);
+                // Clear out the form fields and hide the Add URL form
+                $scope.newUrl.name = null;
+                $scope.newUrl.host = null;
+                $scope.newUrl.path = null;
+                $scope.newUrl.protocol = "http";
+                $scope.showFormAddUrl = false;
+
+            })
+        }
+
+        // Recursive function removes any and all trailing forward slashes from string
+        function removeAllTrailingSlashes(input) {
+            if (input.endsWith('/')) {
+                return removeAllTrailingSlashes(input.substr(0, input.length - 1));
+            } else {
+                return input;
+            }
+        }
+
+        // Adds forward slashes to the beginning and end of a string if they are not
+        // already there
+        function addForeAndAftSlashes(input) {
+            var result = input;
+            if (!result.startsWith('/')) {
+                result = '/' + result;
+            }
+            if (!result.endsWith('/')) {
+                result = result + '/';
+            }
+            return result;
+        }
     }
 ]);
