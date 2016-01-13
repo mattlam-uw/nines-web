@@ -99,20 +99,32 @@ angular.module('ninesWeb')
         * digits for the resulting availability rating.
         */
         function createAvailRating(errorTotal, requestTotal, numDigits) {
+
+            // If the total number of requests is 0 then return "No Data"
+            if (requestTotal === 0) {
+                return ["No Response Data Available"];
+            }
+
+            // Otherwise, there's data, so caclulate and return the rating
             // Array to be used to return the results
             var results = [];
+
             // Initialize availability rating value variable
             var rating = 0;
+            
             // The multFactor is used to move all digits that are part of the
             // availability rating to the left of the decimal point, making
             // division ('/') and rounding easier to execute on the numbers
             var multFactor = Math.pow(10, numDigits);
+            
             // The divFactor is used to narrow down the next digit in the
             // availability rating to be retrieved into the results array
             var divFactor = Math.pow(10, numDigits - 1);
+            
             // Calculate the raw rating and apply the multFactor to move digits
             // to the left of the decimal point
             rating = (1 - (errorTotal / requestTotal)) * multFactor;
+            
             // Interesting thing here: a perfect score should be 100%, right?
             // But no system is truly up 100% of the time. If your numbers are
             // telling you that it is, then you need to increase your sample
@@ -122,6 +134,7 @@ angular.module('ninesWeb')
             if (rating === (multFactor)) {
                 rating = multFactor - 1;
             }
+            
             // Convert the rating number into an array of digits numDigits in
             // length that represents the rating
             for (var i = 0; i < numDigits; i++) {
@@ -135,6 +148,7 @@ angular.module('ninesWeb')
                 // Adjust the divFactor for the next round
                 divFactor = Math.pow(10, numDigits - (i + 2));
             }
+            
             return results;
         }
 
