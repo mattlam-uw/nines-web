@@ -11,9 +11,8 @@ angular.module('ninesWeb')
 .constant("errorThreshold", 400)
 // Main controller for Nines Web
 .controller('ninesWebCtrl', ['$scope', '$routeParams', 'Urls', 'Heads',
-            'numDigits', 'errorThreshold',
-             function($scope, $routeParams, Urls, Heads, numDigits,
-                      errorThreshold) {
+    'numDigits', 'errorThreshold',
+    function($scope, $routeParams, Urls, Heads, numDigits, errorThreshold) {
 
         /*-------------------------------------------------------------------
          Initialize $scope variables
@@ -23,6 +22,9 @@ angular.module('ninesWeb')
         $scope.urls = Urls.query(); // All rows retrieved from Urls model
         $scope.heads = Heads.query(); // All rows retrieved from Heads model
         $scope.numDigits = numDigits; // Expose numDigits constant to views
+
+        // Initialize variables for controlling view properties
+        $scope.formAddUrl = false; // Hide form to add new URL by default
 
         // Returns an ordered array off
         $scope.getStatusCodes = function() {
@@ -157,6 +159,10 @@ angular.module('ninesWeb')
         /*-------------------------------------------------------------------------
          Event Handlers
          ------------------------------------------------------------------------*/
+        /*-- Handler for showing form for adding new URL ------------------------*/
+        $scope.showAddUrlForm = function() {
+            $scope.formAddUrl = true;
+        };
 
     }
 ]);
