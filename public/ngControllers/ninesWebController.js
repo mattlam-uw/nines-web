@@ -101,9 +101,13 @@ angular.module('ninesWeb')
         */
         function createAvailRating(errorTotal, requestTotal, numDigits) {
 
-            // If the total number of requests is 0 then return "No Data"
+            // If the total number of requests is 0 then return dashes
             if (requestTotal === 0) {
-                return ["No Response Data Available"];
+                var noDataMsg = [];
+                for (var i = 0; i < numDigits; i++) {
+                    noDataMsg.push("-");
+                }
+                return noDataMsg;
             }
 
             // Otherwise, there's data, so caclulate and return the rating
