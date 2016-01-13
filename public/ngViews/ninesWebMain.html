@@ -9,11 +9,7 @@
                 <th ng-repeat="statusCode in getStatusCodes()" id="{{statusCode}}">
                     {{statusCode}}
                 </th>
-                <th>1</th>
-                <th>2</th>
-                <th>3</th>
-                <th>4</th>
-                <th>5</th>
+                <th colspan="{{numDigits}}">Availability Rating</th>
             </thead>
             <tbody>
                 <tr ng-repeat="url in urls">

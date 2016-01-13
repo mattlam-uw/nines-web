@@ -5,22 +5,26 @@
  Main httping Controller
  ----------------------------------------------------------------------------*/
 angular.module('ninesWeb')
+// Number of digits to be calculated and displayed for availability rating
 .constant("numDigits", 5)
+// Minimum status code value at or over which responses are considered errors
+.constant("errorThreshold", 400)
+// Main controller for Nines Web
 .controller('ninesWebCtrl', ['$scope', '$routeParams', 'Urls', 'Heads',
-            'numDigits',
-             function($scope, $routeParams, Urls, Heads, numDigits) {
+            'numDigits', 'errorThreshold',
+             function($scope, $routeParams, Urls, Heads, numDigits,
+                      errorThreshold) {
 
         /*-------------------------------------------------------------------
          Initialize $scope variables
          --------------------------------------------------------------------*/
 
         // Populate scope variables with objects pulled from nines-api
-        $scope.urls = Urls.query();
-        $scope.heads = Heads.query();
+        $scope.urls = Urls.query(); // All rows retrieved from Urls model
+        $scope.heads = Heads.query(); // All rows retrieved from Heads model
+        $scope.numDigits = numDigits; // Expose numDigits constant to views
 
-        // Scope variables used within this controller to provide data to views
-        $scope.urlTotals = {};
-
+        // Returns an ordered array off
         $scope.getStatusCodes = function() {
             var results = [];
             var keys = {};
@@ -34,7 +38,6 @@ angular.module('ninesWeb')
             results.sort();
             return results;
         };
-
 
         // Provide view with an object containing the following for a given URL:
         // 1) an occurrence total for each status code column in the table,
@@ -60,7 +63,7 @@ angular.module('ninesWeb')
                 if ($scope.heads[i].url_id === urlId) {
                     var statusCode = $scope.heads[i].status_code;
                     results[statusCode] += 1;
-                    if (statusCode >= 400) {
+                    if (statusCode >= errorThreshold) {
                         errTotal += 1;
                     }
                     resTotal += 1;
