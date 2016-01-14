@@ -29,16 +29,28 @@ angular.module('ninesWeb')
         $scope.newUrl = {}; // Object bound to Add URL form for conveying form data
         $scope.newUrl.protocol = "http"; // Set protocol to "http" by default
 
+        // Returns an array URL ids for URLs relevant to this stats page
+        $scope.getUrlIds = function() {
+            var results = [];
+            for (var i = 0; i < $scope.urls.length; i++) {
+                results.push($scope.urls[i]._id);
+            }
+            return results;
+        }
 
-        // Returns an ordered array off
+        // Returns an ordered array of status codes from Heads model for a
+        // given set of urls
         $scope.getStatusCodes = function() {
+            var urlIds = $scope.getUrlIds();
             var results = [];
             var keys = {};
             for (var i = 0; i < $scope.heads.length; i++) {
-                var val = $scope.heads[i].status_code;
-                if (angular.isUndefined(keys[val])) {
-                    keys[val] = true;
-                    results.push(val);
+                if (urlIds.indexOf($scope.heads[i].url_id) > -1) {
+                    var val = $scope.heads[i].status_code;
+                    if (angular.isUndefined(keys[val])) {
+                        keys[val] = true;
+                        results.push(val);
+                    }
                 }
             }
             results.sort();
