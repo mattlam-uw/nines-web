@@ -10,18 +10,22 @@ angular.module('ninesWeb')
 // Minimum status code value at or over which responses are considered errors
 .constant("errorThreshold", 400)
 // Main controller for Nines Web
-.controller('ninesWebCtrl', ['$scope', '$routeParams', 'Urls', 'Heads',
-    'numDigits', 'errorThreshold',
-    function($scope, $routeParams, Urls, Heads, numDigits, errorThreshold) {
+.controller('ninesWebCtrl', ['$scope', '$routeParams', 'Urls', 'UrlGroups',
+    'Heads', 'numDigits', 'errorThreshold',
+    function($scope, $routeParams, Urls, UrlGroups, Heads, numDigits,
+             errorThreshold) {
 
         /*-------------------------------------------------------------------
          Initialize $scope variables
          --------------------------------------------------------------------*/
 
         // Populate scope variables with objects pulled from nines-api
-        $scope.urls = Urls.query(); // All rows retrieved from Urls model
-        $scope.heads = Heads.query(); // All rows retrieved from Heads model
-        $scope.numDigits = numDigits; // Expose numDigits constant to views
+        // Retrieve all rows from the following models:
+        $scope.urls = Urls.query(); // Urls model
+        $scope.urlgroups = UrlGroups.query(); // UrlGroups model
+        $scope.heads = Heads.query(); // Heads model
+        // Expose numDigits constant to views
+        $scope.numDigits = numDigits;
 
         // Initialize variables for controlling view properties
         $scope.showFormAddUrl = false; // Hide form to add new URL by default
