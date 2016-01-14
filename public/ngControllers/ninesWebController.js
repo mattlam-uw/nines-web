@@ -201,8 +201,16 @@ angular.module('ninesWeb')
             // Remove trailing slash from the Host value if it exists
             newUrl.host = removeAllTrailingSlashes(newUrl.host.trim());
 
-            // Add leading and trailing slashes to the Path value if needed
-            newUrl.path = addForeAndAftSlashes(newUrl.path.trim());
+            // If a path value was provided, then add a leading slash if needed.
+            // If no path value was provided, then set path to empty string.
+            if (angular.isDefined(newUrl.path)) {
+                newUrl.path = newUrl.path.trim();
+                if (!newUrl.path.startsWith('/')) {
+                    newUrl.path = '/' + newUrl.path;
+                }
+            } else {
+                newUrl.path = "";
+            }
 
             // Add the new URL to the Urls model
             var addUrl = new Urls(newUrl);
@@ -229,17 +237,5 @@ angular.module('ninesWeb')
             }
         }
 
-        // Adds forward slashes to the beginning and end of a string if they are not
-        // already there
-        function addForeAndAftSlashes(input) {
-            var result = input;
-            if (!result.startsWith('/')) {
-                result = '/' + result;
-            }
-            if (!result.endsWith('/')) {
-                result = result + '/';
-            }
-            return result;
-        }
     }
 ]);
