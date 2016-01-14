@@ -12,7 +12,7 @@
                 <th colspan="{{numDigits}}">Availability Rating</th>
             </thead>
             <tbody>
-                <tr ng-repeat="url in urls">
+                <tr ng-repeat="url in getUrlsForGroup('5697eecf70cdb11e43203cca')">
                     <td>{{url.name}}</td>
                     <td><a href="http://{{url.host}}{{url.path}}" target="_blank">
                         {{url.host}}{{url.path}}</a>

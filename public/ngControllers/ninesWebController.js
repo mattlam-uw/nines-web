@@ -11,9 +11,9 @@ angular.module('ninesWeb')
 .constant("errorThreshold", 400)
 // Main controller for Nines Web
 .controller('ninesWebCtrl', ['$scope', '$routeParams', 'Urls', 'UrlGroups',
-    'Heads', 'numDigits', 'errorThreshold',
-    function($scope, $routeParams, Urls, UrlGroups, Heads, numDigits,
-             errorThreshold) {
+    'UrlGroupUrls', 'Heads', 'numDigits', 'errorThreshold',
+    function($scope, $routeParams, Urls, UrlGroups, UrlGroupUrls, Heads,
+             numDigits, errorThreshold) {
 
         /*-------------------------------------------------------------------
          Initialize $scope variables
@@ -21,9 +21,10 @@ angular.module('ninesWeb')
 
         // Populate scope variables with objects pulled from nines-api
         // Retrieve all rows from the following models:
-        $scope.urls = Urls.query(); // Urls model
-        $scope.urlgroups = UrlGroups.query(); // UrlGroups model
-        $scope.heads = Heads.query(); // Heads model
+        $scope.urls = Urls.query();                 // Urls model
+        $scope.urlgroups = UrlGroups.query();       // UrlGroups model
+        $scope.urlgroupurls = UrlGroupUrls.query(); // UrlGroupUrls model
+        $scope.heads = Heads.query();               // Heads model
         // Expose numDigits constant to views
         $scope.numDigits = numDigits;
 
@@ -33,11 +34,25 @@ angular.module('ninesWeb')
         $scope.newUrl = {}; // Object bound to Add URL form for conveying form data
         $scope.newUrl.protocol = "http"; // Set protocol to "http" by default
 
-        // Returns an array URL ids for URLs relevant to this stats page
-        $scope.getUrlIds = function() {
+        // Fetch rows from the /urls model for urls relevant to the given urlGroupId
+        $scope.getUrlsForGroup = function(urlGroupId) {
+            var urlIds = $scope.getUrlIds(urlGroupId);
             var results = [];
             for (var i = 0; i < $scope.urls.length; i++) {
-                results.push($scope.urls[i]._id);
+                if (urlIds.indexOf($scope.urls[i]._id) > -1) {
+                    results.push($scope.urls[i]);
+                }
+            }
+            return results;
+        }
+
+        // Returns an array URL ids for URLs relevant to this stats page
+        $scope.getUrlIds = function(urlGroupId) {
+            var results = [];
+            for (var i = 0; i < $scope.urlgroupurls.length; i++) {
+                if ($scope.urlgroupurls[i].urlgroup_id === urlGroupId) {
+                    results.push($scope.urlgroupurls[i].url_id);
+                }
             }
             return results;
         }
@@ -45,7 +60,7 @@ angular.module('ninesWeb')
         // Returns an ordered array of status codes from Heads model for a
         // given set of urls
         $scope.getStatusCodes = function() {
-            var urlIds = $scope.getUrlIds();
+            var urlIds = $scope.getUrlIds('5697eecf70cdb11e43203cca');
             var results = [];
             var keys = {};
             for (var i = 0; i < $scope.heads.length; i++) {
