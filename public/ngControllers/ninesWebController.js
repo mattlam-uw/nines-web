@@ -210,21 +210,31 @@ angular.module('ninesWeb')
 
 //        }
 
-        /*-------------------------------------------------------------------------
+        /*--------------------------------------------------------------------
          Event Handlers
-         ------------------------------------------------------------------------*/
-        /*-- Handlers for showing and hiding form for adding new URL ------------*/
+         --------------------------------------------------------------------*/
+        /*-- Handlers for showing and hiding form for adding new URL --------*/
+        // Shows the form if currently hidden. Hides the form if currently
+        // showing
         $scope.showAddUrlForm = function() {
-            $scope.showFormAddUrl = true;
+            if (!$scope.showFormAddUrl) {
+                $scope.showFormAddUrl = true;
+            } else {
+                $scope.hideAddUrlForm();
+            }
         };
 
+        // Hides the form and clears out the form fields
         $scope.hideAddUrlForm = function() {
             $scope.showFormAddUrl = false;
+            $scope.newUrl.name = null;
+            $scope.newUrl.host = null;
+            $scope.newUrl.path = null;
             $scope.addUrlFormMessage = "";
             $scope.newUrl.protocol = "http";
         }
 
-        /*-- Handler for adding a new URL -------------*/
+        /*-- Handler for adding a new URL -----------------------------------*/
         $scope.addUrl = function(newUrl) {
             // Take no action if either the name or the host fields have no data
             if (!newUrl.name || !newUrl.host) {
@@ -232,6 +242,8 @@ angular.module('ninesWeb')
                     "Name and URL Host";
                 return;
             }
+
+            // Clean up and format data to get ready for adding to model
 
             // Remove trailing slash from the Host value if it exists
             newUrl.host = removeAllTrailingSlashes(newUrl.host.trim());
@@ -249,28 +261,49 @@ angular.module('ninesWeb')
 
             // Add the new URL to the Urls model
             var addUrl = new Urls(newUrl);
-
             addUrl.$save(function() {
                 // Update the local model with the new URL
                 $scope.urls.push(addUrl);
                 // Clear out the form fields and hide the Add URL form
-                $scope.newUrl.name = null;
-                $scope.newUrl.host = null;
-                $scope.newUrl.path = null;
-                $scope.newUrl.protocol = "http";
-                $scope.showFormAddUrl = false;
-
+                $scope.hideAddUrlForm();
             })
         }
 
         /*-- Handlers for showing and hiding form for adding new URL Group --*/
+        // Shows the form if currently hidden. Hides the form if currently
+        // showing
         $scope.showAddUrlGroupForm = function() {
-            $scope.showFormAddUrlGroup = true;
+            if (!$scope.showFormAddUrlGroup) {
+                $scope.showFormAddUrlGroup = true
+            } else {
+                $scope.hideAddUrlGroupForm();
+            }
         };
 
+        // Hides the form
         $scope.hideAddUrlGroupForm = function() {
             $scope.showFormAddUrlGroup = false;
             $scope.addUrlGroupFormMessage = "";
+            $scope.showFormAddUrl = false;
+            $scope.newUrlGroup.name = null;
+        }
+
+        /*-- Handler for adding a new URL Group -----------------------------*/
+        $scope.addUrlGroup = function(newUrlGroup) {
+            // Take no action if the name field has no data
+            if (!newUrlGroup.name) {
+                $scope.addUrlGroupFormMessage = "Please provide a group name"
+                return;
+            }
+
+            // Add the new URL Group to the UrlGroups model
+            var addUrlGroup = new UrlGroups(newUrlGroup);
+            addUrlGroup.$save(function() {
+                // Update the local model with the new URL Group
+                $scope.urlgroups.push(addUrlGroup);
+                // Clear out the form fields and hid the Add URL Group form
+                $scope.hideAddUrlGroupForm();
+            })
         }
 
         /*-- Private utility functions --------------------------------------*/

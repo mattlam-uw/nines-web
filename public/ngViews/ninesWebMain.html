@@ -23,7 +23,7 @@
                 </div>
                 <button type="submit" class="btn btn-large btn-primary"
                         ng-click="addUrlGroup(newUrlGroup)">
-                    Add URL Group
+                    Add
                 </button>
                 <button class="btn btn-large btn-default" ng-click="hideAddUrlGroupForm()">
                     Cancel
@@ -33,7 +33,7 @@
 
         <div ng-repeat="urlgroup in urlgroups">
             <table class="table table-striped table-condensed table-responsive">
-                <h3>URL Group: {{urlgroup.name}}</h3>
+                <h3>{{urlgroup.name}}</h3>
                 <thead>
                     <th>Name</th>
                     <th>URL</th>
@@ -98,7 +98,7 @@
                     </div>
                     <button type="submit" class="btn btn-large btn-primary"
                             ng-click="addUrl(newUrl)">
-                        Add URL
+                        Add
                     </button>
                     <button class="btn btn-large btn-default" ng-click="hideAddUrlForm()">
                         Cancel
