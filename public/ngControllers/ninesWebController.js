@@ -34,6 +34,10 @@ angular.module('ninesWeb')
         $scope.newUrl = {}; // Object bound to Add URL form for conveying form data
         $scope.newUrl.protocol = "http"; // Set protocol to "http" by default
 
+        $scope.showFormAddUrlGroup = false; // Hide form to add new URL Group by default
+        $scope.addUrlGroupFormMessage = ""; // Provide feedback for add URL Group form
+        $scope.newUrlGroup = {}; // Object bound to Add URL Group form for conveying form data
+
         // Fetch rows from the /urls model for urls relevant to the given urlGroupId
         $scope.getUrlsForGroup = function(urlGroupId) {
             var urlIds = $scope.getUrlIds(urlGroupId);
@@ -258,6 +262,18 @@ angular.module('ninesWeb')
 
             })
         }
+
+        /*-- Handlers for showing and hiding form for adding new URL Group --*/
+        $scope.showAddUrlGroupForm = function() {
+            $scope.showFormAddUrlGroup = true;
+        };
+
+        $scope.hideAddUrlGroupForm = function() {
+            $scope.showFormAddUrlGroup = false;
+            $scope.addUrlGroupFormMessage = "";
+        }
+
+        /*-- Private utility functions --------------------------------------*/
 
         // Recursive function removes any and all trailing forward slashes from string
         function removeAllTrailingSlashes(input) {
