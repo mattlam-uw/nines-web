@@ -97,7 +97,7 @@
                         <alert ng-show="addUrlFormMessage">{{addUrlFormMessage}}</alert>
                     </div>
                     <button type="submit" class="btn btn-large btn-primary"
-                            ng-click="addUrl(newUrl)">
+                            ng-click="addUrl(newUrl, urlgroup._id)">
                         Add
                     </button>
                     <button class="btn btn-large btn-default" ng-click="hideAddUrlForm()">

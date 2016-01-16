@@ -235,7 +235,7 @@ angular.module('ninesWeb')
         }
 
         /*-- Handler for adding a new URL -----------------------------------*/
-        $scope.addUrl = function(newUrl) {
+        $scope.addUrl = function(newUrl, urlGroupId) {
             // Take no action if either the name or the host fields have no data
             if (!newUrl.name || !newUrl.host) {
                 $scope.addUrlFormMessage = "Please provide values for both URL " +
@@ -260,13 +260,22 @@ angular.module('ninesWeb')
             }
 
             // Add the new URL to the Urls model
+            // Also add a new relationship between the URL Group and the new URL
             var addUrl = new Urls(newUrl);
-            addUrl.$save(function() {
+            addUrl.$save(function(urlResData) {
                 // Update the local model with the new URL
                 $scope.urls.push(addUrl);
                 // Clear out the form fields and hide the Add URL form
                 $scope.hideAddUrlForm();
-            })
+
+                // Add a new relationship between URL and URL Group
+                var newUrlGroupUrl = { urlgroup_id: urlGroupId, url_id: urlResData._id }
+                var addUrlGroupUrl = new UrlGroupUrls(newUrlGroupUrl);
+                addUrlGroupUrl.$save(function() {
+                    $scope.urlgroupurls.push(addUrlGroupUrl);
+                });
+            });
+
         }
 
         /*-- Handlers for showing and hiding form for adding new URL Group --*/
