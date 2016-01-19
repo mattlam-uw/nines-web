@@ -214,15 +214,16 @@ angular.module('ninesWeb')
          Event Handlers
          --------------------------------------------------------------------*/
         /*-- Handlers for showing and hiding form for adding new URL --------*/
-        // Shows the form if currently hidden. Hides the form if currently
-        // showing
-        $scope.showAddUrlForm = function() {
-            if (!$scope.showFormAddUrl) {
-                $scope.showFormAddUrl = true;
+        // Shows the form for a Url Group if currently hidden. Hides the form
+        // if currently showing
+        $scope.showAddUrlForm = function(groupId) {
+            if ($scope.showFormAddUrl !== groupId) {
+                $scope.showFormAddUrl = groupId;
             } else {
                 $scope.hideAddUrlForm();
             }
         };
+
 
         // Hides the form and clears out the form fields
         $scope.hideAddUrlForm = function() {

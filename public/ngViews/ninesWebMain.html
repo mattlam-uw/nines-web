@@ -57,14 +57,15 @@
 
             <div class="btn-group" role="group" aria-label="actions for managing URLs">
                 <button type="button" class="btn btn-primary"
-                        ng-click="showAddUrlForm()">
+                        ng-click="showAddUrlForm(urlgroup._id)">
                     Add URL
                 </button>
                 <button type="button" class="btn btn-default">
                     Edit URLs
                 </button>
             </div>
-            <div id="add-url-form" ng-show="showFormAddUrl">
+            {{showFormAddUrl}}
+            <div id="add-url-form" ng-show="showFormAddUrl === urlgroup._id">
                 <h3>Add new URL</h3>
                 <form name="add-url">
                     <div class="form-group">
