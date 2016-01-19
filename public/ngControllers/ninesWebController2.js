@@ -10,7 +10,7 @@ angular.module('ninesWeb')
 // Minimum status code value at or over which responses are considered errors
 .constant("errorThreshold", 400)
 // Main controller for Nines Web
-.controller('ninesWebCtrl', ['$scope', '$routeParams', 'Urls', 'UrlGroups',
+.controller('ninesWebCtrl2', ['$scope', '$routeParams', 'Urls', 'UrlGroups',
     'UrlGroupUrls', 'Heads', 'numDigits', 'errorThreshold',
     function($scope, $routeParams, Urls, UrlGroups, UrlGroupUrls, Heads,
              numDigits, errorThreshold) {
@@ -213,7 +213,9 @@ angular.module('ninesWeb')
         /*--------------------------------------------------------------------
          Event Handlers
          --------------------------------------------------------------------*/
+
         /*-- Handlers for showing and hiding form for adding new URL --------*/
+
         // Shows the form for a Url Group if currently hidden. Hides the form
         // if currently showing
         $scope.showAddUrlForm = function(groupId) {
@@ -280,6 +282,7 @@ angular.module('ninesWeb')
         }
 
         /*-- Handlers for showing and hiding form for adding new URL Group --*/
+
         // Shows the form if currently hidden. Hides the form if currently
         // showing
         $scope.showAddUrlGroupForm = function() {

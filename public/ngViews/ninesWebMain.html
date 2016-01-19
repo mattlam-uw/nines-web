@@ -3,32 +3,34 @@
     <div id="content">
         <h2>Response Stats</h2>
 
-        <div class="btn-group" role="group" aria-label="actions for managing URL Groups">
-            <button type="button" class="btn btn-large btn-primary"
-                    ng-click="showAddUrlGroupForm()">
-                Add URL Group
-            </button>
-        </div>
+        <div id="manageUrlGroups" ng-controller="uiMainUrlGroupsCtrl">
+            <div class="btn-group" role="group" aria-label="actions for managing URL Groups">
+                <button type="button" class="btn btn-large btn-primary"
+                        ng-click="showAddUrlGroupForm()">
+                    Add URL Group
+                </button>
+            </div>
 
-        <div id="add-url-group-form" ng-show="showFormAddUrlGroup">
-            <h3>Add new URL Group</h3>
-            <form name="add-url-group">
-                <div class="form-group">
-                    <label for="url-group-name">URL Group Name</label>
-                    <input type="text" class="form-control" id="url-group-name"
-                           ng-model="newUrlGroup.name" name="url-group-name">
-                </div>
-                <div class="form-alert">
-                    <alert ng-show="addUrlGroupFormMessage">{{addUrlGroupFormMessage}}</alert>
-                </div>
-                <button type="submit" class="btn btn-large btn-primary"
-                        ng-click="addUrlGroup(newUrlGroup)">
-                    Add
-                </button>
-                <button class="btn btn-large btn-default" ng-click="hideAddUrlGroupForm()">
-                    Cancel
-                </button>
-            </form>
+            <div id="add-url-group-form" ng-show="showFormAddUrlGroup">
+                <h3>Add new URL Group</h3>
+                <form name="add-url-group">
+                    <div class="form-group">
+                        <label for="url-group-name">URL Group Name</label>
+                        <input type="text" class="form-control" id="url-group-name"
+                               ng-model="newUrlGroup.name" name="url-group-name">
+                    </div>
+                    <div class="form-alert">
+                        <alert ng-show="addUrlGroupFormMessage">{{addUrlGroupFormMessage}}</alert>
+                    </div>
+                    <button type="submit" class="btn btn-large btn-primary"
+                            ng-click="addUrlGroup(newUrlGroup)">
+                        Add
+                    </button>
+                    <button class="btn btn-large btn-default" ng-click="hideAddUrlGroupForm()">
+                        Cancel
+                    </button>
+                </form>
+            </div>
         </div>
 
         <div ng-repeat="urlgroup in urlgroups">
@@ -55,56 +57,57 @@
                 </tbody>
             </table>
 
-            <div class="btn-group" role="group" aria-label="actions for managing URLs">
-                <button type="button" class="btn btn-primary"
-                        ng-click="showAddUrlForm(urlgroup._id)">
-                    Add URL
-                </button>
-                <button type="button" class="btn btn-default">
-                    Edit URLs
-                </button>
-            </div>
-            {{showFormAddUrl}}
-            <div id="add-url-form" ng-show="showFormAddUrl === urlgroup._id">
-                <h3>Add new URL</h3>
-                <form name="add-url">
-                    <div class="form-group">
-                        <label for="url-name">URL Name</label>
-                        <input type="text" class="form-control" id="url-name"
-                               ng-model="newUrl.name" name="url-name">
-                        <label for="url-host">URL Host</label>
-                        <input type="text" class="form-control" id="url-host"
-                               ng-model="newUrl.host" name="url-host">
-                        <label for="url-path">URL Path</label>
-                        <input type="text" class="form-control" id="url-path"
-                               ng-model="newUrl.path" name="url-path">
-                        <label for="url-protocol-choice-buttons">Protocol</label>
-                        <div id="url-protocol-choice-buttons">
-                            <label class="radio-inline">
-                                <input type="radio" name="urlProtocolOptions"
-                                       id="urlProtocolHttp" value="http"
-                                       ng-model="newUrl.protocol">
-                                HTTP
-                            </label>
-                            <label class="radio-inline">
-                                <input type="radio" name="urlProtocolOptions"
-                                       id="urlProtocolHttps" value="https"
-                                       ng-model="newUrl.protocol">
-                                HTTPS
-                            </label>
+            <div id="manageUrls" ng-controller="uiMainUrlsCtrl">
+                <div class="btn-group" role="group" aria-label="actions for managing URLs">
+                    <button type="button" class="btn btn-primary"
+                            ng-click="showAddUrlForm(urlgroup._id)">
+                        Add URL
+                    </button>
+                    <button type="button" class="btn btn-default">
+                        Edit URLs
+                    </button>
+                </div>
+                <div id="add-url-form" ng-show="showFormAddUrl === urlgroup._id">
+                    <h3>Add new URL</h3>
+                    <form name="add-url">
+                        <div class="form-group">
+                            <label for="url-name">URL Name</label>
+                            <input type="text" class="form-control" id="url-name"
+                                   ng-model="newUrl.name" name="url-name">
+                            <label for="url-host">URL Host</label>
+                            <input type="text" class="form-control" id="url-host"
+                                   ng-model="newUrl.host" name="url-host">
+                            <label for="url-path">URL Path</label>
+                            <input type="text" class="form-control" id="url-path"
+                                   ng-model="newUrl.path" name="url-path">
+                            <label for="url-protocol-choice-buttons">Protocol</label>
+                            <div id="url-protocol-choice-buttons">
+                                <label class="radio-inline">
+                                    <input type="radio" name="urlProtocolOptions"
+                                           id="urlProtocolHttp" value="http"
+                                           ng-model="newUrl.protocol">
+                                    HTTP
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" name="urlProtocolOptions"
+                                           id="urlProtocolHttps" value="https"
+                                           ng-model="newUrl.protocol">
+                                    HTTPS
+                                </label>
+                            </div>
                         </div>
-                    </div>
-                    <div class="form-alert">
-                        <alert ng-show="addUrlFormMessage">{{addUrlFormMessage}}</alert>
-                    </div>
-                    <button type="submit" class="btn btn-large btn-primary"
-                            ng-click="addUrl(newUrl, urlgroup._id)">
-                        Add
-                    </button>
-                    <button class="btn btn-large btn-default" ng-click="hideAddUrlForm()">
-                        Cancel
-                    </button>
-                </form>
+                        <div class="form-alert">
+                            <alert ng-show="addUrlFormMessage">{{addUrlFormMessage}}</alert>
+                        </div>
+                        <button type="submit" class="btn btn-large btn-primary"
+                                ng-click="addUrl(newUrl, urlgroup._id)">
+                            Add
+                        </button>
+                        <button class="btn btn-large btn-default" ng-click="hideAddUrlForm()">
+                            Cancel
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
