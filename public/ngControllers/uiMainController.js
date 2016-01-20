@@ -70,7 +70,7 @@ angular.module('ninesWeb')
         // Provide view with an object containing the following for a given URL:
         // 1) an occurrence total for each status code column in the table,
         // 2) an overall availability rating
-        $scope.getResponseStatsByUrlId = function(urlId) {
+        $scope.getResponseStatsByUrlId = function(urlGroupId, urlId) {
             // Initialize variables:
             var results = {}; // final results object to be returned
             var resTotal = 0; // total number of responses
@@ -78,7 +78,7 @@ angular.module('ninesWeb')
 
             // Create a property in the results object for every possible
             // status code a response from the URL might have
-            var allStatusCodes = $scope.getStatusCodes();
+            var allStatusCodes = $scope.getStatusCodes(urlGroupId);
             for (var i = 0; i < allStatusCodes.length; i++) {
                 results[allStatusCodes[i]] = 0;
             }
@@ -116,8 +116,8 @@ angular.module('ninesWeb')
 
         // Returns an ordered array of status codes from Heads model for a
         // given set of urls
-        $scope.getStatusCodes = function() {
-            var urlIds = $scope.getUrlIds('5697eecf70cdb11e43203cca');
+        $scope.getStatusCodes = function(urlGroupId) {
+            var urlIds = $scope.getUrlIds(urlGroupId);
             var results = [];
             var keys = {};
             for (var i = 0; i < $scope.heads.length; i++) {

@@ -39,7 +39,7 @@
                 <thead>
                     <th>Name</th>
                     <th>URL</th>
-                    <th ng-repeat="statusCode in getStatusCodes()" id="{{statusCode}}">
+                    <th ng-repeat="statusCode in getStatusCodes(urlgroup._id)" id="{{statusCode}}">
                         {{statusCode}}
                     </th>
                     <th colspan="{{numDigits}}">Availability Rating</th>
@@ -50,7 +50,7 @@
                         <td><a href="http://{{url.host}}{{url.path}}" target="_blank">
                             {{url.host}}{{url.path}}</a>
                         </td>
-                        <td ng-repeat="count in getResponseStatsByUrlId(url._id)">
+                        <td ng-repeat="count in getResponseStatsByUrlId(urlgroup._id, url._id)">
                             {{count}}
                         </td>
                     </tr>
