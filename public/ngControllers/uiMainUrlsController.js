@@ -55,10 +55,7 @@ angular.module('ninesWeb')
 
             // If a path value was provided, then add a leading slash if needed
             // If no path value was provided, then set path to empty string
-            console.log('angular isDefined newUrl.path:', angular.isDefined(newUrl.path));
             if (newUrl.path) {
-                console.log('New Url Path:', newUrl.path);
-                console.log('New Url Path Size:', newUrl.path.length);
                 newUrl.path = newUrl.path.trim();
                 if (!newUrl.path.startsWith('/')) {
                     newUrl.path = '/' + newUrl.path;
