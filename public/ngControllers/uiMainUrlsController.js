@@ -51,9 +51,9 @@ angular.module('ninesWeb')
             // (1) Remove trailing slash from the Host value if it exists
             newUrl.host = removeAllTrailingSlashes(newUrl.host.trim());
             // (2) Make sure the host name is formatted correctly (e.g.
-            // abc.def.ghi)
-            var hostNameRegExPattern = /^(([a-zA-Z]+\.)?[a-zA-Z]+\.[a-zA-Z]+)$/;
-            if (!newUrl.host.match(hostNameRegExPattern)) {
+            // abc.def.ghi or abd.def)
+            var hostNameRegEx = /^(([a-zA-Z][a-zA-Z0-9\-]*\.)?[a-zA-Z][a-zA-Z0-9\-]*\.[a-zA-Z]+)$/;
+            if (!newUrl.host.match(hostNameRegEx)) {
                 $scope.addUrlFormMessage = "Make sure your 'URL Host' value is"
                     + " of either of the following formats: 'abc.def.ghi' or"
                     + " 'abc.def'.";
