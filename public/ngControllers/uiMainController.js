@@ -189,6 +189,11 @@ angular.module('ninesWeb')
             // Convert the rating number into an array of digits numDigits in
             // length that represents the rating
             for (var i = 0; i < numDigits; i++) {
+                // Add a decimal place if this is the third digit
+                if (i === 2) {
+                    results.push('.');
+                }
+
                 // Retrieve the number currently on the far left of the rating
                 // number
                 var result = Math.floor(rating / divFactor);
@@ -198,6 +203,7 @@ angular.module('ninesWeb')
                 rating = rating - (result * divFactor);
                 // Adjust the divFactor for the next round
                 divFactor = Math.pow(10, numDigits - (i + 2));
+
             }
 
             return results;
