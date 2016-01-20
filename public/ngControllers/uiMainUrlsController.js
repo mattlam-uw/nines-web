@@ -47,14 +47,21 @@ angular.module('ninesWeb')
                     + "URL Name and URL Host";
                 return;
             }
-
-            // Clean up and format data to get ready for adding to model
-
-            // Remove trailing slash from the Host value if it exists
+            // Clean up and format data to get ready for adding to model:
+            // (1) Remove trailing slash from the Host value if it exists
             newUrl.host = removeAllTrailingSlashes(newUrl.host.trim());
+            // (2) Make sure the host name is formatted correctly (e.g.
+            // abc.def.ghi)
+            var hostNameRegExPattern = /^(([a-zA-Z]+\.)?[a-zA-Z]+\.[a-zA-Z]+)$/;
+            if (!newUrl.host.match(hostNameRegExPattern)) {
+                $scope.addUrlFormMessage = "Make sure your 'URL Host' value is"
+                    + " of either of the following formats: 'abc.def.ghi' or"
+                    + " 'abc.def'.";
+                return;
+            }
 
-            // If a path value was provided, then add a leading slash if needed
-            // If no path value was provided, then set path to empty string
+            // (2) If a path value was provided, then add a leading slash if
+            // needed. If no path value provided, then set path empty string
             if (newUrl.path) {
                 newUrl.path = newUrl.path.trim();
                 if (!newUrl.path.startsWith('/')) {
