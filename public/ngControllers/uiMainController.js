@@ -21,6 +21,9 @@ angular.module('ninesWeb')
         // Expose numDigits constant to views
         $scope.numDigits = numDigits;
 
+        // Global object for storing URL Group Rating Totals
+        var urlGroupRatingTotals = {};
+
 
         // +++++ DEBUG CODE START +++++
         // console.log('++Parameter: ', $routeParams.id);
@@ -70,7 +73,7 @@ angular.module('ninesWeb')
         // Provide view with an object containing the following for a given URL:
         // 1) an occurrence total for each status code column in the table,
         // 2) an overall availability rating
-        $scope.getResponseStatsByUrlId = function(urlGroupId, urlId) {
+        $scope.getResStatsByUrlId = function(urlGroupId, urlId) {
             // Initialize variables:
             var results = {}; // final results object to be returned
             var resTotal = 0; // total number of responses
@@ -113,6 +116,27 @@ angular.module('ninesWeb')
 
             return results;
         };
+
+        // Provide view with an average availability rating for a URL Group
+        $scope.getUrlGroupTotals = function(urlGroupId) {
+            var errTotal = 0;
+            var resTotal = 0;
+
+            // Get the URL IDs for URLs in the URL Group and then use these to
+            // comb through the Heads model to arrive at an overall
+            // availability rating for the URL Group
+            var urlIds = $scope.getUrlIds(urlGroupId);
+
+            for (var i = 0; i < $scope.heads.length; i++) {
+                if (urlIds.indexOf($scope.heads[i].url_id) > -1) {
+                    if ($scope.heads[i].status_code >= errorThreshold) {
+                        errTotal += 1;
+                    }
+                    resTotal += 1;
+                }
+            }
+            return createAvailRating(errTotal, resTotal, numDigits);
+        }
 
         // Returns an ordered array of status codes from Heads model for a
         // given set of urls

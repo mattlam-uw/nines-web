@@ -45,7 +45,8 @@
                 <thead>
                     <th>Name</th>
                     <th>URL</th>
-                    <th ng-repeat="statusCode in getStatusCodes(urlgroup._id)" id="{{statusCode}}">
+                    <th ng-repeat="statusCode in getStatusCodes(urlgroup._id)"
+                        class="url-group-status-code-{{statusCode}}">
                         {{statusCode}}
                     </th>
                     <th colspan="{{numDigits + 1}}">Availability Rating (%)</th>
@@ -56,8 +57,16 @@
                         <td><a href="http://{{url.host}}{{url.path}}" target="_blank">
                             {{url.host}}{{url.path}}</a>
                         </td>
-                        <td ng-repeat="count in getResponseStatsByUrlId(urlgroup._id, url._id)">
-                            {{count}}
+                        <td ng-repeat="stat in getResStatsByUrlId(urlgroup._id, url._id)">
+                            {{stat}}
+                        </td>
+                    </tr>
+                    <tr class="url-group-total-row">
+                        <td colspan="2">Group Average:</td>
+                        <td ng-repeat="statusCode in getStatusCodes(urlgroup._id)"></td>
+                        <td ng-repeat="totalStat in getUrlGroupTotals(urlgroup._id)
+                                       track by $index">
+                            {{totalStat}}
                         </td>
                     </tr>
                 </tbody>
