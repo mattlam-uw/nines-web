@@ -62,18 +62,17 @@ angular.module('ninesWeb')
 
             // If a path value was provided, then add a leading slash if
             // needed. If no path value provided, then set path empty string
-            if (newUrl.path) {
+            if (!newUrl.path) {
+                newUrl.path = "";
+            } else {
                 newUrl.path = newUrl.path.trim();
                 if (!newUrl.path.startsWith('/')) {
                     newUrl.path = '/' + newUrl.path;
                 }
-            } else {
-                newUrl.path = "";
             }
 
-            // Initialize total responses and total errors fields
-            newUrl.response_total = 0;
-            newUrl.error_total = 0;
+            // Initialize object to store status codes and response counts
+            newUrl.responses = { 200: 0 };
 
             // Add the URL Group ID
             newUrl.urlgroup_id = urlGroupId;
