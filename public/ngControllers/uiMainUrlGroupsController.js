@@ -42,6 +42,10 @@ angular.module('ninesWeb')
                 return;
             }
 
+            // Initialize the Response and Error Total properties
+            newUrlGroup.response_total = 0;
+            newUrlGroup.error_total = 0;
+
             // Add the new URL Group to the UrlGroups model
             var addUrlGroup = new UrlGroups(newUrlGroup);
             addUrlGroup.$save(function() {
