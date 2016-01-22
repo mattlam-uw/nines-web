@@ -60,7 +60,7 @@ angular.module('ninesWeb')
                 return;
             }
 
-            // (2) If a path value was provided, then add a leading slash if
+            // If a path value was provided, then add a leading slash if
             // needed. If no path value provided, then set path empty string
             if (newUrl.path) {
                 newUrl.path = newUrl.path.trim();
@@ -70,6 +70,10 @@ angular.module('ninesWeb')
             } else {
                 newUrl.path = "";
             }
+
+            // Initialize total responses and total errors fields
+            newUrl.response_total = 0;
+            newUrl.error_total = 0;
 
             // Add the new URL to the Urls model
             // Also add a new relationship between the URL Group and the new URL
@@ -90,7 +94,6 @@ angular.module('ninesWeb')
                     $scope.urlgroupurls.push(addUrlGroupUrl);
                 });
             });
-
         };
 
         /*---------------------------------------------------------------------
