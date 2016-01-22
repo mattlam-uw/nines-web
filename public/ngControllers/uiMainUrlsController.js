@@ -75,6 +75,9 @@ angular.module('ninesWeb')
             newUrl.response_total = 0;
             newUrl.error_total = 0;
 
+            // Add the URL Group ID
+            newUrl.urlgroup_id = urlGroupId;
+
             // Add the new URL to the Urls model
             // Also add a new relationship between the URL Group and the new URL
             var addUrl = new Urls(newUrl);
