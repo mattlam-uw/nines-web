@@ -47,63 +47,49 @@ angular.module('ninesWeb')
          View Data Prep Methods - Public (available to view)
          --------------------------------------------------------------------*/
 
-        // Fetch rows from the /urls model for urls relevant to the given urlGroupId
-        $scope.getUrlsForGroup = function(urlGroupId) {
-            var urlIds = $scope.getUrlIds(urlGroupId);
-            var results = [];
-            for (var i = 0; i < $scope.urls.length; i++) {
-                if (urlIds.indexOf($scope.urls[i]._id) > -1) {
-                    results.push($scope.urls[i]);
-                }
-            }
-            return results;
-        };
-
-        // Returns an array URL ids for URLs relevant to this stats page
-        $scope.getUrlIds = function(urlGroupId) {
-            var results = [];
-            for (var i = 0; i < $scope.urlgroupurls.length; i++) {
-                if ($scope.urlgroupurls[i].urlgroup_id === urlGroupId) {
-                    results.push($scope.urlgroupurls[i].url_id);
-                }
-            }
-            return results;
-        };
-
-        // Provide view with an object containing the following for a given URL:
-        // 1) an occurrence total for each status code column in the table,
-        // 2) an overall availability rating
-        $scope.getResStatsByUrlId = function(urlGroupId, urlId) {
+        // The following function can be called to get either (a) stats for a
+        // particular URL in a URL Group or (b) overall stats for the URL Group.
+        // If an object value for the 'urlResponses' parameter is provided,
+        // then it is assumed the function is being called to get specific URL
+        // stats. If no value is provided for the 'urlResponses' parameter,
+        // then it is assumed the function is being called to get overall
+        // stats for the URL Group. In each case, the following stats will be
+        // returned: (1) an occurrence total for each status code column in
+        // the table, and (2) an overall availability rating
+        $scope.getUrlStats = function(urlgroupResponses, urlResponses) {
             // Initialize variables:
             var results = {}; // final results object to be returned
             var resTotal = 0; // total number of responses
             var errTotal = 0; // total number of error responses
 
-            // Create a property in the results object for every possible
-            // status code a response from the URL might have
-            var allStatusCodes = $scope.getStatusCodes(urlGroupId);
-            for (var i = 0; i < allStatusCodes.length; i++) {
-                results[allStatusCodes[i]] = 0;
+            // If this is being run for URLs (not URL Groups), then add a
+            // 'results' object property for all status codes represented
+            // in URL Group
+            if (urlResponses) {
+                for (var statusCode in urlgroupResponses) {
+                    results[statusCode] = 0;
+                }
             }
 
-            // Iterate over the header responses retrieved from the Heads model
-            // looking for responses for the given URL. For each header response
-            // identified, increment the appropriate results object status code
-            // property value. Also increment the overall count of responses.
-            for (var i = 0; i < $scope.heads.length; i++) {
-                if ($scope.heads[i].url_id === urlId) {
-                    var statusCode = $scope.heads[i].status_code;
-                    results[statusCode] += 1;
-                    if (statusCode >= errorThreshold) {
-                        errTotal += 1;
-                    }
-                    resTotal += 1;
+            // Iterate through the responses for this URL Group or URL and
+            // determine the error and response totals and add the response
+            // totals to the appropriate status code property in the 'results'
+            // object.
+            var responseObject = urlgroupResponses;
+            if (urlResponses) {
+                responseObject = urlResponses;
+            }
+            for (var statusCode in responseObject) {
+                if (statusCode >= errorThreshold) {
+                    errTotal += responseObject[statusCode];
                 }
+                resTotal += responseObject[statusCode];
+                results[statusCode] = responseObject[statusCode];
             }
 
             // Retrieve the array of digits representing the availability rating
             // for this URL
-            availRating = createAvailRating(errTotal, resTotal, numDigits);
+            var availRating = createAvailRating(errTotal, resTotal, numDigits);
 
             // Create properties in the results object for storing all digits
             // of the availability rating, and then populate the property values
@@ -116,47 +102,6 @@ angular.module('ninesWeb')
 
             return results;
         };
-
-        // Provide view with an average availability rating for a URL Group
-        $scope.getUrlGroupTotals = function(urlGroupId) {
-            var errTotal = 0;
-            var resTotal = 0;
-
-            // Get the URL IDs for URLs in the URL Group and then use these to
-            // comb through the Heads model to arrive at an overall
-            // availability rating for the URL Group
-            var urlIds = $scope.getUrlIds(urlGroupId);
-
-            for (var i = 0; i < $scope.heads.length; i++) {
-                if (urlIds.indexOf($scope.heads[i].url_id) > -1) {
-                    if ($scope.heads[i].status_code >= errorThreshold) {
-                        errTotal += 1;
-                    }
-                    resTotal += 1;
-                }
-            }
-            return createAvailRating(errTotal, resTotal, numDigits);
-        }
-
-        // Returns an ordered array of status codes from Heads model for a
-        // given set of urls
-        $scope.getStatusCodes = function(urlGroupId) {
-            var urlIds = $scope.getUrlIds(urlGroupId);
-            var results = [];
-            var keys = {};
-            for (var i = 0; i < $scope.heads.length; i++) {
-                if (urlIds.indexOf($scope.heads[i].url_id) > -1) {
-                    var val = $scope.heads[i].status_code;
-                    if (angular.isUndefined(keys[val])) {
-                        keys[val] = true;
-                        results.push(val);
-                    }
-                }
-            }
-            results.sort();
-            return results;
-        };
-
 
         /*-------------------------------------------------------------------
          View Data Prep Methods - Internal
