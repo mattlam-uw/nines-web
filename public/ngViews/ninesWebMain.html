@@ -39,10 +39,9 @@
         <!---------------------------------------------------------------------
          Main Display of Groups, URLs, and Ratings
         ---------------------------------------------------------------------->
-        <div ng-repeat="urlgroup in urlgroups">
+        <div ng-repeat="urlgroup in urlgroups" ng-controller="uiMainUrlsCtrl">
             <table class="table table-striped table-condensed table-responsive">
                 <h3>{{urlgroup.name}}</h3>
-                {{showIconsRemoveUrl}} and {{urlgroup._id}}
                 <thead>
                     <th ng-show="showIconsRemoveUrl === urlgroup._id">Remove</th>
                     <th>Name</th>
@@ -57,7 +56,7 @@
                                    filter : { urlgroup_id: urlgroup._id } |
                                    orderBy: 'name'">
                         <td ng-show="showIconsRemoveUrl === urlgroup._id">
-                            <a type="button" class="btn btn-small btn-danger">x</a>
+                            <a>x</a>
                         </td>
                         <td>{{url.name}}</td>
                         <td><a href="http://{{url.host}}{{url.path}}" target="_blank">
@@ -81,15 +80,22 @@
             <!-----------------------------------------------------------------
              Form for Adding URLs
             ------------------------------------------------------------------>
-            <div id="manageUrls" ng-controller="uiMainUrlsCtrl">
+            <div id="manageUrls">
                 <div class="btn-group" role="group" aria-label="actions for managing URLs">
                     <button type="button" class="btn btn-primary"
+                            ng-hide="showIconsRemoveUrl === urlgroup._id"
                             ng-click="showAddUrlForm(urlgroup._id)">
                         Add URL
                     </button>
                     <button type="button" class="btn btn-danger"
+                            ng-hide="showIconsRemoveUrl === urlgroup._id"
                             ng-click="showRemoveUrlIcons(urlgroup._id)">
                         Remove URLs
+                    </button>
+                    <button type="button" class="btn btn-success"
+                            ng-show="showIconsRemoveUrl === urlgroup._id"
+                            ng-click="showRemoveUrlIcons(urlgroup._id)">
+                        Done
                     </button>
                 </div>
                 <div id="add-url-form" ng-show="showFormAddUrl === urlgroup._id">
