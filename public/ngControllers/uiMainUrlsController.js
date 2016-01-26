@@ -10,6 +10,8 @@ angular.module('ninesWeb')
         $scope.showFormAddUrl = false;
         // Provide feedback for add URL form
         $scope.addUrlFormMessage = "";
+        // Hide the Icons for removing URLS by default
+        $scope.showIconsRemoveUrl = "blah";
         // Object bound to Add-URL-Form for conveying form data
         $scope.newUrl = {};
         // Set protocol to "http" by default
@@ -37,6 +39,21 @@ angular.module('ninesWeb')
             $scope.newUrl.path = null;
             $scope.addUrlFormMessage = "";
             $scope.newUrl.protocol = "http";
+        };
+
+        /*-- Show the Remove-URL icons given URL Group ----------------------*/
+        // Hides the icons if they are currently showing
+        $scope.showRemoveUrlIcons = function(groupId) {
+            if ($scope.showIconsRemoveUrl !== groupId) {
+                $scope.showIconsRemoveUrl = groupId;
+            } else {
+                $scope.hideRemoveUrlIcons();
+            }
+        };
+
+        /*-- Hide the Remove-URL icons for given URL Group ------------------*/
+        $scope.hideRemoveUrlIcons = function() {
+            $scope.showIconsRemoveUrl = false;
         };
 
         /*-- Add a new URL --------------------------------------------------*/
