@@ -2,10 +2,10 @@
  Nines Web Main UI View Controller
  ----------------------------------------------------------------------------*/
 angular.module('ninesWeb')
-.controller('uiMainCtrl', ['$scope', '$routeParams', 'Urls', 'UrlGroups',
-    'UrlGroupUrls', 'Heads', 'numDigits', 'errorThreshold',
-    function($scope, $routeParams, Urls, UrlGroups, UrlGroupUrls, Heads,
-             numDigits, errorThreshold) {
+.controller('uiMainCtrl', ['$scope', '$routeParams', '$route', 'Urls',
+    'UrlGroups', 'UrlGroupUrls', 'Heads', 'numDigits', 'errorThreshold',
+    function($scope, $routeParams, $route, Urls, UrlGroups,
+             UrlGroupUrls, Heads, numDigits, errorThreshold) {
 
         /*-------------------------------------------------------------------
          Initialize $scope variables
@@ -27,25 +27,6 @@ angular.module('ninesWeb')
 
         // Global object for storing URL Group Rating Totals
         var urlGroupRatingTotals = {};
-
-
-        // +++++ DEBUG CODE START +++++
-        // console.log('++Parameter: ', $routeParams.id);
-        // console.log('++Status Codes: ', $scope.statusCodes)
-        // +++++ DEBUG CODE END +++++++
-
-//        if ($routeParams.id) {
-//            $scope.statusCode = $routeParams.id;
-//            $scope.count = ErrorCount.query({ statusCode: $routeParams.id });
-//            $scope.files = ErrorFiles.query({ statusCode: $routeParams.id });
-//
-//            // +++++ DEBUG CODE START +++++
-//            console.log('++Status Code: ', $scope.statusCode);
-//            console.log('++Error Count: ', $scope.count);
-//            console.log('++Error Files: ', $scope.files);
-//            // +++++ DEBUG CODE END +++++++
-
-//        }
 
         /*-------------------------------------------------------------------
          View Data Prep Methods - Public (available to view)
@@ -199,7 +180,9 @@ angular.module('ninesWeb')
 
             // Callback for call to Urls resource. Determines the index of the
             // URL in the $scope.urls array and removes item from array
-            var callback = function() {
+            var removeUrlCallback = function(urlData) {
+                // Determine the index of the URL to delete in the urls local
+                // model
                 var urlInd = -1;
                 for (var i = 0; i < $scope.urls.length && urlInd < 0; i++) {
                     if ($scope.urls[i]._id === remUrlId) {
@@ -207,14 +190,77 @@ angular.module('ninesWeb')
                     }
                 }
 
+                // Remove the URL from the local model
                 $scope.urls.splice(urlInd, 1);
+
+                // Update the totals for the URL Group of the URL
+                updateUrlGroup(urlData);
 
                 // Clean-up: return $scope url identifiers to empty values
                 $scope.remUrlName = null;
                 $scope.remUrlId = null;
-            };
+            }
 
-            Urls.remove({id: remUrlId}, callback);
+            // Update the URLs model (database) to delete the URL
+            Urls.remove({id: remUrlId}, removeUrlCallback);
         };
+
+        /*-------------------------------------------------------------------
+         Internal functions for Removing URL
+         --------------------------------------------------------------------*/
+
+        // Update the URL Group for a URL to subtract the response stats per
+        // status code for the removed URL from the group total
+        function updateUrlGroup(urlData) {
+            // Don't do anything unless there is data to act on
+            if (urlData) {
+
+                // Determine the index of the URL Group in urlgroups local
+                // model
+                var urlGroupInd = -1;
+                for (var j = 0; j < $scope.urlgroups.length &&
+                    urlGroupInd < 0; j++) {
+                    if ($scope.urlgroups[j]._id === urlData.urlgroup_id) {
+                        urlGroupInd = j;
+                    }
+                }
+
+                // For each status code in the responses data for the deleted
+                // URL, check for a matching status code in the responses for
+                // the associated URL Group and subtract the URL's status code
+                // response number from the URL Group's.
+                for (var delUrlStatusCode in urlData.responses) {
+                    for (var urlGroupStatusCode in
+                        $scope.urlgroups[urlGroupInd].responses) {
+
+                        if (delUrlStatusCode === urlGroupStatusCode) {
+                            $scope.urlgroups[urlGroupInd]
+                                  .responses[urlGroupStatusCode] -=
+                                urlData.responses[urlGroupStatusCode];
+                            console.log('Making a responses adjustment!');
+                        }
+                    }
+                }
+
+                console.log('Group after response adjustment:',
+                    $scope.urlgroups[urlGroupInd]);
+
+                // Update the URL Group model (database) with the modified
+                // response totals (old totals minus those of the deleted URL).
+                UrlGroups.update(
+                    {id: urlData.urlgroup_id},
+                    $scope.urlgroups[urlGroupInd],
+                    updateUrlGroupCallback
+                );
+            }
+        }
+
+        // Callback for the UrlGroups update call. This just refreshes
+        // the page once the UrlGroups model is updated
+        function updateUrlGroupCallback() {
+            // Reload the page to recalculate totals and
+            // availability metrics
+            $route.reload();
+        }
     }
 ]);
