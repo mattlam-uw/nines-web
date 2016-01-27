@@ -237,13 +237,9 @@ angular.module('ninesWeb')
                             $scope.urlgroups[urlGroupInd]
                                   .responses[urlGroupStatusCode] -=
                                 urlData.responses[urlGroupStatusCode];
-                            console.log('Making a responses adjustment!');
                         }
                     }
                 }
-
-                console.log('Group after response adjustment:',
-                    $scope.urlgroups[urlGroupInd]);
 
                 // Update the URL Group model (database) with the modified
                 // response totals (old totals minus those of the deleted URL).
