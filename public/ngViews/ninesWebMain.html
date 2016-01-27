@@ -56,7 +56,11 @@
                                    filter : { urlgroup_id: urlgroup._id } |
                                    orderBy: 'name'">
                         <td ng-show="showIconsRemoveUrl === urlgroup._id">
-                            <a>x</a>
+                            <a ng-click="prepRemoveUrl(url._id, url.name)"
+                               data-toggle="modal"
+                               data-target="#confirmationModal">
+                                X
+                            </a>
                         </td>
                         <td>{{url.name}}</td>
                         <td><a href="http://{{url.host}}{{url.path}}" target="_blank">
@@ -69,7 +73,10 @@
 
                     </tr>
                     <tr class="url-group-total-row">
-                        <td colspan="2">Group Total:</td>
+                        <td ng-show="showIconsRemoveUrl === urlgroup._id"></td>
+                        <td colspan="2">
+                            Group Total:
+                        </td>
                         <td ng-repeat="stat in getUrlStats(urlgroup.responses)">
                             {{stat}}
                         </td>
@@ -78,10 +85,10 @@
             </table>
 
             <!-----------------------------------------------------------------
-             Form for Adding URLs
+             Buttons for Adding/Removing URLs and Form for Adding URLs
             ------------------------------------------------------------------>
             <div id="manageUrls">
-                <div class="btn-group" role="group" aria-label="actions for managing URLs">
+                <div class="btn-toolbar" role="group" aria-label="actions for managing URLs">
                     <button type="button" class="btn btn-primary"
                             ng-hide="showIconsRemoveUrl === urlgroup._id"
                             ng-click="showAddUrlForm(urlgroup._id)">
@@ -142,4 +149,39 @@
             </div>
         </div>
     </div>
+
+    <!-- Confirmation modals -->
+    <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog"
+         ng-controller="uiMainModalCtrl"
+         aria-labelledby="confirmationModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"
+                            aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="confirmationModalLabel">
+                        {{remUrlName}} - remove confirmation
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        Click 'Remove' to remove the URL '{{remUrlName}}' and all related availability data.
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default"
+                            data-dismiss="modal">
+                        Cancel
+                    </button>
+                    <button type="button" class="btn btn-primary"
+                            ng-click="removeUrl(remUrlId)"
+                            data-dismiss="modal">
+                        Remove
+                    </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
 </div>

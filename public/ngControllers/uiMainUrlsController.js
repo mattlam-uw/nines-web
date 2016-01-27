@@ -11,7 +11,7 @@ angular.module('ninesWeb')
         // Provide feedback for add URL form
         $scope.addUrlFormMessage = "";
         // Hide the Icons for removing URLS by default
-        $scope.showIconsRemoveUrl = "blah";
+        $scope.showIconsRemoveUrl = "";
         // Object bound to Add-URL-Form for conveying form data
         $scope.newUrl = {};
         // Set protocol to "http" by default
@@ -114,6 +114,12 @@ angular.module('ninesWeb')
                 });
             });
         };
+
+        /*-------------------------------------------------------------------
+         Handlers for Remove-URL Modal
+         --------------------------------------------------------------------*/
+
+
 
         /*---------------------------------------------------------------------
          Private Utility Functions

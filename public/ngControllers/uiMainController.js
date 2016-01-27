@@ -21,6 +21,10 @@ angular.module('ninesWeb')
         // Expose numDigits constant to views
         $scope.numDigits = numDigits;
 
+        // Expose URL name and id to modal form for confirmation of URL removal
+        $scope.remUrlId = null;
+        $scope.remUrlName = null;
+
         // Global object for storing URL Group Rating Totals
         var urlGroupRatingTotals = {};
 
@@ -177,5 +181,40 @@ angular.module('ninesWeb')
 
             return results;
         }
+
+        /*-------------------------------------------------------------------
+         Handlers for Remove-URL Modal
+         --------------------------------------------------------------------*/
+
+        /*-- Handler for opening a modal dialog to remove a URL -------------*/
+        $scope.prepRemoveUrl = function(remUrlId, remUrlName) {
+            // Add the following attribtes for URL to be removed to $scope so
+            // that these attributes can be used in the modal view
+            $scope.remUrlName = remUrlName;
+            $scope.remUrlId = remUrlId;
+        }
+
+        /*-- Handler for removing a URL and related availability stats ------*/
+        $scope.removeUrl = function(remUrlId) {
+
+            // Callback for call to Urls resource. Determines the index of the
+            // URL in the $scope.urls array and removes item from array
+            var callback = function() {
+                var urlInd = -1;
+                for (var i = 0; i < $scope.urls.length && urlInd < 0; i++) {
+                    if ($scope.urls[i]._id === remUrlId) {
+                        urlInd = i;
+                    }
+                }
+
+                $scope.urls.splice(urlInd, 1);
+
+                // Clean-up: return $scope url identifiers to empty values
+                $scope.remUrlName = null;
+                $scope.remUrlId = null;
+            };
+
+            Urls.remove({id: remUrlId}, callback);
+        };
     }
 ]);
