@@ -40,8 +40,20 @@
          Main Display of Groups, URLs, and Ratings
         ---------------------------------------------------------------------->
         <div ng-repeat="urlgroup in urlgroups" ng-controller="uiMainUrlsCtrl">
-            <table class="table table-striped table-condensed table-responsive">
-                <h3>{{urlgroup.name}}</h3>
+            <h3>{{urlgroup.name}}</h3>
+            <div ng-hide="showDetailsUrlGroup">
+                <a type="link" ng-click="showUrlGroupDetails(urlgroup._id)">
+                    Show Details
+                </a>
+                Summary View
+            </div>
+            <div ng-show="showDetailsUrlGroup">
+                <a type="link" ng-click="showUrlGroupDetails()">
+                    Hide Details
+                </a>
+            </div>
+            <table ng-show="showDetailsUrlGroup"
+                   class="table table-striped table-condensed table-responsive">
                 <thead>
                     <th class="col-md-1" ng-show="showIconsRemoveUrl === urlgroup._id">Remove</th>
                     <th class="col-md-2">Name</th>
@@ -101,7 +113,7 @@
             <!-----------------------------------------------------------------
              Buttons for Adding/Removing URLs and Form for Adding URLs
             ------------------------------------------------------------------>
-            <div id="manageUrls">
+            <div ng-show="showDetailsUrlGroup" id="manageUrls">
                 <div class="btn-toolbar" role="group" aria-label="actions for managing URLs">
                     <button type="button" class="btn btn-primary"
                             ng-hide="showIconsRemoveUrl === urlgroup._id"

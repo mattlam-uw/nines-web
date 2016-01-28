@@ -8,6 +8,8 @@ angular.module('ninesWeb')
 
         // Hide form to add new URL by default
         $scope.showFormAddUrl = false;
+        // Hide URL Group details view by default
+        $scope.showDetailsUrlGroup = false;
         // Provide feedback for add URL form
         $scope.addUrlFormMessage = "";
         // Hide the Icons for removing URLS by default
@@ -16,6 +18,21 @@ angular.module('ninesWeb')
         $scope.newUrl = {};
         // Set protocol to "http" by default
         $scope.newUrl.protocol = "http";
+
+        /*-------------------------------------------------------------------
+         Handlers for Showing and Hiding URL Group Details
+         --------------------------------------------------------------------*/
+        $scope.showUrlGroupDetails = function(groupId) {
+            if ($scope.showDetailsUrlGroup !== groupId) {
+                $scope.showDetailsUrlGroup = groupId;
+            } else {
+                $scope.hideUrlGroupDetails();
+            }
+        }
+
+        $scope.hideUrlGroupDetails = function() {
+            $scope.showDetailsUrlGroup = false;
+        }
 
         /*-------------------------------------------------------------------
          Handlers for Add-New-URL Form
