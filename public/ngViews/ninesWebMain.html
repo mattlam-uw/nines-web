@@ -43,13 +43,13 @@
             <table class="table table-striped table-condensed table-responsive">
                 <h3>{{urlgroup.name}}</h3>
                 <thead>
-                    <th ng-show="showIconsRemoveUrl === urlgroup._id">Remove</th>
-                    <th>Name</th>
-                    <th>URL</th>
-                    <th ng-repeat="(statusCode, count) in urlgroup.responses">
+                    <th class="col-md-1" ng-show="showIconsRemoveUrl === urlgroup._id">Remove</th>
+                    <th class="col-md-2">Name</th>
+                    <th class="col-md-2">URL</th>
+                    <th class="col-md-1" ng-repeat="(statusCode, count) in urlgroup.responses">
                         {{statusCode}}
                     </th>
-                    <th colspan="{{numDigits + 1}}">Availability Rating (%)</th>
+                    <th class="col-md-3" colspan="{{numDigits + 1}}">Availability Rating (%)</th>
                 </thead>
                 <tbody>
                     <tr ng-repeat="url in urls |
