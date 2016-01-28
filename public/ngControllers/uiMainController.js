@@ -15,7 +15,6 @@ angular.module('ninesWeb')
         // Retrieve all rows from the following models:
         $scope.urls = Urls.query();                 // Urls model
         $scope.urlgroups = UrlGroups.query();       // UrlGroups model
-        $scope.urlgroupurls = UrlGroupUrls.query(); // UrlGroupUrls model
         $scope.heads = Heads.query();               // Heads model
 
         // Expose numDigits constant to views

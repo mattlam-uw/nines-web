@@ -102,16 +102,6 @@ angular.module('ninesWeb')
                 $scope.urls.push(addUrl);
                 // Clear out the form fields and hide the Add URL form
                 $scope.hideAddUrlForm();
-
-                // Add a new relationship between URL and URL Group
-                var newUrlGroupUrl = {
-                    urlgroup_id: urlGroupId,
-                    url_id: urlResData._id
-                }
-                var addUrlGroupUrl = new UrlGroupUrls(newUrlGroupUrl);
-                addUrlGroupUrl.$save(function() {
-                    $scope.urlgroupurls.push(addUrlGroupUrl);
-                });
             });
         };
 
