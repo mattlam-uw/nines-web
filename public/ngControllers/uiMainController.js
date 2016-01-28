@@ -24,8 +24,9 @@ angular.module('ninesWeb')
         $scope.remUrlId = null;
         $scope.remUrlName = null;
 
-        // Global object for storing URL Group Rating Totals
-        var urlGroupRatingTotals = {};
+        // Global object for storing the value of the last color used for
+        // displaying a URL rating stat value.
+        var leadStatColor = 0;
 
         /*-------------------------------------------------------------------
          View Data Prep Methods - Public (available to view)
@@ -64,13 +65,16 @@ angular.module('ninesWeb')
                 responseObject = urlResponses;
             }
             for (var statusCode in responseObject) {
+                /*
                 if (statusCode >= errorThreshold) {
                     errTotal += responseObject[statusCode];
                 }
                 resTotal += responseObject[statusCode];
+                */
                 results[statusCode] = responseObject[statusCode];
             }
 
+            /*
             // Retrieve the array of digits representing the availability rating
             // for this URL
             var availRating = createAvailRating(errTotal, resTotal, numDigits);
@@ -83,9 +87,83 @@ angular.module('ninesWeb')
                 // Assign the digit to the property
                 results[propertyName] = availRating[i];
             }
+            */
 
             return results;
         };
+
+        $scope.getAvailRating = function(urlgroupResponses, urlResponses) {
+            var results = {}; // final results object to be returned
+            var resTotal = 0; // total number of responses
+            var errTotal = 0; // total number of error responses
+
+            // If a URL Responses argument was passed, then use that for
+            // creating availability rating. Otherwise, use URL Group's.
+            var responseObject = urlgroupResponses;
+            if (urlResponses) {
+                responseObject = urlResponses;
+            }
+
+            // Iterate over the status code properties in the response object
+            // and calculate the error and overall response totals to be used
+            // to determine the availability rating.
+            for (var statusCode in responseObject) {
+                if (statusCode >= errorThreshold) {
+                    errTotal += responseObject[statusCode];
+                }
+                resTotal += responseObject[statusCode];
+            }
+
+            // Create the availability rating. It will be returned as an array
+            // of digits 'numDigits' in length
+            var rating = createAvailRating(errTotal, resTotal, numDigits);
+
+            // An annoying thing with AngularJS (though there must be some
+            // reason for it) -- ng-repeat will not accept an array of values
+            // where all the values are the same. But it will accept an object
+            // where all the property values are the same. So, rather than just
+            // returning the array, we convert to object.
+            for (var i = 0; i < rating.length; i++) {
+                results[i] = rating[i];
+            }
+
+            return results;
+        }
+
+
+        $scope.getStatColor = function(statNum, value) {
+            // If the last color was green, then check for green or yellow
+            // If the last color was yellow, then all remaining are yellow
+            // If the last color was red, then all remaining are red
+            var statColor = "";
+            if (statNum == 0) {
+                leadStatColor = 1;
+                if (value < 9) {
+                    leadStatColor = 2;
+                }
+                if (value < 5) {
+                    leadStatColor = 3;
+                }
+            } else {
+                if (leadStatColor === 1) {
+                    if (value < 9) {
+                        leadStatColor = 2;
+                    }
+                }
+            }
+
+            statColor = leadStatColor;
+
+            if (statColor === 1) {
+                statColor = "label-success";
+            } else if (statColor === 2) {
+                statColor = "label-warning";
+            } else {
+                statColor = "label-danger";
+            }
+
+            return statColor;
+        }
 
         /*-------------------------------------------------------------------
          View Data Prep Methods - Internal

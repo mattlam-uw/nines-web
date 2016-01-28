@@ -70,6 +70,13 @@
                         <td ng-repeat="stat in getUrlStats(urlgroup.responses, url.responses)">
                             {{stat}}
                         </td>
+                        <td ng-repeat="(statNum, rating) in getAvailRating(urlgroup.responses, url.responses)">
+                            <span ng-show="rating === '.'">{{rating}}</span>
+                            <span ng-hide="rating === '.'"
+                                  class="label {{getStatColor(statNum, rating)}}">
+                                {{rating}}
+                            </span>
+                        </td>
 
                     </tr>
                     <tr class="url-group-total-row">
@@ -79,6 +86,13 @@
                         </td>
                         <td ng-repeat="stat in getUrlStats(urlgroup.responses)">
                             {{stat}}
+                        </td>
+                        <td ng-repeat="(statNum, rating) in getAvailRating(urlgroup.responses)">
+                            <span ng-show="rating === '.'">{{rating}}</span>
+                            <span ng-hide="rating === '.'"
+                                  class="label {{getStatColor(statNum, rating)}}">
+                                {{rating}}
+                            </span>
                         </td>
                     </tr>
                 </tbody>
