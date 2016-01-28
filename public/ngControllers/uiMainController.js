@@ -103,8 +103,12 @@ angular.module('ninesWeb')
             // If the total number of requests is 0 then return dashes
             if (requestTotal === 0) {
                 var noDataMsg = [];
-                for (var i = 0; i < numDigits; i++) {
-                    noDataMsg.push("-");
+                for (var i = 0; i < numDigits + 1; i++) {
+                    if (i === 2) {
+                        noDataMsg.push(".");
+                    } else {
+                        noDataMsg.push("-");
+                    }
                 }
                 return noDataMsg;
             }
