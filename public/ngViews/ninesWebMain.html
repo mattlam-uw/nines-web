@@ -73,7 +73,7 @@
                         <td ng-repeat="(statNum, rating) in getAvailRating(urlgroup.responses, url.responses)">
                             <span ng-show="rating === '.'">{{rating}}</span>
                             <span ng-hide="rating === '.'"
-                                  class="label {{getStatColor(statNum, rating)}}">
+                                  class="label {{getStatMarkup(statNum, rating)}}">
                                 {{rating}}
                             </span>
                         </td>
@@ -90,7 +90,7 @@
                         <td ng-repeat="(statNum, rating) in getAvailRating(urlgroup.responses)">
                             <span ng-show="rating === '.'">{{rating}}</span>
                             <span ng-hide="rating === '.'"
-                                  class="label {{getStatColor(statNum, rating)}}">
+                                  class="label {{getStatMarkup(statNum, rating)}}">
                                 {{rating}}
                             </span>
                         </td>

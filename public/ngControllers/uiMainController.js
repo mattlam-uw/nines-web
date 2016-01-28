@@ -24,28 +24,28 @@ angular.module('ninesWeb')
         $scope.remUrlId = null;
         $scope.remUrlName = null;
 
-        // Global object for storing the value of the last color used for
-        // displaying a URL rating stat value.
-        var leadStatColor = 0;
+        // Global variable for storing the value of the markup code for the
+        // leading stat value of an overall availability stat for URL or URL
+        // Group
+        var leadStatCode = 0;
 
         /*-------------------------------------------------------------------
          View Data Prep Methods - Public (available to view)
          --------------------------------------------------------------------*/
 
-        // The following function can be called to get either (a) stats for a
-        // particular URL in a URL Group or (b) overall stats for the URL Group.
-        // If an object value for the 'urlResponses' parameter is provided,
-        // then it is assumed the function is being called to get specific URL
-        // stats. If no value is provided for the 'urlResponses' parameter,
-        // then it is assumed the function is being called to get overall
-        // stats for the URL Group. In each case, the following stats will be
-        // returned: (1) an occurrence total for each status code column in
-        // the table, and (2) an overall availability rating
+        /**
+         * The following function can be called to get either (a) stats for a
+         * particular URL in a URL Group or (b) overall stats for the URL Group.
+         * If an object value for the 'urlResponses' parameter is provided,
+         * then it is assumed the function is being called to get specific URL
+         * stats. If no value is provided for the 'urlResponses' parameter,
+         * then it is assumed the function is being called to get overall
+         * stats for the URL Group. In each case, a results object will be
+         * populated with an occurrence total for each status code column.
+         */
         $scope.getUrlStats = function(urlgroupResponses, urlResponses) {
             // Initialize variables:
             var results = {}; // final results object to be returned
-            var resTotal = 0; // total number of responses
-            var errTotal = 0; // total number of error responses
 
             // If this is being run for URLs (not URL Groups), then add a
             // 'results' object property for all status codes represented
@@ -56,38 +56,19 @@ angular.module('ninesWeb')
                 }
             }
 
-            // Iterate through the responses for this URL Group or URL and
-            // determine the error and response totals and add the response
-            // totals to the appropriate status code property in the 'results'
-            // object.
+            // If a URL Responses argument was passed, then use that for
+            // creating availability rating. Otherwise, use URL Group's.
             var responseObject = urlgroupResponses;
             if (urlResponses) {
                 responseObject = urlResponses;
             }
+
+            // Iterate through the responses for this URL Group or URL and
+            // update the results object status code property with the value
+            // of that of the corresponding status code of response object
             for (var statusCode in responseObject) {
-                /*
-                if (statusCode >= errorThreshold) {
-                    errTotal += responseObject[statusCode];
-                }
-                resTotal += responseObject[statusCode];
-                */
                 results[statusCode] = responseObject[statusCode];
             }
-
-            /*
-            // Retrieve the array of digits representing the availability rating
-            // for this URL
-            var availRating = createAvailRating(errTotal, resTotal, numDigits);
-
-            // Create properties in the results object for storing all digits
-            // of the availability rating, and then populate the property values
-            for (var i = 0; i < availRating.length; i++) {
-                // Create property name
-                var propertyName = 'digit' + (i + 1);
-                // Assign the digit to the property
-                results[propertyName] = availRating[i];
-            }
-            */
 
             return results;
         };
@@ -131,43 +112,56 @@ angular.module('ninesWeb')
         }
 
 
-        $scope.getStatColor = function(statNum, value) {
-            // If the last color was green, then check for green or yellow
-            // If the last color was yellow, then all remaining are yellow
-            // If the last color was red, then all remaining are red
-            var statColor = "";
+        /**
+         *  Provides markup that will be used to style (color) a digit of
+         *  an availability stat for a URL or URL Group. This function will
+         *  determine an integer code that will then be fed to another
+         *  function (getMarkupValue) to retrieve the appropriate corresponding
+         *  markup string.
+         */
+        $scope.getStatMarkup = function(statNum, value) {
+            // Logic Rules: (Note) The first digit in the availability rating
+            // can determine the markup for all remaining digits. (1) If the
+            // first digit is a '9' then it will be assigned a value of 1.
+            // Following this, the first non-'9' digit in the value and all
+            // digits following it will be assigned a value of 2. (2) If the
+            // first digit is between 5 and 8 (inclusive) then it and all
+            // following digits will receive a value of 2. If the first digit
+            // is less than 5, then it and all following digits will receive a
+            // value of 3.
             if (statNum == 0) {
-                leadStatColor = 1;
+                leadStatCode = 1;
                 if (value < 9) {
-                    leadStatColor = 2;
+                    leadStatCode = 2;
                 }
                 if (value < 5) {
-                    leadStatColor = 3;
+                    leadStatCode = 3;
                 }
             } else {
-                if (leadStatColor === 1) {
+                if (leadStatCode === 1) {
                     if (value < 9) {
-                        leadStatColor = 2;
+                        leadStatCode = 2;
                     }
                 }
             }
 
-            statColor = leadStatColor;
-
-            if (statColor === 1) {
-                statColor = "label-success";
-            } else if (statColor === 2) {
-                statColor = "label-warning";
-            } else {
-                statColor = "label-danger";
-            }
-
-            return statColor;
+            // Return the markup string that maps to the code
+            return getMarkupValue(leadStatCode);
         }
 
         /*-------------------------------------------------------------------
          View Data Prep Methods - Internal
          --------------------------------------------------------------------*/
+
+        // Return a mapped markup string value for a given code
+        function getMarkupValue(statCode) {
+            var markupMap = {
+                1: "label-success",
+                2: "label-warning",
+                3: "label-danger"
+            }
+            return markupMap[statCode];
+        }
 
         /**
          * Returns a url availability rating in the form of an array of single
