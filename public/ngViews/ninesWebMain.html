@@ -40,17 +40,38 @@
          Main Display of Groups, URLs, and Ratings
         ---------------------------------------------------------------------->
         <div ng-repeat="urlgroup in urlgroups" ng-controller="uiMainUrlsCtrl">
-            <h3>{{urlgroup.name}}</h3>
-            <div ng-hide="showDetailsUrlGroup">
-                <a type="link" ng-click="showUrlGroupDetails(urlgroup._id)">
-                    Show Details
-                </a>
-                Summary View
+            <h3 class="group-name">{{urlgroup.name}}</h3>
+            <div class="group-details">
+                <div class="summary-totals">
+                    <span class="summary-label">Total Requests: </span>
+                    <span>100 </span>
+                    <span class="summary-label">Total Errors: </span>
+                    <span>4 </span>
+                </div>
+                <div class="summary-rating">
+                    <span class="summary-label">
+                        Group Average Availability Rating:
+                    </span>
+                    <div class="summary-rating-digit" ng-repeat="(statNum, rating) in getAvailRating(urlgroup.responses)">
+                        <span ng-show="rating === '.'">{{rating}}</span>
+                        <span ng-hide="rating === '.'"
+                              class="label {{getStatMarkup(statNum, rating)}}">
+                            {{rating}}
+                        </span>
+                    </div>
+                </div>
+                <div class="show-hide-details" ng-hide="showDetailsUrlGroup">
+                    <a type="link" ng-click="showUrlGroupDetails(urlgroup._id)">
+                        Show Details
+                    </a>
+                </div>
             </div>
-            <div ng-show="showDetailsUrlGroup">
-                <a type="link" ng-click="showUrlGroupDetails()">
-                    Hide Details
-                </a>
+            <div class="group-details" ng-show="showDetailsUrlGroup">
+                <div class="show-hide-details">
+                    <a type="link" ng-click="showUrlGroupDetails()">
+                        Hide Details
+                    </a>
+                </div>
             </div>
             <table ng-show="showDetailsUrlGroup"
                    class="table table-striped table-condensed table-responsive">
