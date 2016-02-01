@@ -156,9 +156,9 @@ angular.module('ninesWeb')
         // Return a mapped markup string value for a given code
         function getMarkupValue(statCode) {
             var markupMap = {
-                1: "label-success",
-                2: "label-warning",
-                3: "label-danger"
+                1: "rating-good",
+                2: "rating-fair",
+                3: "rating-poor"
             }
             return markupMap[statCode];
         }
