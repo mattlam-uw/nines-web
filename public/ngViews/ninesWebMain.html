@@ -94,7 +94,7 @@
                 </a>
             </div>
         </div>
-        <table ng-show="showDetailsUrlGroup"
+        <table ng-show="showDetailsUrlGroup  && !showIconsRemoveUrl"
                class="table table-striped table-condensed table-responsive">
             <thead>
                 <th class="col-md-1" ng-show="showIconsRemoveUrl === urlgroup._id">Remove</th>
@@ -110,11 +110,18 @@
                                filter : { urlgroup_id: urlgroup._id } |
                                orderBy: 'name'">
                     <td ng-show="showIconsRemoveUrl === urlgroup._id">
+                        <!--
                         <a ng-click="prepRemoveUrl(url._id, url.name)"
                            data-toggle="modal"
                            data-target="#confirmationModal">
                             X
                         </a>
+                        -->
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" ng-model="updateUrls['url._id']">
+                            </label>
+                        </div>
                     </td>
                     <td>{{url.name}}</td>
                     <td><a href="http://{{url.host}}{{url.path}}" target="_blank">
@@ -152,6 +159,49 @@
             </tbody>
         </table>
 
+        <form name="move-remove-url" ng-show="showDetailsUrlGroup && showIconsRemoveUrl">
+            <table class="table table-striped table-condensed table-responsive">
+                <thead>
+                    <th class="col-md-1" ng-show="showIconsRemoveUrl === urlgroup._id">Move or Remove</th>
+                    <th class="col-md-2">Name</th>
+                    <th class="col-md-9">URL</th>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="url in urls |
+                                       filter : { urlgroup_id: urlgroup._id } |
+                                       orderBy: 'name'">
+                        <td>
+                            <input type="checkbox" ng-model="url.remove">
+                        </td>
+                        <td>{{url.name}}</td>
+                        <td><a href="http://{{url.host}}{{url.path}}" target="_blank">
+                            {{url.host}}{{url.path}}</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="form-alert">
+                <alert ng-show="false"></alert>
+            </div>
+            <button type="submit" class="btn btn-sm btn-primary"
+                    ng-click=""
+                    data-toggle="modal"
+                    data-target="#confirmationModal">
+                Move Selected URLs
+            </button>
+            <button type="submit" class="btn btn-sm btn-danger"
+                    ng-click="prepRemoveUrls()"
+                    data-toggle="modal"
+                    data-target="#confirmationModal">
+                Remove Selected URLs
+            </button>
+            <button class="btn btn-sm btn-default"
+                    ng-show="showIconsRemoveUrl === urlgroup._id"
+                    ng-click="showRemoveUrlIcons(urlgroup._id)">
+                Cancel
+            </button>
+        </form>
+
         <!-----------------------------------------------------------------
          Buttons for Adding/Removing URLs and Form for Adding URLs
         ------------------------------------------------------------------>
@@ -165,12 +215,7 @@
                 <button type="button" class="btn  btn-sm btn-danger"
                         ng-hide="showIconsRemoveUrl === urlgroup._id"
                         ng-click="showRemoveUrlIcons(urlgroup._id)">
-                    Remove URLs
-                </button>
-                <button type="button" class="btn btn-sm btn-success"
-                        ng-show="showIconsRemoveUrl === urlgroup._id"
-                        ng-click="showRemoveUrlIcons(urlgroup._id)">
-                    Done
+                    Move or Remove URLs
                 </button>
             </div>
             <div id="add-url-form" ng-show="showFormAddUrl === urlgroup._id">
@@ -228,13 +273,15 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                     <h4 class="modal-title" id="confirmationModalLabel">
-                        {{remUrlName}} - remove confirmation
+                        {{modalHeaderMsg}}
                     </h4>
                 </div>
                 <div class="modal-body">
-                    <p>
-                        Click 'Remove' to remove the URL '{{remUrlName}}' and all related availability data.
-                    </p>
+                    <p></p>
+                    <div ng-repeat="url in urls |
+                               filter : { remove: true } ">
+                        {{url.name}}
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-md btn-default"

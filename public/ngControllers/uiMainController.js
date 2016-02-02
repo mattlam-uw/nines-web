@@ -21,6 +21,9 @@ angular.module('ninesWeb')
         $scope.numDigits = numDigits;
 
         // Expose URL name and id to modal form for confirmation of URL removal
+        $scope.updateUrls = {};
+        $scope.updateUrlNames = [];
+        $scope.modalHeaderMsg = "";
         $scope.remUrlId = null;
         $scope.remUrlName = null;
 
@@ -243,12 +246,15 @@ angular.module('ninesWeb')
          --------------------------------------------------------------------*/
 
         /*-- Handler for opening a modal dialog to remove a URL -------------*/
-        $scope.prepRemoveUrl = function(remUrlId, remUrlName) {
-            // Add the following attribtes for URL to be removed to $scope so
+        $scope.prepRemoveUrls = function() {
+            // Add the following attributes for URL to be removed to $scope so
             // that these attributes can be used in the modal view
-            $scope.remUrlName = remUrlName;
-            $scope.remUrlId = remUrlId;
-        }
+            // $scope.remUrlName = remUrlName;
+            // $scope.remUrlId = remUrlId;
+            $scope.modalHeaderMsg = "Click 'Remove' to permanently delete"
+                                  + " the following URLs:";
+
+        };
 
         /*-- Handler for removing a URL and related availability stats ------*/
         $scope.removeUrl = function(remUrlId) {
