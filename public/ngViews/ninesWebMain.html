@@ -73,7 +73,7 @@
                         <div class="summary-rating-digit" ng-repeat="(statNum, rating) in getAvailRating(urlgroup.responses)">
                             <span ng-show="rating === '.'">{{rating}}</span>
                             <span ng-hide="rating === '.'"
-                                  class="label {{getStatMarkup(statNum, rating)}}">
+                                  class="summary-digit {{getStatMarkup(statNum, rating)}}">
                                 {{rating}}
                             </span>
                         </div>

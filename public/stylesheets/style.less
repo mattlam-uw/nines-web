@@ -8,7 +8,7 @@ a {
 }
 
 .app-name {
-  color: lightslategrey;
+  color: grey;
 }
 
 .btn {
@@ -21,11 +21,12 @@ a {
 }
 
 .btn-danger {
-  background: firebrick;
+  background: rgba(190, 42, 42, 0.6);
+  color: black;
 }
 
 .group-container {
-  border: 1px solid grey;
+  background-color: rgba(61, 111, 208, 0.04);
   margin-bottom: 10px;
   margin-top: 10px;
   padding-top: 10px;
@@ -43,27 +44,63 @@ h2 {
 
 .page-name {
   font-size: smaller;
-  color: grey;
+  color: darkgrey;
 }
 
 .page-title {
   letter-spacing: 5px;
 }
 
+.label {
+  padding: 5px;
+}
+
+.label.rating-good {
+  background-color: green;
+}
+
+.label.rating-fair {
+  background-color: orange;
+}
+
+.label.rating-poor {
+  background-color: firebrick;
+}
+
 .show-hide-details {
   margin-top: 10px;
 }
 
-.summary-totals, .summary-rating {
-  padding-left: 15px;
+.summary-digit {
+  font-weight: bolder;
+}
+
+.summary-digit.rating-good {
+  color: green;
+}
+
+.summary-digit.rating-fair {
+  color: orange;
+}
+
+.summary-digit.rating-poor {
+  color: firebrick;
+}
+
+.summary-label {
+  font-weight: bolder;
 }
 
 .summary-label, .summary-total-request-value, .summary-total-error-value {
   vertical-align: -10px;
 }
 
+.summary-totals, .summary-rating {
+  padding-left: 15px;
+}
+
 .summary-rating-digit {
-  vertical-align: -7px;
+  vertical-align: -10px;
   margin-right: 5px;
 }
 
@@ -75,20 +112,12 @@ h2 {
   color: dodgerblue;
 }
 
-.summary-label {
-  font-weight: bolder;
+.table-striped > tbody > tr:nth-child(2n+1) > td, .table-stribed > tbody > tr:nth-child(2n+1) > th {
+  background-color: white;
 }
 
-.rating-good {
-  background-color: green;
-}
-
-.rating-fair {
-  background-color: orange;
-}
-
-.rating-poor {
-  background-color: firebrick;
+.table-striped > tbody > tr:nth-child(2n) > td, .table-stribed > tbody > tr:nth-child(2n) > th {
+  background-color: rgba(61, 111, 208, 0.11);
 }
 
 .group-name, .group-details, .summary-totals, .summary-label, .summary-rating, .summary-rating-digit {
