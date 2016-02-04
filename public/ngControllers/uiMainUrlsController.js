@@ -1,6 +1,5 @@
 angular.module('ninesWeb')
-.controller('uiMainUrlsCtrl', ['$scope', 'Urls', 'UrlGroupUrls',
-    function($scope, Urls, UrlGroupUrls) {
+.controller('uiMainUrlsCtrl', ['$scope', 'Urls', function($scope, Urls) {
 
         /*---------------------------------------------------------------------
          Initialize $scope variables
@@ -13,7 +12,7 @@ angular.module('ninesWeb')
         // Provide feedback for add URL form
         $scope.addUrlFormMessage = "";
         // Hide the Icons for removing URLS by default
-        $scope.showIconsRemoveUrl = "";
+        $scope.showControlsUpdateUrl = "";
         // Object bound to Add-URL-Form for conveying form data
         $scope.newUrl = {};
         // Set protocol to "http" by default
@@ -60,9 +59,9 @@ angular.module('ninesWeb')
 
         /*-- Show the Remove-URL icons given URL Group ----------------------*/
         // Hides the icons if they are currently showing
-        $scope.showRemoveUrlIcons = function(groupId) {
-            if ($scope.showIconsRemoveUrl !== groupId) {
-                $scope.showIconsRemoveUrl = groupId;
+        $scope.showUpdateUrlControls = function(groupId) {
+            if ($scope.showControlsUpdateUrl !== groupId) {
+                $scope.showControlsUpdateUrl = groupId;
             } else {
                 $scope.hideRemoveUrlIcons();
             }
@@ -70,7 +69,10 @@ angular.module('ninesWeb')
 
         /*-- Hide the Remove-URL icons for given URL Group ------------------*/
         $scope.hideRemoveUrlIcons = function() {
-            $scope.showIconsRemoveUrl = false;
+            // Hide the controls view
+            $scope.showControlsUpdateUrl = false;
+            // Set any URL 'remove' or 'move' properties to false
+            setMoveAndRemoveToFalse();
         };
 
         /*-- Add a new URL --------------------------------------------------*/
@@ -133,6 +135,15 @@ angular.module('ninesWeb')
                 return removeAllTrailingSlashes(input.substr(0, input.length - 1));
             } else {
                 return input;
+            }
+        }
+
+        // Runs through all Url objects in $scope.urls and sets the 'move' and
+        // 'remove' properties to false
+        function setMoveAndRemoveToFalse() {
+            for (var i = 0; i < $scope.urls.length; i++) {
+                $scope.urls[i].remove = false;
+                $scope.urls[i].move = false;
             }
         }
     }

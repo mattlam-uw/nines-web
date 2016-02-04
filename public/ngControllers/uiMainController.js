@@ -3,9 +3,9 @@
  ----------------------------------------------------------------------------*/
 angular.module('ninesWeb')
 .controller('uiMainCtrl', ['$scope', '$routeParams', '$route', 'Urls',
-    'UrlGroups', 'UrlGroupUrls', 'Heads', 'numDigits', 'errorThreshold',
+    'UrlGroups', 'Heads', 'numDigits', 'errorThreshold',
     function($scope, $routeParams, $route, Urls, UrlGroups,
-             UrlGroupUrls, Heads, numDigits, errorThreshold) {
+             Heads, numDigits, errorThreshold) {
 
         /*-------------------------------------------------------------------
          Initialize $scope variables
@@ -21,11 +21,7 @@ angular.module('ninesWeb')
         $scope.numDigits = numDigits;
 
         // Expose URL name and id to modal form for confirmation of URL removal
-        $scope.updateUrls = {};
-        $scope.updateUrlNames = [];
         $scope.modalHeaderMsg = "";
-        $scope.remUrlId = null;
-        $scope.remUrlName = null;
 
         // Global variable for storing the value of the markup code for the
         // leading stat value of an overall availability stat for URL or URL
@@ -246,49 +242,39 @@ angular.module('ninesWeb')
          --------------------------------------------------------------------*/
 
         /*-- Handler for opening a modal dialog to remove a URL -------------*/
+        // All this needs to do us update the Modal Header Message variable
         $scope.prepRemoveUrls = function() {
-            // Add the following attributes for URL to be removed to $scope so
-            // that these attributes can be used in the modal view
-            // $scope.remUrlName = remUrlName;
-            // $scope.remUrlId = remUrlId;
             $scope.modalHeaderMsg = "Click 'Remove' to permanently delete"
                                   + " the following URLs:";
 
         };
 
-        /*-- Handler for removing a URL and related availability stats ------*/
-        $scope.removeUrl = function(remUrlId) {
+        /*-- Handler for removing selected URLs and availability stats ------*/
+        // This is a bit clunky. It will remove the URLs from the Urls
+        // database model, and it will recalculate the response stats totals
+        // for the affected URL Group. However, in order to get the response
+        // totals recalculated and displayed (without significant dev effort),
+        // a full screen refresh is forced. This causes all of the URL Groups
+        // to collapse to summary view.
+        $scope.removeUrls = function() {
 
-            // Callback for call to Urls resource. Determines the index of the
-            // URL in the $scope.urls array and removes item from array
-            var removeUrlCallback = function(urlData) {
-                // Determine the index of the URL to delete in the urls local
-                // model
-                var urlInd = -1;
-                for (var i = 0; i < $scope.urls.length && urlInd < 0; i++) {
-                    if ($scope.urls[i]._id === remUrlId) {
-                        urlInd = i;
-                    }
+            // Determine urls to remove and remove them from database model
+            for (var i = 0; i < $scope.urls.length; i++) {
+                if ($scope.urls[i].remove) {
+                    Urls.remove({ id: $scope.urls[i]._id }, function(urlData) {
+                        // Update the resonse totals for the associated URL
+                        // group and refresh the screen
+                        updateUrlGroup(urlData);
+                    });
                 }
-
-                // Remove the URL from the local model
-                $scope.urls.splice(urlInd, 1);
-
-                // Update the totals for the URL Group of the URL
-                updateUrlGroup(urlData);
-
-                // Clean-up: return $scope url identifiers to empty values
-                $scope.remUrlName = null;
-                $scope.remUrlId = null;
             }
-
-            // Update the URLs model (database) to delete the URL
-            Urls.remove({id: remUrlId}, removeUrlCallback);
         };
 
         /*-------------------------------------------------------------------
          Internal functions for Removing URL
          --------------------------------------------------------------------*/
+
+
 
         // Update the URL Group for a URL to subtract the response stats per
         // status code for the removed URL from the group total

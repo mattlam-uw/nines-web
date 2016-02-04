@@ -94,10 +94,10 @@
                 </a>
             </div>
         </div>
-        <table ng-show="showDetailsUrlGroup  && !showIconsRemoveUrl"
+        <table ng-show="showDetailsUrlGroup && !showControlsUpdateUrl"
                class="table table-striped table-condensed table-responsive">
             <thead>
-                <th class="col-md-1" ng-show="showIconsRemoveUrl === urlgroup._id">Remove</th>
+                <th class="col-md-1" ng-show="showControlsUpdateUrl === urlgroup._id">Remove</th>
                 <th class="col-md-2">Name</th>
                 <th class="col-md-2">URL</th>
                 <th class="col-md-1" ng-repeat="(statusCode, count) in urlgroup.responses">
@@ -109,17 +109,10 @@
                 <tr ng-repeat="url in urls |
                                filter : { urlgroup_id: urlgroup._id } |
                                orderBy: 'name'">
-                    <td ng-show="showIconsRemoveUrl === urlgroup._id">
-                        <!--
-                        <a ng-click="prepRemoveUrl(url._id, url.name)"
-                           data-toggle="modal"
-                           data-target="#confirmationModal">
-                            X
-                        </a>
-                        -->
+                    <td ng-show="showControlsUpdateUrl === urlgroup._id">
                         <div class="checkbox">
                             <label>
-                                <input type="checkbox" ng-model="updateUrls['url._id']">
+                                <input type="checkbox">
                             </label>
                         </div>
                     </td>
@@ -141,7 +134,7 @@
 
                 </tr>
                 <tr class="url-group-total-row">
-                    <td ng-show="showIconsRemoveUrl === urlgroup._id"></td>
+                    <td ng-show="showControlsUpdateUrl === urlgroup._id"></td>
                     <td colspan="2">
                         Group Total:
                     </td>
@@ -159,10 +152,10 @@
             </tbody>
         </table>
 
-        <form name="move-remove-url" ng-show="showDetailsUrlGroup && showIconsRemoveUrl">
+        <form name="update-url" ng-show="showDetailsUrlGroup && showControlsUpdateUrl">
             <table class="table table-striped table-condensed table-responsive">
                 <thead>
-                    <th class="col-md-1" ng-show="showIconsRemoveUrl === urlgroup._id">Move or Remove</th>
+                    <th class="col-md-1" ng-show="showControlsUpdateUrl === urlgroup._id">Move or Remove</th>
                     <th class="col-md-2">Name</th>
                     <th class="col-md-9">URL</th>
                 </thead>
@@ -186,18 +179,18 @@
             <button type="submit" class="btn btn-sm btn-primary"
                     ng-click=""
                     data-toggle="modal"
-                    data-target="#confirmationModal">
+                    data-target="#updateUrlsModal">
                 Move Selected URLs
             </button>
             <button type="submit" class="btn btn-sm btn-danger"
                     ng-click="prepRemoveUrls()"
                     data-toggle="modal"
-                    data-target="#confirmationModal">
+                    data-target="#updateUrlsModal">
                 Remove Selected URLs
             </button>
             <button class="btn btn-sm btn-default"
-                    ng-show="showIconsRemoveUrl === urlgroup._id"
-                    ng-click="showRemoveUrlIcons(urlgroup._id)">
+                    ng-show="showControlsUpdateUrl === urlgroup._id"
+                    ng-click="showUpdateUrlControls(urlgroup._id)">
                 Cancel
             </button>
         </form>
@@ -208,13 +201,13 @@
         <div ng-show="showDetailsUrlGroup" id="manageUrls">
             <div class="btn-toolbar" role="group" aria-label="actions for managing URLs">
                 <button type="button" class="btn btn-sm btn-primary"
-                        ng-hide="showIconsRemoveUrl === urlgroup._id"
+                        ng-hide="showControlsUpdateUrl === urlgroup._id"
                         ng-click="showAddUrlForm(urlgroup._id)">
                     Add URL
                 </button>
                 <button type="button" class="btn  btn-sm btn-danger"
-                        ng-hide="showIconsRemoveUrl === urlgroup._id"
-                        ng-click="showRemoveUrlIcons(urlgroup._id)">
+                        ng-hide="showControlsUpdateUrl === urlgroup._id"
+                        ng-click="showUpdateUrlControls(urlgroup._id)">
                     Move or Remove URLs
                 </button>
             </div>
@@ -262,9 +255,9 @@
         </div>
     </div>
 
-    <!-- Confirmation modals -->
-    <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog"
-         aria-labelledby="confirmationModalLabel">
+    <!-- Modal for execution of move or removal of specified URLs -->
+    <div class="modal fade" id="updateUrlsModal" tabindex="-1" role="dialog"
+         aria-labelledby="updateUrlsModalLabel">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -272,7 +265,7 @@
                             aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                    <h4 class="modal-title" id="confirmationModalLabel">
+                    <h4 class="modal-title" id="updateUrlsModalLabel">
                         {{modalHeaderMsg}}
                     </h4>
                 </div>
@@ -289,7 +282,7 @@
                         Cancel
                     </button>
                     <button type="button" class="btn btn-md btn-primary"
-                            ng-click="removeUrl(remUrlId)"
+                            ng-click="removeUrls()"
                             data-dismiss="modal">
                         Remove
                     </button>
