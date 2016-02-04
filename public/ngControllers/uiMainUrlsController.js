@@ -68,11 +68,12 @@ angular.module('ninesWeb')
         };
 
         /*-- Hide the Remove-URL icons for given URL Group ------------------*/
+        // Also uncheck any checkboxes
         $scope.hideRemoveUrlIcons = function() {
             // Hide the controls view
             $scope.showControlsUpdateUrl = false;
-            // Set any URL 'remove' or 'move' properties to false
-            setMoveAndRemoveToFalse();
+            // Set all URL 'update' properties to false (un-checks checkboxes)
+            setUrlPropToFalse('update');
         };
 
         /*-- Add a new URL --------------------------------------------------*/
@@ -138,12 +139,11 @@ angular.module('ninesWeb')
             }
         }
 
-        // Runs through all Url objects in $scope.urls and sets the 'move' and
-        // 'remove' properties to false
-        function setMoveAndRemoveToFalse() {
+        // Runs through all Url objects in $scope.urls and sets the given
+        // property to false
+        function setUrlPropToFalse(prop) {
             for (var i = 0; i < $scope.urls.length; i++) {
-                $scope.urls[i].remove = false;
-                $scope.urls[i].move = false;
+                $scope.urls[i][prop] = false;
             }
         }
     }

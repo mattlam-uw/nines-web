@@ -260,7 +260,7 @@ angular.module('ninesWeb')
 
             // Determine urls to remove and remove them from database model
             for (var i = 0; i < $scope.urls.length; i++) {
-                if ($scope.urls[i].remove) {
+                if ($scope.urls[i].update) {
                     Urls.remove({ id: $scope.urls[i]._id }, function(urlData) {
                         // Update the resonse totals for the associated URL
                         // group and refresh the screen
