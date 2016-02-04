@@ -23,6 +23,8 @@ angular.module('ninesWeb')
         // Expose URL name and id to modal form for confirmation of URL removal
         $scope.modalHeaderMsg = "";
 
+        $scope.showDropdownMoveGroup = false;
+
         // Global variable for storing the value of the markup code for the
         // leading stat value of an overall availability stat for URL or URL
         // Group
@@ -238,10 +240,10 @@ angular.module('ninesWeb')
         }
 
         /*-------------------------------------------------------------------
-         Handlers for Remove-URL Modal
+         Handlers for Update URLs Modal
          --------------------------------------------------------------------*/
 
-        /*-- Handler for opening a modal dialog to remove a URL -------------*/
+        /*-- Handler for opening a modal dialog to remove URLs --------------*/
         // All this needs to do us update the Modal Header Message variable
         $scope.prepRemoveUrls = function() {
             $scope.modalHeaderMsg = "Click 'Remove' to permanently delete"
@@ -268,6 +270,15 @@ angular.module('ninesWeb')
                     });
                 }
             }
+        };
+
+        /*-- Handler to open a modal dialog to move URLs to another group ---*/
+        // All this needs to do us update the Modal Header Message variable
+        $scope.prepMoveUrls = function() {
+            $scope.modalHeaderMsg = "Click 'Move' to move the following URLs"
+                + " to the selected group:";
+            $scope.showDropdownMoveGroup = true;
+
         };
 
         /*-------------------------------------------------------------------

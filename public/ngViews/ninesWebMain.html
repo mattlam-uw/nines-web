@@ -177,7 +177,7 @@
                 <alert ng-show="false"></alert>
             </div>
             <button type="submit" class="btn btn-sm btn-primary"
-                    ng-click=""
+                    ng-click="prepMoveUrls()"
                     data-toggle="modal"
                     data-target="#updateUrlsModal">
                 Move Selected URLs
@@ -274,6 +274,9 @@
                     <div ng-repeat="url in urls |
                                filter : { update: true } ">
                         {{url.name}}
+                    </div>
+                    <div ng-show="showDropdownMoveGroup">
+                        Choose Group Dropdown
                     </div>
                 </div>
                 <div class="modal-footer">
