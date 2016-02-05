@@ -50,7 +50,8 @@
      Main Display of Groups, URLs, and Ratings
     ---------------------------------------------------------------------->
 
-    <div class="group-container" ng-repeat="urlgroup in urlgroups" ng-controller="uiMainUrlsCtrl">
+    <div class="group-container" ng-repeat="urlgroup in urlgroups | orderBy: 'name'"
+         ng-controller="uiMainUrlsCtrl">
         <div class="row">
             <div class="col-md-2">
                 <h2 class="group-name">{{urlgroup.name}}</h2>
@@ -70,7 +71,8 @@
                         <span class="summary-label">
                             Average Availability Rating:
                         </span>
-                        <div class="summary-rating-digit" ng-repeat="(statNum, rating) in getAvailRating(urlgroup.responses)">
+                        <div class="summary-rating-digit"
+                             ng-repeat="(statNum, rating) in getAvailRating(urlgroup.responses)">
                             <span ng-show="rating === '.'">{{rating}}</span>
                             <span ng-hide="rating === '.'"
                                   class="summary-digit {{getStatMarkup(statNum, rating)}}">
@@ -177,7 +179,7 @@
                 <alert ng-show="false"></alert>
             </div>
             <button type="submit" class="btn btn-sm btn-primary"
-                    ng-click="prepMoveUrls()"
+                    ng-click="prepMoveUrls(urlgroup._id)"
                     data-toggle="modal"
                     data-target="#updateUrlsModal">
                 Move Selected URLs
@@ -269,27 +271,45 @@
                         {{modalHeaderMsg}}
                     </h4>
                 </div>
-                <div class="modal-body">
-                    <p></p>
-                    <div ng-repeat="url in urls |
-                               filter : { update: true } ">
-                        {{url.name}}
+                <form>
+                    <div class="modal-body">
+                        <div class="modal-body-header">URLs:</div>
+                        <div ng-repeat="url in urls |
+                                   filter : { update: true } ">
+                            {{url.name}}
+                        </div>
+                        <div class="modal-body-header"
+                             ng-show="showModalControl == 'move-groups'">
+                            Select URL Group to move to:
+                        </div>
+                        <select class="form-control"
+                                ng-show="showModalControl == 'move-groups'"
+                                ng-model="moveUrlGroup" name="UrlGroupChooser"
+                                ng-options="urlgroup.name for urlgroup in urlgroups |
+                                            filter: { _id: '!' + currentUrlGroupId } |
+                                            orderBy: 'name'"
+                                autofocus>
+                        </select>
                     </div>
-                    <div ng-show="showDropdownMoveGroup">
-                        Choose Group Dropdown
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-md btn-default"
+                                data-dismiss="modal">
+                            Cancel
+                        </button>
+                        <button type="button" class="btn btn-md btn-primary"
+                                ng-click="moveUrls()"
+                                ng-show="showModalControl == 'move-groups'"
+                                data-dismiss="modal">
+                            Move
+                        </button>
+                        <button type="button" class="btn btn-md btn-danger"
+                                ng-click="removeUrls()"
+                                ng-show="showModalControl == 'remove-groups'"
+                                data-dismiss="modal">
+                            Remove
+                        </button>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-md btn-default"
-                            data-dismiss="modal">
-                        Cancel
-                    </button>
-                    <button type="button" class="btn btn-md btn-primary"
-                            ng-click="removeUrls()"
-                            data-dismiss="modal">
-                        Remove
-                    </button>
-                </div>
+                </form>
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->

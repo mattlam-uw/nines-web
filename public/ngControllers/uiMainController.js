@@ -23,7 +23,11 @@ angular.module('ninesWeb')
         // Expose URL name and id to modal form for confirmation of URL removal
         $scope.modalHeaderMsg = "";
 
-        $scope.showDropdownMoveGroup = false;
+        $scope.showModalControl = "";
+
+        $scope.currentUrlGroupId = null;
+
+        $scope.moveUrlGroup = null;
 
         // Global variable for storing the value of the markup code for the
         // leading stat value of an overall availability stat for URL or URL
@@ -247,7 +251,8 @@ angular.module('ninesWeb')
         // All this needs to do us update the Modal Header Message variable
         $scope.prepRemoveUrls = function() {
             $scope.modalHeaderMsg = "Click 'Remove' to permanently delete"
-                                  + " the following URLs:";
+                                  + " the following URLs";
+            $scope.showModalControl = "remove-groups";
 
         };
 
@@ -264,7 +269,7 @@ angular.module('ninesWeb')
             for (var i = 0; i < $scope.urls.length; i++) {
                 if ($scope.urls[i].update) {
                     Urls.remove({ id: $scope.urls[i]._id }, function(urlData) {
-                        // Update the resonse totals for the associated URL
+                        // Update the response totals for the associated URL
                         // group and refresh the screen
                         updateUrlGroup(urlData);
                     });
@@ -274,18 +279,50 @@ angular.module('ninesWeb')
 
         /*-- Handler to open a modal dialog to move URLs to another group ---*/
         // All this needs to do us update the Modal Header Message variable
-        $scope.prepMoveUrls = function() {
+        $scope.prepMoveUrls = function(urlGroupId) {
             $scope.modalHeaderMsg = "Click 'Move' to move the following URLs"
-                + " to the selected group:";
-            $scope.showDropdownMoveGroup = true;
+                + " to the selected URL Group";
+            $scope.showModalControl = "move-groups";
+            $scope.currentUrlGroupId = urlGroupId;
+        };
 
+        // WORK IN PROGRESS
+        $scope.moveUrls = function() {
+            var allDone = { count: 0 };
+            var urlIds = [];
+            for (var i = 0; i < $scope.urls.length; i++) {
+                if ($scope.urls[i].update) {
+                    urlIds.push($scope.urls[i]._id);
+                }
+            }
+
+            for (var i = 0; i < urlIds.length; i++) {
+                Urls.update(
+                    { id: urlIds[i] },
+                    { $set: { urlgroup_id: $scope.moveUrlGroup._id} },
+                    function(urlData) {
+                        if (i === urlIds.length) {
+                            var urlGroupIds = [urlData.urlgroup_id, $scope.moveUrlGroup._id];
+                            updateMoveUrlGroupTotals(urlGroupIds);
+                        }
+                    }
+                )
+            }
+
+            // Set 'update' property to false for all URLs in local model
+            setUrlPropToFalse('update');
         };
 
         /*-------------------------------------------------------------------
          Internal functions for Removing URL
          --------------------------------------------------------------------*/
 
+        // Update URL Groups of URLs that have been moved so that the response
+        // stat totals for the URL Groups will accurately reflect the response
+        // stats of their URL members
+        function updateMoveUrlGroupTotals(fromUrlGroupId, toUrlGroupId) {
 
+        }
 
         // Update the URL Group for a URL to subtract the response stats per
         // status code for the removed URL from the group total
@@ -335,6 +372,14 @@ angular.module('ninesWeb')
             // Reload the page to recalculate totals and
             // availability metrics
             $route.reload();
+        }
+
+        // Runs through all Url objects in $scope.urls and sets the given
+        // property to false
+        function setUrlPropToFalse(prop) {
+            for (var i = 0; i < $scope.urls.length; i++) {
+                $scope.urls[i][prop] = false;
+            }
         }
     }
 ]);
