@@ -288,10 +288,17 @@ angular.module('ninesWeb')
 
         // WORK IN PROGRESS
         $scope.moveUrls = function() {
-            var allDone = { count: 0 };
             var urlIds = [];
+            var statusCodeTotals = {};
             for (var i = 0; i < $scope.urls.length; i++) {
                 if ($scope.urls[i].update) {
+                    for (var statusCode in $scope.urls[i].responses) {
+                        if (statusCodeTotals[statusCode]) {
+                            statusCodeTotals[statusCode] = 1;
+                        } else {
+                            statusCodeTotals[statusCode] += 1;
+                        }
+                    }
                     urlIds.push($scope.urls[i]._id);
                 }
             }
@@ -302,8 +309,8 @@ angular.module('ninesWeb')
                     { $set: { urlgroup_id: $scope.moveUrlGroup._id} },
                     function(urlData) {
                         if (i === urlIds.length) {
-                            var urlGroupIds = [urlData.urlgroup_id, $scope.moveUrlGroup._id];
-                            updateMoveUrlGroupTotals(urlGroupIds);
+                            console.log('Last URL moved, so now update URL Group totals...');
+                            updateUrlGroupTotals();
                         }
                     }
                 )
@@ -317,10 +324,66 @@ angular.module('ninesWeb')
          Internal functions for Removing URL
          --------------------------------------------------------------------*/
 
+        // Experiment: Create a function that will recalculate all group status
+        // code totals and then refresh the screen to pull the new totals
+        function updateUrlGroupTotals() {
+            // For each Url Group, do a fresh query and sweep of all URLs to
+            // find URLs for that group
+            // Get the status code numbers from each URL and add totals
+            // Update the URL Group status code totals
+
+            for (var i = 0; i < $scope.urlgroups.length; i++) {
+                var urlGroup = $scope.urlgroups[i];
+                console.log('Going to recalculate totals for group:', urlGroup.name);
+
+                // Zero out current response status code value for Url Group
+                for (var statusCode in urlGroup.responses) {
+                    urlGroup.responses[statusCode] = 0;
+                    console.log('Zeroing out response number for status code:', statusCode);
+                }
+
+                // Iterate over all Urls for this Url Group and add their
+                // their response status code totals to the group status code
+                // total
+                Urls.query({ urlgroup: urlGroup._id }, function(urls) {
+                    console.log('Number of urls for group - ' + urlGroup.name + ': '  + urls.length);
+                    for (var j = 0; j < urls.length; j++) {
+                        console.log('Adding response data for url:', urls[j].name);
+                        for (var statusCode in urls[j].responses) {
+                            console.log('For status code - ' + statusCode + ', adding - ' + urls[j].responses[statusCode] + ' responses.');
+                            if (urlGroup.responses[statusCode]) {
+                                urlGroup.responses[statusCode] +=
+                                    urls[j].responses[statusCode];
+                                console.log('Response number added to ' + urlGroup.name + ' for existing status code ' + statusCode);
+                            } else {
+                                urlGroup.responses[statusCode] =
+                                    urls[j].responses[statusCode];
+                                console.log('Response number added to ' + urlGroup.name + ' for new status code ' + statusCode);
+                            }
+                        }
+                    }
+
+                    // Update the URL Group model (database) with the modified
+                    // response totals (old totals minus those of the deleted URL).
+                    UrlGroups.update(
+                        {id: urlGroup._id},
+                        urlGroup,
+                        function() {
+                            if (i === $scope.urlgroups.length) {
+                                console.log('Refreshing the view');
+                                $route.reload();
+                            }
+                        }
+                    );
+                });
+            }
+        }
+
         // Update URL Groups of URLs that have been moved so that the response
         // stat totals for the URL Groups will accurately reflect the response
         // stats of their URL members
-        function updateMoveUrlGroupTotals(fromUrlGroupId, toUrlGroupId) {
+        function updateMoveUrlGroupTotals(statusCodeTotals, fromUrlGroupId,
+                                          toUrlGroupId) {
 
         }
 
