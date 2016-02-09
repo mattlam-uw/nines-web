@@ -7,5 +7,13 @@ angular.module('ninesWeb')
     return $resource(
         'http://localhost:3000/urls/:id',
         null,
-        { 'update': { 'method': 'PUT' } });
+        { 'update': { 'method': 'PUT' } }
+    );
+}])
+.factory('UrlsByUrlGroup', ['$resource', function($resource) {
+    return $resource(
+        'http://localhost:3000/urls/urlgroup/:id',
+        null,
+        { 'update': { 'method': 'PUT' } }
+    );
 }]);

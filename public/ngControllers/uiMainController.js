@@ -3,8 +3,8 @@
  ----------------------------------------------------------------------------*/
 angular.module('ninesWeb')
 .controller('uiMainCtrl', ['$scope', '$routeParams', '$route', 'Urls',
-    'UrlGroups', 'Heads', 'numDigits', 'errorThreshold',
-    function($scope, $routeParams, $route, Urls, UrlGroups,
+    'UrlsByUrlGroup', 'UrlGroups', 'Heads', 'numDigits', 'errorThreshold',
+    function($scope, $routeParams, $route, Urls, UrlsByUrlGroup, UrlGroups,
              Heads, numDigits, errorThreshold) {
 
         /*-------------------------------------------------------------------
@@ -332,6 +332,7 @@ angular.module('ninesWeb')
             // Get the status code numbers from each URL and add totals
             // Update the URL Group status code totals
 
+
             for (var i = 0; i < $scope.urlgroups.length; i++) {
                 var urlGroup = $scope.urlgroups[i];
                 console.log('Going to recalculate totals for group:', urlGroup.name);
@@ -345,7 +346,12 @@ angular.module('ninesWeb')
                 // Iterate over all Urls for this Url Group and add their
                 // their response status code totals to the group status code
                 // total
-                Urls.query({ urlgroup: urlGroup._id }, function(urls) {
+                console.log('URL Group ID -- Before Query:', urlGroup._id);
+                console.log('URL Group Name -- Before Query:', urlGroup.name);
+
+                UrlsByUrlGroup.query({ id: urlGroup._id }, function(urls) {
+                    console.log('URL Group ID -- After Query:', urlGroup._id);
+                    console.log('URL Group Name -- After Query:', urlGroup.name);
                     console.log('Number of urls for group - ' + urlGroup.name + ': '  + urls.length);
                     for (var j = 0; j < urls.length; j++) {
                         console.log('Adding response data for url:', urls[j].name);
