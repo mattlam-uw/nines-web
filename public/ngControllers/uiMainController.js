@@ -265,15 +265,13 @@ angular.module('ninesWeb')
         // to collapse to summary view.
         $scope.removeUrls = function() {
 
-            // Determine urls to remove and remove them from database model
-            for (var i = 0; i < $scope.urls.length; i++) {
-                if ($scope.urls[i].update) {
-                    Urls.remove({ id: $scope.urls[i]._id }, function(urlData) {
-                        // Update the response totals for the associated URL
-                        // group and refresh the screen
-                        updateUrlGroup(urlData);
-                    });
-                }
+            // Iterate over URLs and (1) add the IDs of those selected for 
+            // removal to an array, and (2) set 'update' flag to false
+            var urlIds = getArrUpdateUrlIds();
+            console.log('urlIds:', urlIds);
+
+            for (var i = 0; i < urlIds.length; i++) {
+                removeUrlsFromDb(urlIds[i], (i + 1), urlIds.length);
             }
         };
 
@@ -289,14 +287,9 @@ angular.module('ninesWeb')
         // Move selected Urls from one URL Group to another
         $scope.moveUrls = function() {
 
-            // Iterate over URLs and add the IDs of those that have been
-            // selected for move to an array
-            var urlIds = [];
-            for (var i = 0; i < $scope.urls.length; i++) {
-                if ($scope.urls[i].update) {
-                    urlIds.push($scope.urls[i]._id);
-                }
-            }
+            // Iterate over URLs and (1) add the IDs of those that have been
+            // selected for move to an array, and (2) set 'update' flag to false
+            var urlIds = getArrUpdateUrlIds();
 
             // Iterate over the new array of IDs for URLs to be moved
             // and update the database model to set the urlgroup_id property
@@ -306,14 +299,19 @@ angular.module('ninesWeb')
             for (var i = 0; i < urlIds.length; i++) {
                 updateUrlGroupIds(urlIds[i], (i + 1), urlIds.length);
             }
-
-            // Set 'update' property to false for all URLs in local model
-            setUrlPropToFalse('update');
         };
 
         /*-------------------------------------------------------------------
          Internal functions for Removing URL
          --------------------------------------------------------------------*/
+
+        function removeUrlsFromDb(urlId, num, ofTotal) {
+            Urls.remove({ id: $scope.urlId }, function(urlData) {
+                if (num === ofTotal) {
+                    updateUrlGroupTotals();
+                }
+            });
+        }
 
         // Updates the urlgroup_id property of a given URL with the ID of the
         // target URL Group chosen in the view. The 'num' and 'ofTotal'
@@ -326,7 +324,6 @@ angular.module('ninesWeb')
                 { $set: { urlgroup_id: $scope.moveUrlGroup._id} },
                 function(urlData) {
                     if (num === ofTotal) {
-                        console.log('updateUrlGroupTotals called');
                         updateUrlGroupTotals();
                     }
                 }
@@ -359,7 +356,6 @@ angular.module('ninesWeb')
         // view screen if this is the last URL Group being recalculated.
         function recalcUrlGroupTotals(urlGroup, num, ofTotal) {
 
-            console.log('recalc called');
             // Query all URLs associated with URL Group in order to get their
             // latest status code response totals
             UrlsByUrlGroup.query({ id: urlGroup._id }, function(urls) {
@@ -447,12 +443,17 @@ angular.module('ninesWeb')
             $route.reload();
         }
 
-        // Runs through all Url objects in $scope.urls and sets the given
-        // property to false
-        function setUrlPropToFalse(prop) {
+        // Iterates over local Urls model and (1) copies the Id of any URL where 
+        // 'update' flag is true, then (2) flips the 'update' flag to false
+        function getArrUpdateUrlIds() {
+            var updateUrlIds = [];
             for (var i = 0; i < $scope.urls.length; i++) {
-                $scope.urls[i][prop] = false;
+                if ($scope.urls[i].update) {
+                    updateUrlIds.push($scope.urls[i]._id);
+                    $scope.urls[i].update = false;
+                }
             }
+            return updateUrlIds;
         }
     }
 ]);
