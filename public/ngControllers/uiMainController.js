@@ -286,33 +286,25 @@ angular.module('ninesWeb')
             $scope.currentUrlGroupId = urlGroupId;
         };
 
-        // WORK IN PROGRESS
+        // Move selected Urls from one URL Group to another
         $scope.moveUrls = function() {
+
+            // Iterate over URLs and add the IDs of those that have been
+            // selected for move to an array
             var urlIds = [];
-            var statusCodeTotals = {};
             for (var i = 0; i < $scope.urls.length; i++) {
                 if ($scope.urls[i].update) {
-                    for (var statusCode in $scope.urls[i].responses) {
-                        if (statusCodeTotals[statusCode]) {
-                            statusCodeTotals[statusCode] = 1;
-                        } else {
-                            statusCodeTotals[statusCode] += 1;
-                        }
-                    }
                     urlIds.push($scope.urls[i]._id);
                 }
             }
 
+            // Iterate over the new array of IDs for URLs to be moved
+            // and update the database model to set the urlgroup_id property
+            // of each URL to the target URL Group ID. When the last one has
+            // been updated, then recalculate all group totals and refresh
+            // the view
             for (var i = 0; i < urlIds.length; i++) {
-                Urls.update(
-                    { id: urlIds[i] },
-                    { $set: { urlgroup_id: $scope.moveUrlGroup._id} },
-                    function(urlData) {
-                        if (i === urlIds.length) {
-                            updateUrlGroupTotals();
-                        }
-                    }
-                )
+                updateUrlGroupIds(urlIds[i], (i + 1), urlIds.length);
             }
 
             // Set 'update' property to false for all URLs in local model
@@ -323,7 +315,25 @@ angular.module('ninesWeb')
          Internal functions for Removing URL
          --------------------------------------------------------------------*/
 
-        // Recalculate status code response totals for all URL Groups and then 
+        // Updates the urlgroup_id property of a given URL with the ID of the
+        // target URL Group chosen in the view. The 'num' and 'ofTotal'
+        // parameters track which of (possibly) multiple URL updates this
+        // represents. All URL Group totals are recalculated when the last URL
+        // is updated.
+        function updateUrlGroupIds(urlId, num, ofTotal) {
+            Urls.update(
+                { id: urlId },
+                { $set: { urlgroup_id: $scope.moveUrlGroup._id} },
+                function(urlData) {
+                    if (num === ofTotal) {
+                        console.log('updateUrlGroupTotals called');
+                        updateUrlGroupTotals();
+                    }
+                }
+            )
+        }
+
+        // Recalculate status code response totals for all URL Groups and then
         // refresh the screen to pull the new totals
         function updateUrlGroupTotals() {       
 
@@ -349,6 +359,7 @@ angular.module('ninesWeb')
         // view screen if this is the last URL Group being recalculated.
         function recalcUrlGroupTotals(urlGroup, num, ofTotal) {
 
+            console.log('recalc called');
             // Query all URLs associated with URL Group in order to get their
             // latest status code response totals
             UrlsByUrlGroup.query({ id: urlGroup._id }, function(urls) {
