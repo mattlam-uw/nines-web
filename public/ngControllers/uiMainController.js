@@ -268,7 +268,6 @@ angular.module('ninesWeb')
             // Iterate over URLs and (1) add the IDs of those selected for 
             // removal to an array, and (2) set 'update' flag to false
             var urlIds = getArrUpdateUrlIds();
-            console.log('urlIds:', urlIds);
 
             for (var i = 0; i < urlIds.length; i++) {
                 removeUrlsFromDb(urlIds[i], (i + 1), urlIds.length);
@@ -306,7 +305,7 @@ angular.module('ninesWeb')
          --------------------------------------------------------------------*/
 
         function removeUrlsFromDb(urlId, num, ofTotal) {
-            Urls.remove({ id: $scope.urlId }, function(urlData) {
+            Urls.remove({ id: urlId }, function(urlData) {
                 if (num === ofTotal) {
                     updateUrlGroupTotals();
                 }
