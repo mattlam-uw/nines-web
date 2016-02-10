@@ -340,14 +340,14 @@ angular.module('ninesWeb')
 
                 // Call recalculate function to calculate current status code
                 // response totals for the group and update the model.
-                recalcUrlGroupTotals(urlGroup, i);
+                recalcUrlGroupTotals(urlGroup, (i + 1), $scope.urlgroups.length);
             }
         }
 
         // Recalculates status code response totals for given urlGroup. Writes
         // the resulting totals to the urlgroups database model. Refreshes the
         // view screen if this is the last URL Group being recalculated.
-        function recalcUrlGroupTotals(urlGroup, index) {
+        function recalcUrlGroupTotals(urlGroup, num, ofTotal) {
 
             // Query all URLs associated with URL Group in order to get their
             // latest status code response totals
@@ -378,7 +378,7 @@ angular.module('ninesWeb')
                     function() {
                         // Refresh the view screen if this is the last URL
                         // Group being updated
-                        if (index === $scope.urlgroups.length - 1) {
+                        if (num === ofTotal) {
                             $route.reload();
                         }
                     }
