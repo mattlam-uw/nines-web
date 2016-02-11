@@ -384,11 +384,17 @@ angular.module('ninesWeb')
                     // Iterate over each status code in responses for URL and
                     // add to status code total for URL Group
                     for (var statusCode in urls[j].responses) {
-                        
-                        if (urlGroup.responses[statusCode]) {
-                            urlGroup.responses[statusCode] +=
-                                urls[j].responses[statusCode];
+
+                        if (urlGroup.responses) {
+                            if (urlGroup.responses[statusCode]) {
+                                urlGroup.responses[statusCode] +=
+                                    urls[j].responses[statusCode];
+                            } else {
+                                urlGroup.responses[statusCode] =
+                                    urls[j].responses[statusCode];
+                            }
                         } else {
+                            urlGroup.responses = {};
                             urlGroup.responses[statusCode] =
                                 urls[j].responses[statusCode];
                         }

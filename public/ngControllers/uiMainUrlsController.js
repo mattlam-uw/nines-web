@@ -78,55 +78,59 @@ angular.module('ninesWeb')
 
         /*-- Add a new URL --------------------------------------------------*/
         $scope.addUrl = function(newUrl, urlGroup) {
+
             // Take no action if no data in either 'name' or the 'host' fields
-            if (!newUrl.name || !newUrl.host) {
+            if (angular.isDefined(newUrl.name) && angular.isDefined(newUrl.host)) {
+
+                // Clean up and format data to get ready for adding to model:
+
+                // (1) Remove trailing slash from the Host value if it exists
+                newUrl.host = removeAllTrailingSlashes(newUrl.host.trim());
+
+                // (2) Make sure the host name is formatted correctly (e.g.
+                // abc.def.ghi or abd.def)
+                var hostNameRegEx = /^(([a-zA-Z][a-zA-Z0-9\-]*\.)?[a-zA-Z][a-zA-Z0-9\-]*\.[a-zA-Z]+)$/;
+                if (!newUrl.host.match(hostNameRegEx)) {
+                    $scope.addUrlFormMessage = "Make sure your 'URL Host' value is"
+                        + " of either of the following formats: 'abc.def.ghi' or"
+                        + " 'abc.def'.";
+                    return;
+                }
+
+                // If a path value was provided, then add a leading slash if
+                // needed. If no path value provided, then set path empty string
+                if (!newUrl.path) {
+                    newUrl.path = "";
+                } else {
+                    newUrl.path = newUrl.path.trim();
+                    if (!newUrl.path.startsWith('/')) {
+                        newUrl.path = '/' + newUrl.path;
+                    }
+                }
+
+                // Initialize object to store status codes and response counts. Add
+                // all status codes currently active in URL Group to responses obj.
+                newUrl.responses = {};
+                for (var statusCode in urlGroup.responses) {
+                    newUrl.responses[statusCode] = 0;
+                }
+
+                // Add the URL Group ID
+                newUrl.urlgroup_id = urlGroup._id;
+
+                // Add the new URL to the Urls model
+                var addUrl = new Urls(newUrl);
+                addUrl.$save(function(urlResData) {
+                    // Update the local model with the new URL
+                    $scope.urls.push(addUrl);
+                    // Clear out the form fields and hide the Add URL form
+                    $scope.hideAddUrlForm();
+                });
+            } else {
                 $scope.addUrlFormMessage = "Please provide values for both "
                     + "URL Name and URL Host";
                 return;
             }
-            // Clean up and format data to get ready for adding to model:
-            // (1) Remove trailing slash from the Host value if it exists
-            newUrl.host = removeAllTrailingSlashes(newUrl.host.trim());
-            // (2) Make sure the host name is formatted correctly (e.g.
-            // abc.def.ghi or abd.def)
-            var hostNameRegEx = /^(([a-zA-Z][a-zA-Z0-9\-]*\.)?[a-zA-Z][a-zA-Z0-9\-]*\.[a-zA-Z]+)$/;
-            if (!newUrl.host.match(hostNameRegEx)) {
-                $scope.addUrlFormMessage = "Make sure your 'URL Host' value is"
-                    + " of either of the following formats: 'abc.def.ghi' or"
-                    + " 'abc.def'.";
-                return;
-            }
-
-            // If a path value was provided, then add a leading slash if
-            // needed. If no path value provided, then set path empty string
-            if (!newUrl.path) {
-                newUrl.path = "";
-            } else {
-                newUrl.path = newUrl.path.trim();
-                if (!newUrl.path.startsWith('/')) {
-                    newUrl.path = '/' + newUrl.path;
-                }
-            }
-
-            // Initialize object to store status codes and response counts. Add
-            // all status codes currently active in URL Group to responses obj.
-            newUrl.responses = {};
-            for (var statusCode in urlGroup.responses) {
-                newUrl.responses[statusCode] = 0;
-            }
-
-            // Add the URL Group ID
-            newUrl.urlgroup_id = urlGroup._id;
-
-            // Add the new URL to the Urls model
-            // Also add a new relationship between the URL Group and the new URL
-            var addUrl = new Urls(newUrl);
-            addUrl.$save(function(urlResData) {
-                // Update the local model with the new URL
-                $scope.urls.push(addUrl);
-                // Clear out the form fields and hide the Add URL form
-                $scope.hideAddUrlForm();
-            });
         };
 
         /*---------------------------------------------------------------------

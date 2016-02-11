@@ -36,23 +36,24 @@ angular.module('ninesWeb')
 
         /*-- Add a new URL Group --------------------------------------------*/
         $scope.addUrlGroup = function(newUrlGroup) {
-            // Take no action if the name field has no data
-            if (!newUrlGroup.name) {
+            // Only add if URL Group name has been provided
+            if (angular.isDefined(newUrlGroup.name)) {
+
+                // Initialize the Response and Error Total properties
+                newUrlGroup.responses = { 200: 0 };
+
+                // Add the new URL Group to the UrlGroups model
+                var addUrlGroup = new UrlGroups(newUrlGroup);
+                addUrlGroup.$save(function() {
+                    // Update the local model with the new URL Group
+                    $scope.urlgroups.push(addUrlGroup);
+                    // Clear out the form fields and hid the Add URL Group form
+                    $scope.hideAddUrlGroupForm();
+                });
+            } else {
                 $scope.addUrlGroupFormMessage = "Please provide a group name"
                 return;
             }
-
-            // Initialize the Response and Error Total properties
-            newUrlGroup.responses = { 200: 0 };
-
-            // Add the new URL Group to the UrlGroups model
-            var addUrlGroup = new UrlGroups(newUrlGroup);
-            addUrlGroup.$save(function() {
-                // Update the local model with the new URL Group
-                $scope.urlgroups.push(addUrlGroup);
-                // Clear out the form fields and hid the Add URL Group form
-                $scope.hideAddUrlGroupForm();
-            })
         }
     }
 ]);
