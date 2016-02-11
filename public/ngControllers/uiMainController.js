@@ -38,6 +38,23 @@ angular.module('ninesWeb')
          View Data Prep Methods - Public (available to view)
          --------------------------------------------------------------------*/
 
+        // Provides numbers for total number of responses and the total number
+        // of error resonses in one results object for use in the view
+        $scope.getUrlGroupTotals = function(urlGroup) {
+            var results = {
+                errTotal: 0,
+                resTotal: 0
+            };
+            for (var statusCode in urlGroup.responses) {
+                if (statusCode >= errorThreshold) {
+                    results.errTotal += urlGroup.responses[statusCode];
+                }
+                results.resTotal += urlGroup.responses[statusCode];
+            }
+
+            return results;
+        }
+
         /**
          * The following function can be called to get either (a) stats for a
          * particular URL in a URL Group or (b) overall stats for the URL Group.

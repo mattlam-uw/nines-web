@@ -61,9 +61,9 @@
                     <div class="col-md-4">
                     <div class="summary-totals">
                         <span class="summary-label">Total Requests: </span>
-                        <span class="summary-total-request-value">100 </span>
+                        <span class="summary-total-request-value">{{getUrlGroupTotals(urlgroup).resTotal}} </span>
                         <span class="summary-label">Total Errors: </span>
-                        <span class="summary-total-error-value">4 </span>
+                        <span class="summary-total-error-value">{{getUrlGroupTotals(urlgroup).errTotal}} </span>
                     </div>
                     </div>
                     <div class="col-md-8">
