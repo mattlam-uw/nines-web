@@ -39,7 +39,7 @@ angular.module('ninesWeb')
          --------------------------------------------------------------------*/
 
         // Provides numbers for total number of responses and the total number
-        // of error resonses in one results object for use in the view
+        // of error responses in one results object for use in the view
         $scope.getUrlGroupTotals = function(urlGroup) {
             var results = {
                 errTotal: 0,
@@ -367,9 +367,11 @@ angular.module('ninesWeb')
             }
         }
 
-        // Recalculates status code response totals for given urlGroup. Writes
-        // the resulting totals to the urlgroups database model. Refreshes the
-        // view screen if this is the last URL Group being recalculated.
+        // Recalculates status code response totals for given URL Group. Writes
+        // the resulting totals to the urlgroups database model. Removes any
+        // case where a status code column for a URL Group is all zeroes.
+        // Refreshes the view screen if this is the last URL Group being
+        // recalculated.
         function recalcUrlGroupTotals(urlGroup, numGroup, ofTotalGroups) {
 
             // Query all URLs associated with URL Group in order to get their
@@ -393,22 +395,24 @@ angular.module('ninesWeb')
                     }
                 }
 
-                // Check for URL Group status code response totals of zero. If
-                // any are found remove the status code response total for both
-                // the URL Group and all URLs in the group
-                // removeZeroResponseTotals(urlGroup);
-
                 // Update the URL Group database model with the recalculated
                 // response totals.
                 UrlGroups.update(
                     {id: urlGroup._id},
                     urlGroup,
                     function() {
-                        // Refresh the view screen if this is the last URL
-                        // Group being updated
+                        // Check for URL Group status code response totals of
+                        // zero. If any are found remove the status code
+                        // response total for both the URL Group and all URLs
+                        // in the group
                         removeZeroResponseTotals(urlGroup, numGroup, ofTotalGroups);
+
+                        // Refresh the view screen if this is the last URL
+                        // Group being updated. The reload that is triggered by
+                        // updateUrlResponses() below will almost definitely
+                        // happen after this. So this may be superfluous. But
+                        // for now call it failsafe.
                         if (numGroup === ofTotalGroups) {
-                            console.log('reloading once');
                             $route.reload();
                         }
                     }
@@ -416,34 +420,55 @@ angular.module('ninesWeb')
             });
         }
 
+        // Look at a URL Group to see of there are cases where the response
+        // total for a status code is zero. For all such cases found, remove
+        // that status code from the 'responses' object of both the URL Group
+        // and URLs associated with the URL Group.
         function removeZeroResponseTotals(urlGroup, numGroup, ofTotalGroups) {
-            var zeroTotalStatusCodes = [];
-            var updatedGroupResponses = {};
+            var zeroTotalStatusCodes = []; // Array for status codes w/zero total
+            var updatedGroupResponses = {}; // Replacement 'responses' object
+
+            // Iterate over the status codes in the URL Group 'responses' object
+            // and add the cases of a zero total to the 'zerototal' array while
+            // adding cases of non-zero total to the replacement 'responses' obj.
             for (var statusCode in urlGroup.responses) {
                 if (urlGroup.responses[statusCode] === 0) {
                     zeroTotalStatusCodes.push(statusCode);
                 } else {
-                    updatedGroupResponses[statusCode] = urlGroup.responses[statusCode];
+                    updatedGroupResponses[statusCode] =
+                        urlGroup.responses[statusCode];
                 }
             }
 
+            // Replace the existing 'responses' object for the URL Group with
+            // the new replacement object that has no zero-total status codes.
             updateUrlGroupResponses(urlGroup, updatedGroupResponses);
 
+            // Find the URLs associated with this URL Group and remove status
+            // codes having zero totals from their 'responses' object
             UrlsByUrlGroup.query({ id: urlGroup._id }, function(urls) {
 
+                // Iterate over all found URLs and add only positive status
+                // code totals to a replacement 'responses' object
                 for (var i = 0; i < urls.length; i++) {
                     var updatedResponses = {};
                     for (var statusCode in urls[i].responses) {
                         if (zeroTotalStatusCodes.indexOf(statusCode) < 0) {
-                            updatedResponses[statusCode] = urls[i].responses[statusCode];
+                            updatedResponses[statusCode] =
+                                urls[i].responses[statusCode];
                         }
                     }
-                    updateUrlResponses(urls[i], updatedResponses, numGroup, ofTotalGroups, (i + 1), urls.length);
-                }
 
+                    // Update the 'responses' object for the URL with the
+                    // replacement 'responses' object
+                    updateUrlResponses(urls[i], updatedResponses, numGroup,
+                        ofTotalGroups, (i + 1), urls.length);
+                }
             });
         }
 
+        // Replace the existing 'responses' object for the URL Group with the
+        // given replacement object.
         function updateUrlGroupResponses(urlGroup, updatedResponses) {
             UrlGroups.update(
                 { id: urlGroup._id },
@@ -454,6 +479,9 @@ angular.module('ninesWeb')
             )
         }
 
+        // Update the 'responses' object for the URL with the replacement
+        // 'responses' object. Also refresh the view only when this is the last
+        // URL being updated for the last URL Group being updated
         function updateUrlResponses(url, updatedResponses, numGroup, ofTotalGroups, numUrl, ofTotalUrls) {
             Urls.update(
                 { id: url._id },
@@ -461,7 +489,6 @@ angular.module('ninesWeb')
                 function(urlData) {
                     if (numGroup === ofTotalGroups) {
                         if (numUrl === ofTotalUrls) {
-                            console.log('reloading twice');
                             $route.reload();
                         }
                     }
