@@ -353,7 +353,7 @@ angular.module('ninesWeb')
         // Recalculates status code response totals for given urlGroup. Writes
         // the resulting totals to the urlgroups database model. Refreshes the
         // view screen if this is the last URL Group being recalculated.
-        function recalcUrlGroupTotals(urlGroup, num, ofTotal) {
+        function recalcUrlGroupTotals(urlGroup, numGroup, ofTotalGroups) {
 
             // Query all URLs associated with URL Group in order to get their
             // latest status code response totals
@@ -376,6 +376,11 @@ angular.module('ninesWeb')
                     }
                 }
 
+                // Check for URL Group status code response totals of zero. If
+                // any are found remove the status code response total for both
+                // the URL Group and all URLs in the group
+                // removeZeroResponseTotals(urlGroup);
+
                 // Update the URL Group database model with the recalculated
                 // response totals.
                 UrlGroups.update(
@@ -384,12 +389,67 @@ angular.module('ninesWeb')
                     function() {
                         // Refresh the view screen if this is the last URL
                         // Group being updated
-                        if (num === ofTotal) {
+                        removeZeroResponseTotals(urlGroup, numGroup, ofTotalGroups);
+                        if (numGroup === ofTotalGroups) {
+                            console.log('reloading once');
                             $route.reload();
                         }
                     }
                 );
             });
+        }
+
+        function removeZeroResponseTotals(urlGroup, numGroup, ofTotalGroups) {
+            var zeroTotalStatusCodes = [];
+            var updatedGroupResponses = {};
+            for (var statusCode in urlGroup.responses) {
+                if (urlGroup.responses[statusCode] === 0) {
+                    zeroTotalStatusCodes.push(statusCode);
+                } else {
+                    updatedGroupResponses[statusCode] = urlGroup.responses[statusCode];
+                }
+            }
+
+            updateUrlGroupResponses(urlGroup, updatedGroupResponses);
+
+            UrlsByUrlGroup.query({ id: urlGroup._id }, function(urls) {
+
+                for (var i = 0; i < urls.length; i++) {
+                    var updatedResponses = {};
+                    for (var statusCode in urls[i].responses) {
+                        if (zeroTotalStatusCodes.indexOf(statusCode) < 0) {
+                            updatedResponses[statusCode] = urls[i].responses[statusCode];
+                        }
+                    }
+                    updateUrlResponses(urls[i], updatedResponses, numGroup, ofTotalGroups, (i + 1), urls.length);
+                }
+
+            });
+        }
+
+        function updateUrlGroupResponses(urlGroup, updatedResponses) {
+            UrlGroups.update(
+                { id: urlGroup._id },
+                { $set: { responses: updatedResponses } },
+                function(urlGroupData) {
+                    // don't do anything
+                }
+            )
+        }
+
+        function updateUrlResponses(url, updatedResponses, numGroup, ofTotalGroups, numUrl, ofTotalUrls) {
+            Urls.update(
+                { id: url._id },
+                { $set: { responses: updatedResponses } },
+                function(urlData) {
+                    if (numGroup === ofTotalGroups) {
+                        if (numUrl === ofTotalUrls) {
+                            console.log('reloading twice');
+                            $route.reload();
+                        }
+                    }
+                }
+            )
         }
 
         // Update the URL Group for a URL to subtract the response stats per

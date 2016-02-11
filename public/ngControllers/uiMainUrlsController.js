@@ -77,7 +77,7 @@ angular.module('ninesWeb')
         };
 
         /*-- Add a new URL --------------------------------------------------*/
-        $scope.addUrl = function(newUrl, urlGroupId) {
+        $scope.addUrl = function(newUrl, urlGroup) {
             // Take no action if no data in either 'name' or the 'host' fields
             if (!newUrl.name || !newUrl.host) {
                 $scope.addUrlFormMessage = "Please provide values for both "
@@ -108,11 +108,15 @@ angular.module('ninesWeb')
                 }
             }
 
-            // Initialize object to store status codes and response counts
-            newUrl.responses = { 200: 0 };
+            // Initialize object to store status codes and response counts. Add
+            // all status codes currently active in URL Group to responses obj.
+            newUrl.responses = {};
+            for (var statusCode in urlGroup.responses) {
+                newUrl.responses[statusCode] = 0;
+            }
 
             // Add the URL Group ID
-            newUrl.urlgroup_id = urlGroupId;
+            newUrl.urlgroup_id = urlGroup._id;
 
             // Add the new URL to the Urls model
             // Also add a new relationship between the URL Group and the new URL
