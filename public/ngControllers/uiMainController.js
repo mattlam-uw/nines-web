@@ -266,11 +266,15 @@ angular.module('ninesWeb')
 
         /*-- Handler for opening a modal dialog to remove URLs --------------*/
         // All this needs to do us update the Modal Header Message variable
-        $scope.prepRemoveUrls = function() {
+        $scope.prepRemoveUrls = function(urlGroupId) {
             $scope.modalHeaderMsg = "Click 'Remove' to permanently delete"
                                   + " the following URLs";
             $scope.showModalControl = "remove-groups";
+            $scope.currentUrlGroupId = urlGroupId;
 
+            // Update URLs in this group to be updated such that their 'update'
+            // property is set to the URL Group ID
+            setUrlGroupIdForUrlUpdate(urlGroupId);
         };
 
         /*-- Handler for removing selected URLs and availability stats ------*/
@@ -289,6 +293,9 @@ angular.module('ninesWeb')
             for (var i = 0; i < urlIds.length; i++) {
                 removeUrlsFromDb(urlIds[i], (i + 1), urlIds.length);
             }
+
+            // Reset the 'update' property for URLs in this URL Group to false
+            resetUrlUpdateForUrlGroup(urlGroupId);
         };
 
         /*-- Handler to open a modal dialog to move URLs to another group ---*/
@@ -299,8 +306,9 @@ angular.module('ninesWeb')
             $scope.showModalControl = "move-groups";
             $scope.currentUrlGroupId = urlGroupId;
 
+            // Update URLs in this group to be updated such that their 'update'
+            // property is set to the URL Group ID
             setUrlGroupIdForUrlUpdate(urlGroupId);
-
         };
 
         // Move selected Urls from one URL Group to another
@@ -319,6 +327,7 @@ angular.module('ninesWeb')
                 updateUrlGroupIds(urlIds[i], (i + 1), urlIds.length);
             }
 
+            // Reset the 'update' property for URLs in this URL Group to false
             resetUrlUpdateForUrlGroup(urlGroupId);
         };
 
