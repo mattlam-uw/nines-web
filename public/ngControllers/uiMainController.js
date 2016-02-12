@@ -339,6 +339,13 @@ angular.module('ninesWeb')
             setUrlUpdateForUrlGroup(urlGroupId, false);
         };
 
+        // Clears all of the 'update' property values for all URLs
+        $scope.unsetAllUrlUpdate = function() {
+            for (var i = 0; i < $scope.urls.length; i++) {
+                $scope.urls[i].update = false;
+            }
+        }
+
         /*-- Handlers for removing URL Group --------------------------------*/
 
         // Open the modal for removing a URL Group
