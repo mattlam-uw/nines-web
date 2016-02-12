@@ -212,6 +212,13 @@
                         ng-click="showUpdateUrlControls(urlgroup._id)">
                     Move or Remove URLs
                 </button>
+                <button type="button" class="btn  btn-sm btn-danger"
+                        ng-hide="showControlsUpdateUrl === urlgroup._id"
+                        ng-click="prepRemoveUrlGroup(urlgroup._id)"
+                        data-toggle="modal"
+                        data-target="#updateUrlsModal">
+                    Remove This Group and all URLs
+                </button>
             </div>
             <div id="add-url-form" ng-show="showFormAddUrl === urlgroup._id">
                 <h3>Add new URL</h3>
@@ -273,9 +280,13 @@
                 </div>
                 <form>
                     <div class="modal-body">
+                        <div class="modal-body-header"
+                             ng-show="showModalControl == 'remove-group'">
+                            URL Group:
+                        </div>
                         <div class="modal-body-header">URLs:</div>
                         <div ng-repeat="url in urls |
-                                   filter : { update: true } ">
+                                   filter : { update: currentUrlGroupId } ">
                             {{url.name}}
                         </div>
                         <div class="modal-body-header"
@@ -297,13 +308,13 @@
                             Cancel
                         </button>
                         <button type="button" class="btn btn-md btn-primary"
-                                ng-click="moveUrls()"
+                                ng-click="moveUrls(currentUrlGroupId)"
                                 ng-show="showModalControl == 'move-groups'"
                                 data-dismiss="modal">
                             Move
                         </button>
                         <button type="button" class="btn btn-md btn-danger"
-                                ng-click="removeUrls()"
+                                ng-click="removeUrls(currentUrlGroupId)"
                                 ng-show="showModalControl == 'remove-groups'"
                                 data-dismiss="modal">
                             Remove
