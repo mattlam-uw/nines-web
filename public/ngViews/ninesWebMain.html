@@ -284,6 +284,9 @@
                              ng-show="showModalControl == 'remove-group'">
                             URL Group:
                         </div>
+                        <div ng-show="showModalControl == 'remove-group'">
+                            {{getUrlGroupById(currentUrlGroupId).name}}
+                        </div>
                         <div class="modal-body-header">URLs:</div>
                         <div ng-repeat="url in urls |
                              filter : { update: currentUrlGroupId }" >
@@ -316,6 +319,12 @@
                         <button type="button" class="btn btn-md btn-danger"
                                 ng-click="removeUrls(currentUrlGroupId)"
                                 ng-show="showModalControl == 'remove-groups'"
+                                data-dismiss="modal">
+                            Remove
+                        </button>
+                        <button type="button" class="btn btn-md btn-danger"
+                                ng-click="removeUrlGroup(currentUrlGroupId)"
+                                ng-show="showModalControl == 'remove-group'"
                                 data-dismiss="modal">
                             Remove
                         </button>
