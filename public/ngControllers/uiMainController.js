@@ -298,6 +298,9 @@ angular.module('ninesWeb')
                 + " to the selected URL Group";
             $scope.showModalControl = "move-groups";
             $scope.currentUrlGroupId = urlGroupId;
+
+            setUrlGroupIdForUrlUpdate(urlGroupId);
+
         };
 
         // Move selected Urls from one URL Group to another
@@ -315,6 +318,8 @@ angular.module('ninesWeb')
             for (var i = 0; i < urlIds.length; i++) {
                 updateUrlGroupIds(urlIds[i], (i + 1), urlIds.length);
             }
+
+            resetUrlUpdateForUrlGroup(urlGroupId);
         };
 
         /*-- Handlers for removing URL Group --------------------------------*/
@@ -609,19 +614,39 @@ angular.module('ninesWeb')
             $route.reload();
         }
 
-        // Iterates over local Urls model and (1) copies the Id of any URL where 
-        // 'update' flag is true, then (2) flips the 'update' flag to false
-        function getArrUpdateUrlIds(urlGroupId) {
-            var updateUrlIds = [];
+        // Iterates over local Urls model looking for any URL (1) having an
+        // 'update' property set and (2) associated with the urlGroupId. For
+        // these Urls, set the 'update' property to the urlGroupId.
+        function setUrlGroupIdForUrlUpdate(urlGroupId) {
             for (var i = 0; i < $scope.urls.length; i++) {
                 if ($scope.urls[i].update) {
-                    if ($scope.urls[i].update === urlGroupId) {
-                        updateUrlIds.push($scope.urls[i]._id);
-                        $scope.urls[i].update = false;
+                    if ($scope.urls[i].urlgroup_id === urlGroupId) {
+                        $scope.urls[i].update = urlGroupId;
                     }
                 }
             }
-            return updateUrlIds;
+        }
+
+        function getArrUpdateUrlIds(urlGroupId) {
+            var results = [];
+            for (var i = 0; i < $scope.urls.length; i++) {
+                if ($scope.urls[i].update) {
+                    if ($scope.urls[i].urlgroup_id === urlGroupId) {
+                        results.push($scope.urls[i]._id);
+                    }
+                }
+            }
+            return results;
+        }
+
+        // Sets the 'update' property for a URL to false for all URLs
+        // associated with the given urlGroupId
+        function resetUrlUpdateForUrlGroup(urlGroupId) {
+            for (var i = 0; i < $scope.urls.length; i++) {
+                if ($scope.urls[i].urlgroup_id === urlGroupId) {
+                    $scope.urls[i].update = false;
+                }
+            }
         }
     }
 ]);

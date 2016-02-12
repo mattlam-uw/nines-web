@@ -185,7 +185,7 @@
                 Move Selected URLs
             </button>
             <button type="submit" class="btn btn-sm btn-danger"
-                    ng-click="prepRemoveUrls()"
+                    ng-click="prepRemoveUrls(urlgroup._id)"
                     data-toggle="modal"
                     data-target="#updateUrlsModal">
                 Remove Selected URLs
@@ -286,7 +286,7 @@
                         </div>
                         <div class="modal-body-header">URLs:</div>
                         <div ng-repeat="url in urls |
-                                   filter : { update: currentUrlGroupId } ">
+                             filter : { update: currentUrlGroupId }" >
                             {{url.name}}
                         </div>
                         <div class="modal-body-header"
