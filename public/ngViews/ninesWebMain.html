@@ -50,7 +50,7 @@
      Main Display of Groups, URLs, and Ratings
     ---------------------------------------------------------------------->
 
-    <div class="group-container" ng-repeat="urlgroup in urlgroups | orderBy: 'name'"
+    <div class="group-container" ng-repeat="urlgroup in urlgroups | orderBy: 'view_order'"
          ng-controller="uiMainUrlsCtrl">
         <div class="row">
             <div class="col-md-2">
@@ -58,15 +58,21 @@
             </div>
             <div class="group-details col-md-10">
                 <div class="row">
-                    <div class="col-md-4">
-                    <div class="summary-totals">
-                        <span class="summary-label">Total Requests: </span>
-                        <span class="summary-total-request-value">{{getUrlGroupTotals(urlgroup).resTotal}} </span>
-                        <span class="summary-label">Total Errors: </span>
-                        <span class="summary-total-error-value">{{getUrlGroupTotals(urlgroup).errTotal}} </span>
+                    <div class="col-md-3">
+                        <div class="ping-freq">
+                            <span class="summary-label">Ping Frequency: </span>
+                            <span class="summary-total-request-value">{{urlgroup.ping_frequency}} Minutes</span>
+                        </div>
                     </div>
+                    <div class="col-md-3">
+                        <div class="summary-totals">
+                            <span class="summary-label">Total Requests: </span>
+                            <span class="summary-total-request-value">{{getUrlGroupTotals(urlgroup).resTotal}} </span>
+                            <span class="summary-label">Total Errors: </span>
+                            <span class="summary-total-error-value">{{getUrlGroupTotals(urlgroup).errTotal}} </span>
+                        </div>
                     </div>
-                    <div class="col-md-8">
+                    <div class="col-md-6">
                     <div class="summary-rating">
                         <span class="summary-label">
                             Average Availability Rating:
@@ -89,6 +95,16 @@
                 <a type="link" ng-hide="showDetailsUrlGroup"
                    ng-click="showUrlGroupDetails(urlgroup._id)">
                     Show Details
+                </a>
+                <span ng-hide="showDetailsUrlGroup"> | Move: </span>
+                <a type="link" ng-hide="showDetailsUrlGroup"
+                   ng-click="moveUrlGroupUp(urlgroup)">
+                    Up
+                </a>
+                <span ng-hide="showDetailsUrlGroup"> | </span>
+                <a type="link" ng-hide="showDetailsUrlGroup"
+                   ng-click="moveUrlGroupDown(urlgroup)">
+                    Down
                 </a>
                 <a type="link" ng-show="showDetailsUrlGroup"
                    ng-click="showUrlGroupDetails()">

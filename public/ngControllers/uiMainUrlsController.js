@@ -19,7 +19,7 @@ angular.module('ninesWeb')
         $scope.newUrl.protocol = "http";
 
         /*-------------------------------------------------------------------
-         Handlers for Showing and Hiding URL Group Details
+         Handlers for Showing and Hiding URL Group Actions from Summary View
          --------------------------------------------------------------------*/
         $scope.showUrlGroupDetails = function(groupId) {
             if ($scope.showDetailsUrlGroup !== groupId) {
@@ -27,11 +27,40 @@ angular.module('ninesWeb')
             } else {
                 $scope.hideUrlGroupDetails();
             }
-        }
+        };
 
         $scope.hideUrlGroupDetails = function() {
             $scope.showDetailsUrlGroup = false;
-        }
+        };
+
+        $scope.moveUrlGroupUp = function(urlGroup) {
+
+            // Only do anything if this is *not* the first group by view order
+            if (urlGroup.view_order > 0) {
+
+                // Find URL Group just above
+                var thisViewOrder = urlGroup.view_order;
+                var targetViewOrder = -1;
+                var targetUrlGroupId = null;
+                for (var i = 0; i < $scope.urlgroups.length; i++) {
+                    if ($scope.urlgroups[i].view_order < thisViewOrder) {
+                        if ($scope.urlgroups[i].view_order >= targetViewOrder) {
+                            targetViewOrder = $scope.urlgroups[i].view_order;
+                            targetUrlGroupId = $scope.urlgroups[i]._id;
+                        }
+                    }
+                }
+                // Swap view_order values (only if a target was found)
+                if (targetViewOrder > -1) {
+
+                }
+            }
+
+        };
+
+        $scope.moveUrlGroupDown = function(urlGroup) {
+
+        };
 
         /*-------------------------------------------------------------------
          Handlers for Add-New-URL Form
