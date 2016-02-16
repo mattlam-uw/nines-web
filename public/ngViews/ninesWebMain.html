@@ -98,12 +98,12 @@
                 </a>
                 <span ng-hide="showDetailsUrlGroup"> | Move: </span>
                 <a type="link" ng-hide="showDetailsUrlGroup"
-                   ng-click="moveUrlGroupUp(urlgroup)">
+                   ng-click="moveUrlGroup(urlgroup, 'up')">
                     Up
                 </a>
                 <span ng-hide="showDetailsUrlGroup"> | </span>
                 <a type="link" ng-hide="showDetailsUrlGroup"
-                   ng-click="moveUrlGroupDown(urlgroup)">
+                   ng-click="moveUrlGroup(urlgroup, 'down')">
                     Down
                 </a>
                 <a type="link" ng-show="showDetailsUrlGroup"

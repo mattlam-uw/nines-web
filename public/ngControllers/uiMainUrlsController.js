@@ -1,5 +1,6 @@
 angular.module('ninesWeb')
-.controller('uiMainUrlsCtrl', ['$scope', 'Urls', function($scope, Urls) {
+.controller('uiMainUrlsCtrl', ['$scope', 'Urls', 'UrlGroups',
+    function($scope, Urls, UrlGroups) {
 
         /*---------------------------------------------------------------------
          Initialize $scope variables
@@ -33,33 +34,75 @@ angular.module('ninesWeb')
             $scope.showDetailsUrlGroup = false;
         };
 
-        $scope.moveUrlGroupUp = function(urlGroup) {
+        $scope.moveUrlGroup = function(urlGroup, direction) {
 
-            // Only do anything if this is *not* the first group by view order
-            if (urlGroup.view_order > 0) {
+            var maxViewOrder = 1000;
 
-                // Find URL Group just above
-                var thisViewOrder = urlGroup.view_order;
+            // Find URL Group just above
+            var thisViewOrder = urlGroup.view_order;
+            var thisUrlGroupInd = -1;
+            var targetUrlGroupInd = -1;
+
+            if (direction === 'up') {
                 var targetViewOrder = -1;
-                var targetUrlGroupId = null;
+
                 for (var i = 0; i < $scope.urlgroups.length; i++) {
                     if ($scope.urlgroups[i].view_order < thisViewOrder) {
                         if ($scope.urlgroups[i].view_order >= targetViewOrder) {
+                            targetUrlGroupInd = i;
                             targetViewOrder = $scope.urlgroups[i].view_order;
-                            targetUrlGroupId = $scope.urlgroups[i]._id;
                         }
                     }
+                    if ($scope.urlgroups[i]._id === urlGroup._id) {
+                        thisUrlGroupInd = i;
+                        thisViewOrder = $scope.urlgroups[i].view_order;
+                    }
                 }
-                // Swap view_order values (only if a target was found)
-                if (targetViewOrder > -1) {
 
+            } else if (direction === 'down') {
+                var targetViewOrder = maxViewOrder;
+
+                for (var i = 0; i < $scope.urlgroups.length; i++) {
+                    if ($scope.urlgroups[i].view_order > thisViewOrder) {
+                        if ($scope.urlgroups[i].view_order <= targetViewOrder) {
+                            targetUrlGroupInd = i;
+                            targetViewOrder = $scope.urlgroups[i].view_order;
+                        }
+                    }
+                    if ($scope.urlgroups[i]._id === urlGroup._id) {
+                        thisUrlGroupInd = i;
+                        thisViewOrder = $scope.urlgroups[i].view_order;
+                    }
                 }
+
+            } else {
+                console.log("Bad value for 'direction' parameter provided");
+                console.log("'direction' parameter value must be 'up' or 'down");
             }
 
-        };
+            // Swap view_order values (only if a target was found)
+            if (targetViewOrder > -1 && targetViewOrder < maxViewOrder) {
 
-        $scope.moveUrlGroupDown = function(urlGroup) {
+                // Update the local model
+                $scope.urlgroups[targetUrlGroupInd].view_order = thisViewOrder
+                $scope.urlgroups[thisUrlGroupInd].view_order = targetViewOrder;
 
+                // Update the database model
+                UrlGroups.update(
+                    { id: $scope.urlgroups[targetUrlGroupInd]._id },
+                    { $set: { view_order: thisViewOrder} },
+                    function(urlData) {
+                        // Do nothing else
+                    }
+                );
+                UrlGroups.update(
+                    { id: $scope.urlgroups[thisUrlGroupInd]._id },
+                    { $set: { view_order: targetViewOrder} },
+                    function(urlData) {
+                        // Do nothing else
+                    }
+                );
+            }
         };
 
         /*-------------------------------------------------------------------
