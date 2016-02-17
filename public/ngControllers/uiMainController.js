@@ -274,15 +274,15 @@ angular.module('ninesWeb')
 
         /*-- Handler for opening a modal dialog to remove URLs --------------*/
         // All this needs to do us update the Modal Header Message variable
-        $scope.prepRemoveUrls = function(urlGroupId) {
+        $scope.prepRemoveUrls = function(urlGroup) {
             $scope.modalHeaderMsg = "Click 'Remove' to permanently delete"
                                   + " the following URLs";
             $scope.showModalControl = "remove-groups";
-            $scope.currentUrlGroupId = urlGroupId;
+            $scope.currentUrlGroup = urlGroup;
 
             // Update URLs in this group to be updated such that their 'update'
             // property is set to the URL Group ID
-            setUrlGroupIdForUrlUpdate(urlGroupId);
+            setUrlGroupIdForUrlUpdate(urlGroup._id);
         };
 
         /*-- Handler for removing selected URLs and availability stats ------*/
@@ -292,39 +292,39 @@ angular.module('ninesWeb')
         // totals recalculated and displayed (without significant dev effort),
         // a full screen refresh is forced. This causes all of the URL Groups
         // to collapse to summary view.
-        $scope.removeUrls = function(urlGroupId) {
+        $scope.removeUrls = function(urlGroup) {
 
             // Iterate over URLs and (1) add the IDs of those selected for 
             // removal to an array, and (2) set 'update' flag to false
-            var urlIds = getArrUpdateUrlIds(urlGroupId);
+            var urlIds = getArrUpdateUrlIds(urlGroup._id);
 
             for (var i = 0; i < urlIds.length; i++) {
                 removeUrlsFromDb(urlIds[i], (i + 1), urlIds.length);
             }
 
             // Reset the 'update' property for URLs in this URL Group to false
-            setUrlUpdateForUrlGroup(urlGroupId, false);
+            setUrlUpdateForUrlGroup(urlGroup._id, false);
         };
 
         /*-- Handler to open a modal dialog to move URLs to another group ---*/
         // All this needs to do us update the Modal Header Message variable
-        $scope.prepMoveUrls = function(urlGroupId) {
+        $scope.prepMoveUrls = function(urlGroup) {
             $scope.modalHeaderMsg = "Click 'Move' to move the following URLs"
                 + " to the selected URL Group";
             $scope.showModalControl = "move-groups";
-            $scope.currentUrlGroupId = urlGroupId;
+            $scope.currentUrlGroup = urlGroup;
 
             // Update URLs in this group to be updated such that their 'update'
             // property is set to the URL Group ID
-            setUrlGroupIdForUrlUpdate(urlGroupId);
+            setUrlGroupIdForUrlUpdate(urlGroup._id);
         };
 
         // Move selected Urls from one URL Group to another
-        $scope.moveUrls = function(urlGroupId) {
+        $scope.moveUrls = function(urlGroup) {
 
             // Iterate over URLs and (1) add the IDs of those that have been
             // selected for move to an array, and (2) set 'update' flag to false
-            var urlIds = getArrUpdateUrlIds(urlGroupId);
+            var urlIds = getArrUpdateUrlIds(urlGroup._id);
 
             // Iterate over the new array of IDs for URLs to be moved
             // and update the database model to set the urlgroup_id property
@@ -336,7 +336,7 @@ angular.module('ninesWeb')
             }
 
             // Reset the 'update' property for URLs in this URL Group to false
-            setUrlUpdateForUrlGroup(urlGroupId, false);
+            setUrlUpdateForUrlGroup(urlGroup._id, false);
         };
 
         // Clears all of the 'update' property values for all URLs
@@ -349,23 +349,23 @@ angular.module('ninesWeb')
         /*-- Handlers for removing URL Group --------------------------------*/
 
         // Open the modal for removing a URL Group
-        $scope.prepRemoveUrlGroup = function(urlGroupId) {
-            $scope.currentUrlGroupId = urlGroupId;
+        $scope.prepRemoveUrlGroup = function(urlGroup) {
+            $scope.currentUrlGroup = urlGroup;
             $scope.modalHeaderMsg = "Click 'Remove' to permanently delete"
                 + " the following URL Group and all associated URLs";
             $scope.showModalControl = "remove-group";
 
             // Update URLs in this group to be updated such that their 'update'
             // property is set to the URL Group ID
-            setUrlUpdateForUrlGroup(urlGroupId, true);
-            setUrlGroupIdForUrlUpdate(urlGroupId);
+            setUrlUpdateForUrlGroup(urlGroup._id, true);
+            setUrlGroupIdForUrlUpdate(urlGroup._id);
         };
 
         // Remove the URL Group and all associated URLs
-        $scope.removeUrlGroup = function(urlGroupId) {
+        $scope.removeUrlGroup = function(urlGroup) {
 
             // Find the URLs associated with the group
-            var urlIds = getArrUpdateUrlIds(urlGroupId);
+            var urlIds = getArrUpdateUrlIds(urlGroup._id);
 
             // Remove the urls from the Database
             for (var i = 0; i < urlIds.length; i++) {
@@ -373,17 +373,58 @@ angular.module('ninesWeb')
             }
 
             // Remove the URL Group from the database
-            removeUrlGroupFromDb(urlGroupId);
+            removeUrlGroupFromDb(urlGroup._id);
 
             // Remove the URL Group from the local model
             // First find the index of the URL Group in the array
             var urlGroupInd = -1;
+            var higherViewOrderUrlGroups = [];
+            var urlGroupIdsByViewOrder = {};
+            var highestViewOrder = -1;
             for (var i = 0; i < $scope.urlgroups.length; i++) {
-                if ($scope.urlgroups[i]._id === urlGroupId) {
+                if ($scope.urlgroups[i]._id === urlGroup._id) {
                     urlGroupInd = i;
+                } else {
+                    var currentViewOrder = $scope.urlgroups[i].view_order;
+                    if (currentViewOrder > highestViewOrder) {
+                        highestViewOrder = currentViewOrder;
+                    }
+                    if (!urlGroupIdsByViewOrder[currentViewOrder]) {
+                        urlGroupIdsByViewOrder[currentViewOrder] =
+                            [$scope.urlgroups[i]._id];
+                    } else {
+                        urlGroupIdsByViewOrder[currentViewOrder].push(
+                            $scope.urlgroups[i]._id
+                        );
+                    }
                 }
             }
-            // Then take it out of the array
+
+            var newViewOrder = 0;
+            for (var i = 0; i <= highestViewOrder; i++) {
+                if (urlGroupIdsByViewOrder[i]) {
+                    for (var j = 0; j < urlGroupIdsByViewOrder[i].length; j++) {
+                        updateUrlGroupViewOrder(urlGroupIdsByViewOrder[i][j], newViewOrder);
+                        console.log('adding view order of', newViewOrder);
+                        newViewOrder += 1;
+                    }
+                }
+            }
+
+            // Update the database model
+            /*
+            for (var i = 0; i < higherViewOrderUrlGroups.length; i++) {
+                var updateUrlGroupId =
+                    $scope.urlgroups[higherViewOrderUrlGroups[i]]._id;
+                var newUrlGroupViewOrder =
+                    $scope.urlgroups[higherViewOrderUrlGroups[i]].view_order - 1;
+                updateUrlGroupViewOrder(updateUrlGroupId, newUrlGroupViewOrder);
+            }
+            */
+
+            // Isn't the local model updated by full refresh?
+
+            // Then take it out of the array (local model)
             $scope.urlgroups.splice(urlGroupInd, 1);
         };
 
@@ -394,6 +435,18 @@ angular.module('ninesWeb')
         // Remove the URL Group from the database
         function removeUrlGroupFromDb(urlGroupId) {
             UrlGroups.remove({ id: urlGroupId }, function(urlGroupData) { });
+        }
+
+        function updateUrlGroupViewOrder(urlGroupId, newViewOrder) {
+            console.log ('Updating URL Group ' + urlGroupId + ' with new view order: ' + newViewOrder);
+            UrlGroups.update(
+                { id: urlGroupId },
+                { $set: { view_order: newViewOrder} },
+                function(urlData) {
+                    // No need to do anything else
+                    console.log('done');
+                }
+            )
         }
 
         // Remove the specified URL from the database and revise the URL Group
