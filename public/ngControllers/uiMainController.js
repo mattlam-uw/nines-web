@@ -375,23 +375,39 @@ angular.module('ninesWeb')
             // Remove the URL Group from the database
             removeUrlGroupFromDb(urlGroup._id);
 
-            // Remove the URL Group from the local model
-            // First find the index of the URL Group in the array
-            var urlGroupInd = -1;
-            var higherViewOrderUrlGroups = [];
-            var urlGroupIdsByViewOrder = {};
-            var highestViewOrder = -1;
+            // Iterate over the urlgroups local model in order to (1) determine
+            // the index of the URL Group being removed, and (2) build an
+            // object to be used to update the view_order values of all
+            // remaining groups such that gaps the the view_order do not emerge
+            // after repeated URL Group removals.
+            var urlGroupInd = -1;            // Index of URL Group to remove
+            var urlGroupIdsByViewOrder = {}; // Object for updating view_order
+            var highestViewOrder = -1;       // Upper limit for view_order vals
             for (var i = 0; i < $scope.urlgroups.length; i++) {
                 if ($scope.urlgroups[i]._id === urlGroup._id) {
+                    // This is the URL Group to be removed, so capture the index
                     urlGroupInd = i;
                 } else {
+                    // These are the URL Groups that remain, so capture their
+                    // view_order values
+
+                    // First, determine the view_order upper limit
                     var currentViewOrder = $scope.urlgroups[i].view_order;
                     if (currentViewOrder > highestViewOrder) {
                         highestViewOrder = currentViewOrder;
                     }
+
+                    // Then, if a property on the object for the current URL
+                    // Group's view_order does not exist, add the property
+                    // and assign a value of an array containing the URL
+                    // Group's ID
                     if (!urlGroupIdsByViewOrder[currentViewOrder]) {
                         urlGroupIdsByViewOrder[currentViewOrder] =
                             [$scope.urlgroups[i]._id];
+                    // If the property on the object does already exist (this
+                    // is a case where two URL Groups had the same view_order
+                    // value -- it shouldn't happen), then add the URL Group
+                    // ID as a second element in the already-existing array.
                     } else {
                         urlGroupIdsByViewOrder[currentViewOrder].push(
                             $scope.urlgroups[i]._id
@@ -400,31 +416,28 @@ angular.module('ninesWeb')
                 }
             }
 
+            // Update the URL Groups database model with new view_order values
+
+            // Starting with a view_order value of 0 and going up through
+            // the view_order upper limit, retrieve the URL Group IDs from the
+            // view_order object in correct order. Use these to update the URL
+            // Group in the database model providing a new view_order value
+            // that eliminates any possible view_order gaps.
             var newViewOrder = 0;
             for (var i = 0; i <= highestViewOrder; i++) {
                 if (urlGroupIdsByViewOrder[i]) {
                     for (var j = 0; j < urlGroupIdsByViewOrder[i].length; j++) {
-                        updateUrlGroupViewOrder(urlGroupIdsByViewOrder[i][j], newViewOrder);
+                        updateUrlGroupViewOrder(
+                            urlGroupIdsByViewOrder[i][j],
+                            newViewOrder
+                        );
                         console.log('adding view order of', newViewOrder);
                         newViewOrder += 1;
                     }
                 }
             }
 
-            // Update the database model
-            /*
-            for (var i = 0; i < higherViewOrderUrlGroups.length; i++) {
-                var updateUrlGroupId =
-                    $scope.urlgroups[higherViewOrderUrlGroups[i]]._id;
-                var newUrlGroupViewOrder =
-                    $scope.urlgroups[higherViewOrderUrlGroups[i]].view_order - 1;
-                updateUrlGroupViewOrder(updateUrlGroupId, newUrlGroupViewOrder);
-            }
-            */
-
-            // Isn't the local model updated by full refresh?
-
-            // Then take it out of the array (local model)
+            // Remove the URL Group from the local model array
             $scope.urlgroups.splice(urlGroupInd, 1);
         };
 
@@ -444,7 +457,8 @@ angular.module('ninesWeb')
                 { $set: { view_order: newViewOrder} },
                 function(urlData) {
                     // No need to do anything else
-                    console.log('done');
+                    console.log('new view order:', newViewOrder);
+                    console.log('urlData:', urlData);
                 }
             )
         }
@@ -535,7 +549,7 @@ angular.module('ninesWeb')
                 // response totals.
                 UrlGroups.update(
                     {id: urlGroup._id},
-                    urlGroup,
+                    { $set: { responses: urlGroup.responses } },
                     function() {
                         // Check for URL Group status code response totals of
                         // zero. If any are found remove the status code
