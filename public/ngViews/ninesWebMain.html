@@ -305,7 +305,8 @@
                         </div>
                         <div class="modal-body-header">URLs:</div>
                         <div ng-repeat="url in urls |
-                             filter : { update: currentUrlGroup._id }" >
+                             filter: { update: currentUrlGroup._id } |
+                             orderBy: 'name'" >
                             {{url.name}}
                         </div>
                         <div class="modal-body-header"
@@ -317,7 +318,7 @@
                                 ng-model="moveUrlGroup" name="UrlGroupChooser"
                                 ng-options="urlgroup.name for urlgroup in urlgroups |
                                             filter: { _id: '!' + currentUrlGroup._id } |
-                                            orderBy: 'name'"
+                                            orderBy: 'view_order'"
                                 autofocus>
                         </select>
                     </div>
