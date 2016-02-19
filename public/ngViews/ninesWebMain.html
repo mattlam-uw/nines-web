@@ -58,21 +58,50 @@
             </div>
             <div class="group-details col-md-10">
                 <div class="row">
-                    <div class="col-md-3">
-                        <div class="ping-freq">
-                            <span class="summary-label">Ping Frequency: </span>
-                            <span class="summary-total-request-value">{{urlgroup.ping_frequency}} Minutes</span>
-                        </div>
+                    <div class="col-md-4">
+                        <form class="form-inline ping-freq">
+                            <div class="form-group">
+                                <label for="pingFrequency">Ping Frequency:</label>
+                                <select name="pingFrequency" class="form-control"
+                                        id="pingFrequency"
+                                        ng-model="urlgroup.ping_frequency"
+                                        ng-show="showDropdownPingFrequency">
+                                    <option ng-repeat="frequency in frequencies"
+                                            value="{{frequency}}">
+                                        {{displayPingFrequency(frequency)}}
+                                    </option>
+                                </select>
+                                <span class="summary-total-request-value"
+                                      ng-hide="showDropdownPingFrequency">
+                                    {{displayPingFrequency(urlgroup.ping_frequency)}}
+                                </span>
+                            </div>
+
+                            <a type="button" class="btn btn-small btn-default"
+                               ng-hide="showDropdownPingFrequency"
+                               ng-click="showUpdatePingFrequency(urlgroup)">
+                                Update
+                            </a>
+                            <a type="button" class="btn btn-small btn-default"
+                               ng-show="showDropdownPingFrequency"
+                               ng-click="updatePingFrequency(urlgroup)">
+                                Save
+                            </a>
+                        </form>
                     </div>
                     <div class="col-md-3">
                         <div class="summary-totals">
                             <span class="summary-label">Total Requests: </span>
-                            <span class="summary-total-request-value">{{getUrlGroupTotals(urlgroup).resTotal}} </span>
+                            <span class="summary-total-request-value">
+                                {{getUrlGroupTotals(urlgroup).resTotal}}
+                            </span>
                             <span class="summary-label">Total Errors: </span>
-                            <span class="summary-total-error-value">{{getUrlGroupTotals(urlgroup).errTotal}} </span>
+                            <span class="summary-total-error-value">
+                                {{getUrlGroupTotals(urlgroup).errTotal}}
+                            </span>
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-5">
                     <div class="summary-rating">
                         <span class="summary-label">
                             Average Availability Rating:

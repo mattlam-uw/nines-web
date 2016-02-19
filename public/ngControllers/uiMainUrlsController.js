@@ -10,6 +10,8 @@ angular.module('ninesWeb')
         $scope.showFormAddUrl = false;
         // Hide URL Group details view by default
         $scope.showDetailsUrlGroup = false;
+        // Hide the Update Ping Frequency controls by default
+        $scope.showDropdownPingFrequency = false;
         // Provide feedback for add URL form
         $scope.addUrlFormMessage = "";
         // Hide the Icons for removing URLS by default
@@ -18,6 +20,8 @@ angular.module('ninesWeb')
         $scope.newUrl = {};
         // Set protocol to "http" by default
         $scope.newUrl.protocol = "http";
+        // URL Ping Frequencies [NEED TO MAKE THIS NG-CONSTANT OR SOMETHING]
+        $scope.frequencies = [5, 10, 15, 30, 60, 120, 360, 720, 1440];
 
         /*-------------------------------------------------------------------
          Handlers for Showing and Hiding URL Group Actions from Summary View
@@ -33,6 +37,37 @@ angular.module('ninesWeb')
         $scope.hideUrlGroupDetails = function() {
             $scope.showDetailsUrlGroup = false;
         };
+
+        $scope.displayPingFrequency = function(freqMins) {
+            var result = "";
+            if (freqMins < 60) {
+                result = freqMins + " Minutes";
+            } else if (freqMins === 60) {
+                result = "1 Hour";
+            } else if (freqMins >= 60) {
+                result = (freqMins / 60) + " Hours";
+            }
+            return result;
+        };
+
+        $scope.showUpdatePingFrequency = function(urlGroup) {
+            $scope.showDropdownPingFrequency = true;
+        }
+
+        $scope.hideUpdatePingFrequency = function() {
+            $scope.showDropdownPingFrequency = false;
+        }
+
+        $scope.updatePingFrequency = function(urlGroup) {
+            $scope.hideUpdatePingFrequency();
+            UrlGroups.update(
+                { id: urlGroup._id },
+                { $set: { ping_frequency: urlGroup.ping_frequency} },
+                function(urlData) {
+                    // Do nothing else
+                }
+            );
+        }
 
         $scope.moveUrlGroup = function(urlGroup, direction) {
 
