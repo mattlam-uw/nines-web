@@ -171,14 +171,6 @@ angular.module('ninesWeb')
             return getMarkupValue(leadStatCode);
         }
 
-        $scope.getUrlGroupById = function(urlGroupId) {
-            for (var i = 0; i < $scope.urlgroups.length; i++) {
-                if ($scope.urlgroups[i]._id === urlGroupId) {
-                    return $scope.urlgroups[i];
-                }
-            }
-        }
-
         /*-------------------------------------------------------------------
          View Data Prep Methods - Internal
          --------------------------------------------------------------------*/

@@ -301,11 +301,11 @@
                             URL Group:
                         </div>
                         <div ng-show="showModalControl == 'remove-group'">
-                            {{getUrlGroupById(currentUrlGroupId).name}}
+                            {{currentUrlGroup.name}}
                         </div>
                         <div class="modal-body-header">URLs:</div>
                         <div ng-repeat="url in urls |
-                             filter : { update: currentUrlGroupId }" >
+                             filter : { update: currentUrlGroup._id }" >
                             {{url.name}}
                         </div>
                         <div class="modal-body-header"
@@ -316,7 +316,7 @@
                                 ng-show="showModalControl == 'move-groups'"
                                 ng-model="moveUrlGroup" name="UrlGroupChooser"
                                 ng-options="urlgroup.name for urlgroup in urlgroups |
-                                            filter: { _id: '!' + currentUrlGroupId } |
+                                            filter: { _id: '!' + currentUrlGroup._id } |
                                             orderBy: 'name'"
                                 autofocus>
                         </select>
