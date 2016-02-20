@@ -61,8 +61,11 @@
                     <div class="col-md-4">
                         <form class="form-inline ping-freq">
                             <div class="form-group">
-                                <label for="pingFrequency">Ping Frequency:</label>
-                                <select name="pingFrequency" class="form-control"
+                                <label class="summary-label" for="pingFrequency">
+                                    Ping Frequency:
+                                </label>
+                                <select name="pingFrequency"
+                                        class="form-control summary-level-control"
                                         id="pingFrequency"
                                         ng-model="urlgroup.ping_frequency"
                                         ng-show="showDropdownPingFrequency">
@@ -77,12 +80,14 @@
                                 </span>
                             </div>
 
-                            <a type="button" class="btn btn-small btn-default"
+                            <a type="button"
+                               class="btn btn-small btn-default summary-level-control"
                                ng-hide="showDropdownPingFrequency"
                                ng-click="showUpdatePingFrequency(urlgroup)">
                                 Update
                             </a>
-                            <a type="button" class="btn btn-small btn-default"
+                            <a type="button"
+                               class="btn btn-small btn-default summary-level-control"
                                ng-show="showDropdownPingFrequency"
                                ng-click="updatePingFrequency(urlgroup)">
                                 Save
