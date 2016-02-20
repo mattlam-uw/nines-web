@@ -701,6 +701,7 @@ angular.module('ninesWeb')
             }
         }
 
+        // Returns array of URL IDs for URLs associated with given URL Group
         function getArrUpdateUrlIds(urlGroupId) {
             var results = [];
             for (var i = 0; i < $scope.urls.length; i++) {

@@ -38,6 +38,10 @@ angular.module('ninesWeb')
             $scope.showDetailsUrlGroup = false;
         };
 
+        /*-------------------------------------------------------------------
+         Handlers for Updating Ping Frequency
+         --------------------------------------------------------------------*/
+
         $scope.displayPingFrequency = function(freqMins) {
             var result = "";
             if (freqMins < 60) {
@@ -52,11 +56,11 @@ angular.module('ninesWeb')
 
         $scope.showUpdatePingFrequency = function(urlGroup) {
             $scope.showDropdownPingFrequency = true;
-        }
+        };
 
         $scope.hideUpdatePingFrequency = function() {
             $scope.showDropdownPingFrequency = false;
-        }
+        };
 
         $scope.updatePingFrequency = function(urlGroup) {
             $scope.hideUpdatePingFrequency();
@@ -67,7 +71,13 @@ angular.module('ninesWeb')
                     // Do nothing else
                 }
             );
-        }
+            // Determine URLs to update
+            var urlIds = getArrUpdateUrlIds(urlGroup._id);
+            // Update ping_frequency of URLs
+            for (var i = 0; i < urlIds.length; i++) {
+                updateUrlPingFreq(urlIds[i], urlGroup.ping_frequency);
+            }
+        };
 
         $scope.moveUrlGroup = function(urlGroup, direction) {
 
@@ -260,6 +270,32 @@ angular.module('ninesWeb')
             for (var i = 0; i < $scope.urls.length; i++) {
                 $scope.urls[i][prop] = false;
             }
+        }
+
+        // Returns array of URL IDs for URLs associated with given URL Group
+        function getArrUpdateUrlIds(urlGroupId) {
+            var results = [];
+            for (var i = 0; i < $scope.urls.length; i++) {
+                if ($scope.urls[i].urlgroup_id === urlGroupId) {
+                    results.push($scope.urls[i]._id);
+                }
+            }
+            return results;
+        }
+
+        // Update URLs database model to replace ping_frequency value with
+        // given pingFreq value for given URL
+        function updateUrlPingFreq(urlId, pingFreq) {
+            console.log('urlId:', urlId);
+            console.log('pingFreq', pingFreq);
+            Urls.update(
+                { id: urlId },
+                { $set: { ping_frequency: pingFreq} },
+                function(urlData) {
+                    console.log('done');
+                    // No need to do anything
+                }
+            )
         }
     }
 ]);
