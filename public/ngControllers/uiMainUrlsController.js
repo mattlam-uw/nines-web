@@ -232,6 +232,9 @@ angular.module('ninesWeb')
                     newUrl.responses[statusCode] = 0;
                 }
 
+                // Set the Ping Frequency
+                newUrl.ping_frequency = urlGroup.ping_frequency;
+
                 // Add the URL Group ID
                 newUrl.urlgroup_id = urlGroup._id;
 
