@@ -1,6 +1,6 @@
 angular.module('ninesWeb')
-.controller('uiMainUrlsCtrl', ['$scope', 'Urls', 'UrlGroups',
-    function($scope, Urls, UrlGroups) {
+.controller('uiMainUrlsCtrl', ['$scope', 'Urls', 'UrlGroups', 'pingFrequencies',
+    function($scope, Urls, UrlGroups, pingFrequencies) {
 
         /*---------------------------------------------------------------------
          Initialize $scope variables
@@ -20,8 +20,8 @@ angular.module('ninesWeb')
         $scope.newUrl = {};
         // Set protocol to "http" by default
         $scope.newUrl.protocol = "http";
-        // URL Ping Frequencies [NEED TO MAKE THIS NG-CONSTANT OR SOMETHING]
-        $scope.frequencies = [5, 10, 15, 30, 60, 120, 360, 720, 1440];
+        // URL Ping Frequencies (sourced from ng-constant)
+        $scope.frequencies = pingFrequencies;
 
         /*-------------------------------------------------------------------
          Handlers for Showing and Hiding URL Group Actions from Summary View
@@ -44,11 +44,12 @@ angular.module('ninesWeb')
 
         $scope.displayPingFrequency = function(freqMins) {
             var result = "";
+            freqMins = parseInt(freqMins);
             if (freqMins < 60) {
                 result = freqMins + " Minutes";
             } else if (freqMins === 60) {
                 result = "1 Hour";
-            } else if (freqMins >= 60) {
+            } else if (freqMins > 60) {
                 result = (freqMins / 60) + " Hours";
             }
             return result;
