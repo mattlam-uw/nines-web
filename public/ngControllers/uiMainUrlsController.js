@@ -80,6 +80,10 @@ angular.module('ninesWeb')
             }
         };
 
+        $scope.getLastPingTime = function(urlGroup) {
+            return urlGroup.last_ping;
+        }
+
         $scope.moveUrlGroup = function(urlGroup, direction) {
 
             var maxViewOrder = 1000;

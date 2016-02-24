@@ -58,7 +58,7 @@
             </div>
             <div class="group-details col-md-10">
                 <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <form class="form-inline ping-freq">
                             <div class="form-group">
                                 <label class="summary-label" for="pingFrequency">
@@ -94,6 +94,12 @@
                             </a>
                         </form>
                     </div>
+                    <div class="col-md-2">
+                        <span class="summary-label">Last Ping:</span>
+                        <span class="summary-total-request-value">
+                            {{getLastPingTime(urlgroup)}}
+                        </span>
+                    </div>
                     <div class="col-md-3">
                         <div class="summary-totals">
                             <span class="summary-label">Total Requests: </span>
@@ -106,7 +112,7 @@
                             </span>
                         </div>
                     </div>
-                    <div class="col-md-5">
+                    <div class="col-md-4">
                     <div class="summary-rating">
                         <span class="summary-label">
                             Average Availability Rating:
