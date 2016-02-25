@@ -56,67 +56,66 @@
             <div class="col-md-2">
                 <h2 class="group-name">{{urlgroup.name}}</h2>
             </div>
-            <div class="group-details col-md-10">
-                <div class="row">
-                    <div class="col-md-3">
-                        <form class="form-inline ping-freq">
-                            <div class="form-group">
-                                <label class="summary-label" for="pingFrequency">
-                                    Ping Frequency:
-                                </label>
-                                <select name="pingFrequency"
-                                        class="form-control summary-level-control"
-                                        id="pingFrequency"
-                                        ng-model="urlgroup.ping_frequency"
-                                        ng-show="showDropdownPingFrequency">
-                                    <option ng-repeat="frequency in frequencies"
-                                            value="{{frequency}}">
-                                        {{displayPingFrequency(frequency)}}
-                                    </option>
-                                </select>
-                                <span class="summary-total-request-value"
+            <div class="col-md-3">
+                <form class="form-inline ping-freq">
+                    <div class="form-group">
+                        <label class="summary-label" for="pingFrequency">
+                            Ping Frequency:
+                        </label>
+                        <select name="pingFrequency"
+                                class="form-control summary-level-control"
+                                id="pingFrequency"
+                                ng-model="urlgroup.ping_frequency"
+                                ng-show="showDropdownPingFrequency">
+                            <option ng-repeat="frequency in frequencies"
+                                    value="{{frequency}}">
+                                {{displayPingFrequency(frequency)}}
+                            </option>
+                        </select>
+                                <span class="summary-ping-value"
                                       ng-hide="showDropdownPingFrequency">
                                     {{displayPingFrequency(urlgroup.ping_frequency)}}
                                 </span>
-                            </div>
+                    </div>
 
-                            <a type="button"
-                               class="btn btn-sm btn-default summary-level-control"
-                               ng-hide="showDropdownPingFrequency"
-                               ng-click="showUpdatePingFrequency(urlgroup)">
-                                Update
-                            </a>
-                            <a type="button"
-                               class="btn btn-sm btn-default summary-level-control"
-                               ng-show="showDropdownPingFrequency"
-                               ng-click="updatePingFrequency(urlgroup)">
-                                Save
-                            </a>
-                        </form>
+                    <a type="button"
+                       class="btn btn-sm btn-default summary-level-control"
+                       ng-hide="showDropdownPingFrequency"
+                       ng-click="showUpdatePingFrequency(urlgroup)">
+                        Update
+                    </a>
+                    <a type="button"
+                       class="btn btn-sm btn-default summary-level-control"
+                       ng-show="showDropdownPingFrequency"
+                       ng-click="updatePingFrequency(urlgroup)">
+                        Save
+                    </a>
+                </form>
+            </div>
+            <div class="col-md-2">
+                <span class="summary-label">Last Ping:</span>
+                <span class="summary-ping-value">
+                    {{getLastPingTime(urlgroup)}}
+                </span>
+            </div>
+            <div class="col-md-2">
+                <div class="summary-totals">
+                    <span class="summary-label">Requests: </span>
+                    <span class="summary-total-request-value">
+                        {{getUrlGroupTotals(urlgroup).resTotal}}
+                    </span>
+                    <span class="summary-label">Errors: </span>
+                    <span class="summary-total-error-value">
+                        {{getUrlGroupTotals(urlgroup).errTotal}}
+                    </span>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="summary-rating">
+                    <div class="summary-label">
+                        Average Availability Rating:
                     </div>
-                    <div class="col-md-2">
-                        <span class="summary-label">Last Ping:</span>
-                        <span class="summary-total-request-value">
-                            {{getLastPingTime(urlgroup)}}
-                        </span>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="summary-totals">
-                            <span class="summary-label">Total Requests: </span>
-                            <span class="summary-total-request-value">
-                                {{getUrlGroupTotals(urlgroup).resTotal}}
-                            </span>
-                            <span class="summary-label">Total Errors: </span>
-                            <span class="summary-total-error-value">
-                                {{getUrlGroupTotals(urlgroup).errTotal}}
-                            </span>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                    <div class="summary-rating">
-                        <span class="summary-label">
-                            Average Availability Rating:
-                        </span>
+
                         <div class="summary-rating-digit"
                              ng-repeat="(statNum, rating) in getAvailRating(urlgroup.responses)">
                             <span ng-show="rating === '.'">{{rating}}</span>
@@ -125,30 +124,37 @@
                                 {{rating}}
                             </span>
                         </div>
-                    </div>
-                    </div>
+
                 </div>
             </div>
         </div>
         <div class="row">
             <div class="show-hide-details col-md-12">
-                <a type="link" ng-hide="showDetailsUrlGroup"
+                <a class="summary-action" type="link"
+                   ng-hide="showDetailsUrlGroup"
                    ng-click="showUrlGroupDetails(urlgroup._id)">
                     Show Details
                 </a>
-                <span ng-hide="showDetailsUrlGroup"> | Move: </span>
-                <a type="link" ng-hide="showDetailsUrlGroup"
-                   ng-click="moveUrlGroup(urlgroup, 'up')">
-                    Up
-                </a>
-                <span ng-hide="showDetailsUrlGroup"> | </span>
-                <a type="link" ng-hide="showDetailsUrlGroup"
-                   ng-click="moveUrlGroup(urlgroup, 'down')">
-                    Down
-                </a>
-                <a type="link" ng-show="showDetailsUrlGroup"
+                <a class="summary-action" type="link"
+                   ng-show="showDetailsUrlGroup"
                    ng-click="showUrlGroupDetails()">
                     Hide Details
+                </a>
+                <span  class="move-label" ng-hide="showDetailsUrlGroup">
+                    Move:
+                </span>
+                <a class="summary-action" type="link"
+                   ng-hide="showDetailsUrlGroup"
+                   ng-click="moveUrlGroup(urlgroup, 'up')">
+                    &uArr;
+                </a>
+                <!--
+                <span ng-hide="showDetailsUrlGroup"> | </span>
+                -->
+                <a class="summary-action" type="link"
+                   ng-hide="showDetailsUrlGroup"
+                   ng-click="moveUrlGroup(urlgroup, 'down')">
+                    &dArr;
                 </a>
             </div>
         </div>

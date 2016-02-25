@@ -96,18 +96,14 @@ angular.module('ninesWeb')
             var year = lastPing.getYear() + 1900;
             var hours = lastPing.getHours();
             var minutes = lastPing.getMinutes();
-            var seconds = lastPing.getSeconds();
 
-            // Add preceding zeroes to single digit minute and second values
+            // Add preceding zeroes to single digit minute values
             if (minutes < 10) {
                 minutes = '0' + minutes;
             }
-            if (seconds < 10) {
-                seconds = '0' + seconds;
-            }
 
             return (month + '/' + day + '/' + year + ' - '
-                    + hours + ':' + minutes + ':' + seconds);
+                    + hours + ':' + minutes);
         }
 
         // Move URL Group higher or lower in the order in which it is displayed

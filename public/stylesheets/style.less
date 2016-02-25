@@ -7,6 +7,11 @@ a {
   color: #00B7FF;
 }
 
+a.summary-action {
+  cursor: pointer;
+  margin-right: 5px;
+}
+
 .app-name {
   color: grey;
 }
@@ -73,6 +78,11 @@ h2 {
   font-weight: bolder;
 }
 
+.move-label {
+  margin-left: 20px;
+  margin-right: 5px;
+}
+
 .show-hide-details {
   margin-top: 10px;
 }
@@ -102,12 +112,15 @@ h2 {
   vertical-align: middle;
 }
 
-.summary-label, .summary-total-request-value, .summary-total-error-value {
+.summary-label,
+.summary-total-request-value,
+.summary-total-error-value,
+.summary-ping-value {
   vertical-align: -10px;
 }
 
-.summary-totals, .summary-rating {
-  padding-left: 15px;
+.summary-ping-value {
+  color: darkslategray;
 }
 
 .summary-rating-digit {
@@ -120,7 +133,8 @@ h2 {
 }
 
 .summary-total-request-value {
-  color: dodgerblue;
+  color: darkslategray;
+  margin-right: 10px;
 }
 
 .table-striped > tbody > tr:nth-child(2n+1) > td, .table-stribed > tbody > tr:nth-child(2n+1) > th {
