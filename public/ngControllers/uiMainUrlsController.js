@@ -42,6 +42,8 @@ angular.module('ninesWeb')
          Handlers for Updating Ping Frequency
          --------------------------------------------------------------------*/
 
+        // Provide view with a ping frequency value translated into an easily
+        // readable string (i.e. translates 1440 minutes into "24 hours")
         $scope.displayPingFrequency = function(freqMins) {
             var result = "";
             freqMins = parseInt(freqMins);
@@ -55,14 +57,18 @@ angular.module('ninesWeb')
             return result;
         };
 
+        // show controls for updating ping frequency for a URL Group
         $scope.showUpdatePingFrequency = function(urlGroup) {
             $scope.showDropdownPingFrequency = true;
         };
 
+        // Hide controls for updating ping frequency for a URL Group
         $scope.hideUpdatePingFrequency = function() {
             $scope.showDropdownPingFrequency = false;
         };
 
+        // Update UrlGroups database model with new URL Group ping frequency.
+        // Also update the ping frequencies in database for all associated URLs.
         $scope.updatePingFrequency = function(urlGroup) {
             $scope.hideUpdatePingFrequency();
             UrlGroups.update(
@@ -80,10 +86,31 @@ angular.module('ninesWeb')
             }
         };
 
+        // Provide view with the last ping date-time for URL Group as a
+        // formatted string
         $scope.getLastPingTime = function(urlGroup) {
-            return urlGroup.last_ping;
+            lastPing = new Date(urlGroup.last_ping);
+
+            var month = lastPing.getMonth();
+            var day = lastPing.getDay();
+            var year = lastPing.getYear() + 1900;
+            var hours = lastPing.getHours();
+            var minutes = lastPing.getMinutes();
+            var seconds = lastPing.getSeconds();
+
+            // Add preceding zeroes to single digit minute and second values
+            if (minutes < 10) {
+                minutes = '0' + minutes;
+            }
+            if (seconds < 10) {
+                seconds = '0' + seconds;
+            }
+
+            return (month + '/' + day + '/' + year + ' - '
+                    + hours + ':' + minutes + ':' + seconds);
         }
 
+        // Move URL Group higher or lower in the order in which it is displayed
         $scope.moveUrlGroup = function(urlGroup, direction) {
 
             var maxViewOrder = 1000;
