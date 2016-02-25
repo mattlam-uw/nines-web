@@ -321,13 +321,10 @@ angular.module('ninesWeb')
         // Update URLs database model to replace ping_frequency value with
         // given pingFreq value for given URL
         function updateUrlPingFreq(urlId, pingFreq) {
-            console.log('urlId:', urlId);
-            console.log('pingFreq', pingFreq);
             Urls.update(
                 { id: urlId },
                 { $set: { ping_frequency: pingFreq} },
                 function(urlData) {
-                    console.log('done');
                     // No need to do anything
                 }
             )
