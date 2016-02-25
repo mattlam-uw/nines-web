@@ -89,21 +89,25 @@ angular.module('ninesWeb')
         // Provide view with the last ping date-time for URL Group as a
         // formatted string
         $scope.getLastPingTime = function(urlGroup) {
-            lastPing = new Date(urlGroup.last_ping);
+            if (urlGroup.last_ping) {
+                lastPing = new Date(urlGroup.last_ping);
 
-            var month = lastPing.getMonth() + 1;
-            var day = lastPing.getDate();
-            var year = lastPing.getYear() + 1900;
-            var hours = lastPing.getHours();
-            var minutes = lastPing.getMinutes();
+                var month = lastPing.getMonth() + 1;
+                var day = lastPing.getDate();
+                var year = lastPing.getYear() + 1900;
+                var hours = lastPing.getHours();
+                var minutes = lastPing.getMinutes();
 
-            // Add preceding zeroes to single digit minute values
-            if (minutes < 10) {
-                minutes = '0' + minutes;
+                // Add preceding zeroes to single digit minute values
+                if (minutes < 10) {
+                    minutes = '0' + minutes;
+                }
+
+                return (month + '/' + day + '/' + year + ' - '
+                + hours + ':' + minutes);
+            } else {
+                return "not pinged yet";
             }
-
-            return (month + '/' + day + '/' + year + ' - '
-                    + hours + ':' + minutes);
         }
 
         // Move URL Group higher or lower in the order in which it is displayed
