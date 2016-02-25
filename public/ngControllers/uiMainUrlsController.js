@@ -91,8 +91,8 @@ angular.module('ninesWeb')
         $scope.getLastPingTime = function(urlGroup) {
             lastPing = new Date(urlGroup.last_ping);
 
-            var month = lastPing.getMonth();
-            var day = lastPing.getDay();
+            var month = lastPing.getMonth() + 1;
+            var day = lastPing.getDate();
             var year = lastPing.getYear() + 1900;
             var hours = lastPing.getHours();
             var minutes = lastPing.getMinutes();
