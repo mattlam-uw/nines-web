@@ -78,12 +78,6 @@ angular.module('ninesWeb')
                     // Do nothing else
                 }
             );
-            // Determine URLs to update
-            var urlIds = getArrUpdateUrlIds(urlGroup._id);
-            // Update ping_frequency of URLs
-            for (var i = 0; i < urlIds.length; i++) {
-                updateUrlPingFreq(urlIds[i], urlGroup.ping_frequency);
-            }
         };
 
         // Provide view with the last ping date-time for URL Group as a
@@ -264,9 +258,6 @@ angular.module('ninesWeb')
                     newUrl.responses[statusCode] = 0;
                 }
 
-                // Set the Ping Frequency
-                newUrl.ping_frequency = urlGroup.ping_frequency;
-
                 // Add the URL Group ID
                 newUrl.urlgroup_id = urlGroup._id;
 
@@ -316,18 +307,6 @@ angular.module('ninesWeb')
                 }
             }
             return results;
-        }
-
-        // Update URLs database model to replace ping_frequency value with
-        // given pingFreq value for given URL
-        function updateUrlPingFreq(urlId, pingFreq) {
-            Urls.update(
-                { id: urlId },
-                { $set: { ping_frequency: pingFreq} },
-                function(urlData) {
-                    // No need to do anything
-                }
-            )
         }
     }
 ]);
