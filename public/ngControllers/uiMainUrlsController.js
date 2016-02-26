@@ -223,7 +223,19 @@ angular.module('ninesWeb')
         $scope.addUrl = function(newUrl, urlGroup) {
 
             // Take no action if no data in either 'name' or the 'host' fields
-            if (angular.isDefined(newUrl.name) && angular.isDefined(newUrl.host)) {
+            if (angular.isDefined(newUrl.name) && angular.isDefined(newUrl.fullUrl)) {
+
+                // Verify that full URL begins with "http://" (https support to
+                // be added later)
+                var scheme = newUrl.fullUrl.slice(0, 7);
+                var urlAfterScheme = newUrl.fullUrl.slice(7);
+
+                if (scheme !== "http://") {
+                    $scope.addUrlFormMessage = "Make sure your Full URL begins"
+                        + " with 'http://'. Only HTTP requests are supported"
+                        + " at this time. HTTPS support coming soon.";
+                    return;
+                }
 
                 // Clean up and format data to get ready for adding to model:
 
