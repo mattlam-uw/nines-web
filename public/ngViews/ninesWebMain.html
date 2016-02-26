@@ -259,9 +259,9 @@
             </button>
         </form>
 
-        <!-----------------------------------------------------------------
+        <!---------------------------------------------------------------------
          Buttons for Adding/Removing URLs and Form for Adding URLs
-        ------------------------------------------------------------------>
+        ---------------------------------------------------------------------->
         <div ng-show="showDetailsUrlGroup" id="manageUrls">
             <div class="btn-toolbar" role="group" aria-label="actions for managing URLs">
                 <button type="button" class="btn btn-sm btn-primary"
@@ -282,6 +282,10 @@
                     Remove This Group and all URLs
                 </button>
             </div>
+
+            <!-----------------------------------------------------------------
+            Form for adding a new URL
+            ------------------------------------------------------------------>
             <div id="add-url-form" ng-show="showFormAddUrl === urlgroup._id">
                 <h3>Add new URL</h3>
                 <form name="add-url">
@@ -289,6 +293,9 @@
                         <label for="url-name">URL Name</label>
                         <input type="text" class="form-control" id="url-name"
                                ng-model="newUrl.name" name="url-name">
+                        <label for="full-url">Full URL</label>
+                        <input type="text" class="form-control" id="full-url"
+                               ng-model="newUrl.fullUrl" name="full-url">
                         <label for="url-host">URL Host</label>
                         <input type="text" class="form-control" id="url-host"
                                ng-model="newUrl.host" name="url-host">
