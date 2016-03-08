@@ -14,6 +14,12 @@ angular.module('ninesWeb').config(function($routeProvider) {
         controller: 'uiMainCtrl'
     }, true);
 
+    // /errors route to show all error responses for a particular URL Group
+    $routeProvider.when('/errors/group/:id', {
+        templateUrl: 'ngViews/ninesWebErrors.html',
+        controller: 'uiMainCtrl'
+    }, true);
+
     // For any other URL, render httpingMain.html
     $routeProvider.otherwise({
         redirectTo: '/'

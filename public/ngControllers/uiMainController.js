@@ -2,10 +2,10 @@
  Nines Web Main UI View Controller
  ----------------------------------------------------------------------------*/
 angular.module('ninesWeb')
-.controller('uiMainCtrl', ['$scope', '$routeParams', '$route', 'Urls',
-    'UrlsByUrlGroup', 'UrlGroups', 'Heads', 'numDigits', 'errorThreshold',
-    function($scope, $routeParams, $route, Urls, UrlsByUrlGroup, UrlGroups,
-             Heads, numDigits, errorThreshold) {
+.controller('uiMainCtrl', ['$scope', '$route', 'Urls',
+    'UrlsByUrlGroup', 'UrlGroups', 'numDigits', 'errorThreshold',
+    function($scope, $route, Urls, UrlsByUrlGroup, UrlGroups,
+             numDigits, errorThreshold) {
 
         /*-------------------------------------------------------------------
          Initialize $scope variables
@@ -15,7 +15,6 @@ angular.module('ninesWeb')
         // Retrieve all rows from the following models:
         $scope.urls = Urls.query();                 // Urls model
         $scope.urlgroups = UrlGroups.query();       // UrlGroups model
-        $scope.heads = Heads.query();               // Heads model
 
         // Expose numDigits constant to views
         $scope.numDigits = numDigits;
