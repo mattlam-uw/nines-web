@@ -8,7 +8,35 @@
             </h1>
         </div>
     </div>
-    <div class="group-container" ng-repeat="error in errors">
-        {{error.request_datetime}} {{error.status_code}} {{error.resource_name}} {{error.resource_url}}
+    <div class="group-container"
+         ng-repeat="error in errors | orderBy : '-request_datetime'">
+        <div>
+            {{error.request_datetime}}
+            {{error.status_code}}
+            {{error.url_name}}
+            {{error.url}}
+            <a ng-click="setCurrentError(error)"
+               ng-hide="currentErrorId === error._id">
+                view
+            </a>
+            <a ng-click="clearCurrentError(error)"
+               ng-show="currentErrorId === error._id">
+                hide
+            </a>
+        </div>
+        <div ng-show="currentErrorId === error._id">
+            <iframe ng-src="{{currentErrorResponseUrl}}" allowfullscreen="true"></iframe>
+        </div>
+    </div>
+    <div ng-show="false">
+        <div>
+            <button class="btn btn-sm btn-primary"
+                    ng-click="clearCurrentError()">
+                Back to Group Errors
+            </button>
+        </div>
+        <div>
+            <iframe ng-src="{{currentErrorResponseUrl}}" allowfullscreen="true"></iframe>
+        </div>
     </div>
 </div>

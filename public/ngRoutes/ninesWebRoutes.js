@@ -8,12 +8,6 @@ angular.module('ninesWeb').config(function($routeProvider) {
         controller: 'uiMainCtrl'
     }, true);
 
-    // When specifying a status code (e.g. 404) then render errorInstances.html
-    $routeProvider.when('/:id', {
-        templateUrl: 'ngViews/ninesWebErrors.html',
-        controller: 'uiMainCtrl'
-    }, true);
-
     // /errors route to show all error responses for a particular URL Group
     $routeProvider.when('/errors/urlgroup/:id', {
         templateUrl: 'ngViews/ninesWebErrors.html',
