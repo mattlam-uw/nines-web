@@ -7,6 +7,7 @@ angular.module('ninesWeb')
         );
     }])
     .factory('ErrorsByUrlGroup', ['$resource', function($resource) {
+    	console.log('Web calling the api ...');
     	return $resource('http://localhost:3000/errors/urlgroup/:id', 
     		null, {}
     	);

@@ -15,7 +15,7 @@ angular.module('ninesWeb').config(function($routeProvider) {
     }, true);
 
     // /errors route to show all error responses for a particular URL Group
-    $routeProvider.when('/errors/group/:id', {
+    $routeProvider.when('/errors/urlgroup/:id', {
         templateUrl: 'ngViews/ninesWebErrors.html',
         controller: 'uiMainCtrl'
     }, true);
