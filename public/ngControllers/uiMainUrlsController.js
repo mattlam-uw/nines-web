@@ -84,7 +84,7 @@ angular.module('ninesWeb')
         // formatted string
         $scope.getLastPingTime = function(urlGroup) {
             if (urlGroup.last_ping) {
-                lastPing = new Date(urlGroup.last_ping);
+                var lastPing = new Date(urlGroup.last_ping);
 
                 var month = lastPing.getMonth() + 1;
                 var day = lastPing.getDate();
@@ -102,7 +102,7 @@ angular.module('ninesWeb')
             } else {
                 return "not pinged yet";
             }
-        }
+        };
 
         // Move URL Group higher or lower in the order in which it is displayed
         $scope.moveUrlGroup = function(urlGroup, direction) {

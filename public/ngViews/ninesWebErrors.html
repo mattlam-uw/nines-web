@@ -8,13 +8,30 @@
             </h1>
         </div>
     </div>
+    <div>
+        <a class="btn btn-sm btn-primary"
+           href="#/">
+            Return to Main View
+        </a>
+    </div>
     <div class="group-container"
          ng-repeat="error in errors | orderBy : '-request_datetime'">
         <div>
-            {{error.request_datetime}}
-            {{error.status_code}}
-            {{error.url_name}}
-            {{error.url}}
+            <span class="summary-label">
+                {{getErrorDateTime(error.request_datetime)}}
+            </span>
+            <span class="summary-label">Status Code: </span>
+            <span class="summary-total-request-value">
+                {{error.status_code}}
+            </span>
+            <span class="summary-label">URL Name: </span>
+            <span class="summary-total-request-value">
+                {{error.url_name}}
+            </span>
+            <span class="summary-label">URL: </span>
+            <span class="summary-total-request-value">
+                {{error.url}}
+            </span>
             <a ng-click="setCurrentError(error)"
                ng-hide="currentErrorId === error._id">
                 view
@@ -24,19 +41,8 @@
                 hide
             </a>
         </div>
-        <div ng-show="currentErrorId === error._id">
-            <iframe ng-src="{{currentErrorResponseUrl}}" allowfullscreen="true"></iframe>
-        </div>
-    </div>
-    <div ng-show="false">
-        <div>
-            <button class="btn btn-sm btn-primary"
-                    ng-click="clearCurrentError()">
-                Back to Group Errors
-            </button>
-        </div>
-        <div>
-            <iframe ng-src="{{currentErrorResponseUrl}}" allowfullscreen="true"></iframe>
+        <div class="error-response-view" ng-show="currentErrorId === error._id">
+            <iframe ng-src="{{currentErrorResponseUrl}}"></iframe>
         </div>
     </div>
 </div>
