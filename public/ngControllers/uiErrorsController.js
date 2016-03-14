@@ -24,15 +24,36 @@ angular.module('ninesWeb')
         };
 
         $scope.getErrorDate = function(dateTime) {
-            parsedDate = DateObjParser.parseDate(dateTime);
-            return parsedDate.month + '/' +
-                   parsedDate.day + '/' +
-                   parsedDate.year;
-         
+            // Verify that a value was passed to dateTime parameter
+            if (dateTime) {
+                // Pass dateTime value to parsing method shared across
+                // this module for formatting and providing easy access to
+                // date-time elements
+                parsedDate = DateObjParser.parseDate(dateTime);
+
+                // Format a date string to pass back to view
+                return parsedDate.month + '/' +
+                    parsedDate.day + '/' +
+                    parsedDate.year;
+            } else {
+            // If no value was passed to dateTime parameter, provide message
+                return "No date data available.";
+            }
         };
         $scope.getErrorTime = function(dateTime) {
-            parsedTime = DateObjParser.parseDate(dateTime);
-            return parsedDate.hours + ':' + parsedDate.minutes;
+            // Verify that a value was passed to dateTime parameter
+            if (dateTime) {
+                // Pass dateTime value to parsing method shared across
+                // this module for formatting and providing easy access to
+                // date-time elements
+                parsedTime = DateObjParser.parseDate(dateTime);
+
+                // Format a time string to pass back to view
+                return parsedDate.hours + ':' + parsedDate.minutes;
+            } else {
+                // If no value was passed to dateTime parameter, provide message
+                return "No time data available.";
+            }
         }
     }
 ]);

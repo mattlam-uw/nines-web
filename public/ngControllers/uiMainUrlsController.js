@@ -1,6 +1,7 @@
 angular.module('ninesWeb')
 .controller('uiMainUrlsCtrl', ['$scope', 'Urls', 'UrlGroups', 'pingFrequencies',
-    function($scope, Urls, UrlGroups, pingFrequencies) {
+    'DateObjParser',
+    function($scope, Urls, UrlGroups, pingFrequencies, DateObjParser) {
 
         /*---------------------------------------------------------------------
          Initialize $scope variables
@@ -83,23 +84,20 @@ angular.module('ninesWeb')
         // Provide view with the last ping date-time for URL Group as a
         // formatted string
         $scope.getLastPingTime = function(urlGroup) {
+            // Check to make sure URL Group has a last-ping date
             if (urlGroup.last_ping) {
-                var lastPing = new Date(urlGroup.last_ping);
 
-                var month = lastPing.getMonth() + 1;
-                var day = lastPing.getDate();
-                var year = lastPing.getYear() + 1900;
-                var hours = lastPing.getHours();
-                var minutes = lastPing.getMinutes();
+                // Pass URL Group last-ping date to parsing method shared across
+                // this module for formatting and providing easy access to
+                // date-time elements
+                parsedDate = DateObjParser.parseDate(urlGroup.last_ping);
 
-                // Add preceding zeroes to single digit minute values
-                if (minutes < 10) {
-                    minutes = '0' + minutes;
-                }
-
-                return (month + '/' + day + '/' + year + ' - '
-                + hours + ':' + minutes);
+                // Format a date-time string to return to the view
+                return (parsedDate.month + '/' + parsedDate.day + '/' +
+                        parsedDate.year + ' - ' + parsedDate.hours + ':' +
+                        parsedDate.minutes);
             } else {
+                // Return alternate message to view if there was no last-ping date
                 return "not pinged yet";
             }
         };
