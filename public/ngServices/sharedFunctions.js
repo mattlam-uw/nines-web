@@ -1,25 +1,31 @@
 /**
  * Created by mattlam on 3/10/2016.
  */
+
 angular.module('ninesWeb')
-    .factory('FormatDateTime', function() {
-        return {
-            formatDateTime: function(datetime) {
-                var dateObj = new Date(datetime);
+/** 
+ * Returns an Object of formatted date and time elements parsed from a given 
+ * JavaScript Date object.
+ **/
+.factory('DateObjParser', function() {
+    return {
+        parseDate: function(datetime) {
+            var result = {};
 
-                var month = dateObj.getMonth() + 1;
-                var day = dateObj.getDate();
-                var year = dateObj.getYear() + 1900;
-                var hours = dateObj.getHours();
-                var minutes = dateObj.getMinutes();
+            var dateObj = new Date(datetime);
 
-                // Add preceding zeroes to single digit minute values
-                if (minutes < 10) {
-                    minutes = '0' + minutes;
-                }
+            result.month = dateObj.getMonth() + 1;
+            result.day = dateObj.getDate();
+            result.year = dateObj.getYear() + 1900;
+            result.hours = dateObj.getHours();
+            result.minutes = dateObj.getMinutes();
 
-                return (month + '/' + day + '/' + year + ' - '
-                + hours + ':' + minutes);
+            // Add preceding zeroes to single digit minute values
+            if (result.minutes < 10) {
+                result.minutes = '0' + result.minutes;
             }
-        };
-    });
+
+            return result;
+        }
+    };
+});

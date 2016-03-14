@@ -18,7 +18,10 @@
          ng-repeat="error in errors | orderBy : '-request_datetime'">
         <div>
             <span class="summary-label">
-                {{getErrorDateTime(error.request_datetime)}}
+                {{getErrorDate(error.request_datetime)}}
+            </span>
+            <span class="summary-total-request-value">
+                {{getErrorTime(error.request_datetime)}}
             </span>
             <span class="summary-label">Status Code: </span>
             <span class="summary-total-request-value">

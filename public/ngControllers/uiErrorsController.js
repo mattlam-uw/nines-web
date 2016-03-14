@@ -3,8 +3,8 @@
  */
 angular.module('ninesWeb')
 .controller('uiErrorsCtrl', ['$scope', '$routeParams', '$sce',
-    'ErrorsByUrlGroup', 'FormatDateTime',
-    function($scope, $routeParams, $sce, ErrorsByUrlGroup, FormatDateTime) {
+    'ErrorsByUrlGroup', 'DateObjParser',
+    function($scope, $routeParams, $sce, ErrorsByUrlGroup, DateObjParser) {
 
         $scope.errors = ErrorsByUrlGroup.query({ id: $routeParams.id });
         $scope.currentErrorId = null;
@@ -23,8 +23,16 @@ angular.module('ninesWeb')
             $scope.currentErrorId = null;
         };
 
-        $scope.getErrorDateTime = function(dateTime) {
-            return FormatDateTime.formatDateTime(dateTime);
+        $scope.getErrorDate = function(dateTime) {
+            parsedDate = DateObjParser.parseDate(dateTime);
+            return parsedDate.month + '/' +
+                   parsedDate.day + '/' +
+                   parsedDate.year;
+         
         };
+        $scope.getErrorTime = function(dateTime) {
+            parsedTime = DateObjParser.parseDate(dateTime);
+            return parsedDate.hours + ':' + parsedDate.minutes;
+        }
     }
 ]);
