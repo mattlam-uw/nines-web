@@ -225,63 +225,69 @@ angular.module('ninesWeb')
 
                 // Verify that full URL begins with "http://" (https support to
                 // be added later)
-                var scheme = newUrl.fullUrl.slice(0, 7);
-                var urlAfterScheme = newUrl.fullUrl.slice(7);
+                newUrl.fullUrl = newUrl.fullUrl.trim();
 
-                if (scheme !== "http://") {
-                    $scope.addUrlFormMessage = "Make sure your Full URL begins"
-                        + " with 'http://'. Only HTTP requests are supported"
-                        + " at this time. HTTPS support coming soon.";
-                    return;
-                }
+                /**
+                 *  Regular expression will make three useful captures. The
+                 *  first will be the scheme (http or https). The second will be
+                 *  the domain (abc.def.com or abc.com, etc.), and the third
+                 *  will be the path (everything following the domain. This
+                 *  will check for valid schemes and (mostly) valid domains, but
+                 *  it will not check for valid paths.
+                 */
+                var urlRegEx = /(^https?):\/\/((?:[a-zA-z][a-zA-Z0-9\-]*\.)+[a-zA-Z]+)(\/.+)*$/;
+                var urlMatch = newUrl.fullUrl.match(urlRegEx);
 
-                // Clean up and format data to get ready for adding to model:
-
-                // (1) Remove trailing slash from the Host value if it exists
-                newUrl.host = removeAllTrailingSlashes(newUrl.host.trim());
-
-                // (2) Make sure the host name is formatted correctly (e.g.
-                // abc.def.ghi or abd.def)
-                var hostNameRegEx = /^(([a-zA-Z][a-zA-Z0-9\-]*\.)?[a-zA-Z][a-zA-Z0-9\-]*\.[a-zA-Z]+)$/;
-                if (!newUrl.host.match(hostNameRegEx)) {
-                    $scope.addUrlFormMessage = "Make sure your 'URL Host' value is"
-                        + " of either of the following formats: 'abc.def.ghi' or"
-                        + " 'abc.def'.";
-                    return;
-                }
-
-                // If a path value was provided, then add a leading slash if
-                // needed. If no path value provided, then set path empty string
-                if (!newUrl.path) {
-                    newUrl.path = "";
-                } else {
-                    newUrl.path = newUrl.path.trim();
-                    if (!newUrl.path.startsWith('/')) {
-                        newUrl.path = '/' + newUrl.path;
+                // If the full URL provided satisfies the regular expression
+                // requirements then add the URL
+                if (urlMatch) {
+                    // If scheme is https, then notify that it's not yet supported
+                    if (urlMatch[1] === "https://") {
+                        $scope.addUrlFormMessage = "HTTPS is not currently "
+                            + "supported. Please use HTTP.";
+                        return;
                     }
+
+                    // Create new URL object that will be used for adding to
+                    // URLs model
+                    var addUrl = {};
+                    addUrl.protocol = urlMatch[1];
+                    addUrl.name = newUrl.name;
+                    addUrl.host = urlMatch[2];
+                    addUrl.path = urlMatch[3] || "";
+
+                    // Initialize object to store status codes and response counts. Add
+                    // all status codes currently active in URL Group to responses obj.
+                    addUrl.responses = {};
+                    for (var statusCode in urlGroup.responses) {
+                        addUrl.responses[statusCode] = 0;
+                    }
+
+                    // Add the URL Group ID
+                    addUrl.urlgroup_id = urlGroup._id;
+
+                    // Add the new URL to the Urls model
+                    var uploadUrl = new Urls(addUrl);
+                    uploadUrl.$save(function(urlResData) {
+                        // Update the local model with the new URL
+                        $scope.urls.push(addUrl);
+                        // Clear out the form fields and hide the Add URL form
+                        $scope.hideAddUrlForm();
+                    });
+
+                // If the given full URL does not satisfy the regular expression
+                // requirements, then notify the user.
+                } else {
+                    $scope.addUrlFormMessage = "Please enter a full URL that "
+                        + "begins with 'http://', contains a valid domain, "
+                        + "and, (if applicable) a valid path. An example is: "
+                        + "http://cool.domain.com/todos/searchresults/?pri=1";
+                    return;
                 }
 
-                // Initialize object to store status codes and response counts. Add
-                // all status codes currently active in URL Group to responses obj.
-                newUrl.responses = {};
-                for (var statusCode in urlGroup.responses) {
-                    newUrl.responses[statusCode] = 0;
-                }
-
-                // Add the URL Group ID
-                newUrl.urlgroup_id = urlGroup._id;
-
-                // Add the new URL to the Urls model
-                var addUrl = new Urls(newUrl);
-                addUrl.$save(function(urlResData) {
-                    // Update the local model with the new URL
-                    $scope.urls.push(addUrl);
-                    // Clear out the form fields and hide the Add URL form
-                    $scope.hideAddUrlForm();
-                });
             } else {
                 $scope.addUrlFormMessage = "Please provide values for both "
-                    + "URL Name and URL Host";
+                    + "URL Name and Full URL";
                 return;
             }
         };
