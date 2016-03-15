@@ -10,5 +10,8 @@ angular.module('ninesWeb')
 .constant("errorThreshold", 400)
 
 // Valid ping frequency values (in recurring minutes)
-.constant("pingFrequencies", [5, 10, 15, 30, 60, 120, 360, 720, 1440]);
+.constant("pingFrequencies", [5, 10, 15, 30, 60, 120, 360, 720, 1440])
 
+// Base URL for full response HTML from full requests executed as follow-ups
+// to header request errors
+.constant("ErrorResponseHtmlUrl", "http://localhost:3000/errors/response/");

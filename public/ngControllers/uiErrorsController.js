@@ -5,8 +5,9 @@
  */
 angular.module('ninesWeb')
 .controller('uiErrorsCtrl', ['$scope', '$routeParams', '$sce',
-    'ErrorsByUrlGroup', 'SharedFuncs',
-    function($scope, $routeParams, $sce, ErrorsByUrlGroup, SharedFuncs) {
+    'ErrorsByUrlGroup', 'SharedFuncs', 'ErrorResponseHtmlUrl',
+    function($scope, $routeParams, $sce, ErrorsByUrlGroup, SharedFuncs,
+             ErrorResponseHtmlUrl) {
 
         // Retrieve all errors associated with the given URL Group ID
         $scope.errors = ErrorsByUrlGroup.query({ id: $routeParams.id });
@@ -20,7 +21,7 @@ angular.module('ninesWeb')
             $scope.currentErrorId = error._id;
             // Build URL to be used to get full request response HTML and
             // make available to view
-            var errorResponseUrl = "http://localhost:3000/errors/response/"
+            var errorResponseUrl = ErrorResponseHtmlUrl
                 + error._id;
             $scope.currentErrorResponseUrl =
                 $sce.trustAsResourceUrl(errorResponseUrl);
