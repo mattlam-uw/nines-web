@@ -1,7 +1,7 @@
 angular.module('ninesWeb')
 .controller('uiMainUrlsCtrl', ['$scope', 'Urls', 'UrlGroups', 'pingFrequencies',
-    'DateObjParser',
-    function($scope, Urls, UrlGroups, pingFrequencies, DateObjParser) {
+    'SharedFuncs',
+    function($scope, Urls, UrlGroups, pingFrequencies, SharedFuncs) {
 
         /*---------------------------------------------------------------------
          Initialize $scope variables
@@ -90,7 +90,7 @@ angular.module('ninesWeb')
                 // Pass URL Group last-ping date to parsing method shared across
                 // this module for formatting and providing easy access to
                 // date-time elements
-                parsedDate = DateObjParser.parseDate(urlGroup.last_ping);
+                parsedDate = SharedFuncs.parseDateObj(urlGroup.last_ping);
 
                 // Format a date-time string to return to the view
                 return (parsedDate.month + '/' + parsedDate.day + '/' +

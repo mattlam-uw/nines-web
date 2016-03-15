@@ -7,9 +7,9 @@ angular.module('ninesWeb')
  * Returns an Object of formatted date and time elements parsed from a given 
  * JavaScript Date object.
  **/
-.factory('DateObjParser', function() {
+.factory('SharedFuncs', function() {
     return {
-        parseDate: function(datetime) {
+        parseDateObj: function(datetime) {
             var result = {};
 
             var dateObj = new Date(datetime);

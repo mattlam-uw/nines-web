@@ -3,8 +3,8 @@
  */
 angular.module('ninesWeb')
 .controller('uiErrorsCtrl', ['$scope', '$routeParams', '$sce',
-    'ErrorsByUrlGroup', 'DateObjParser',
-    function($scope, $routeParams, $sce, ErrorsByUrlGroup, DateObjParser) {
+    'ErrorsByUrlGroup', 'SharedFuncs',
+    function($scope, $routeParams, $sce, ErrorsByUrlGroup, SharedFuncs) {
 
         $scope.errors = ErrorsByUrlGroup.query({ id: $routeParams.id });
         $scope.currentErrorId = null;
@@ -29,7 +29,7 @@ angular.module('ninesWeb')
                 // Pass dateTime value to parsing method shared across
                 // this module for formatting and providing easy access to
                 // date-time elements
-                parsedDate = DateObjParser.parseDate(dateTime);
+                parsedDate = SharedFuncs.parseDateObj(dateTime);
 
                 // Format a date string to pass back to view
                 return parsedDate.month + '/' +
@@ -46,7 +46,7 @@ angular.module('ninesWeb')
                 // Pass dateTime value to parsing method shared across
                 // this module for formatting and providing easy access to
                 // date-time elements
-                parsedTime = DateObjParser.parseDate(dateTime);
+                parsedDate = SharedFuncs.parseDateObj(dateTime);
 
                 // Format a time string to pass back to view
                 return parsedDate.hours + ':' + parsedDate.minutes;
