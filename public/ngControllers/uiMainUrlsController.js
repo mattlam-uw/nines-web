@@ -191,11 +191,8 @@ angular.module('ninesWeb')
         /*-- Hide the add-new-URL Form and clear out form fields ------------*/
         $scope.hideAddUrlForm = function() {
             $scope.showFormAddUrl = false;
-            $scope.newUrl.name = null;
-            $scope.newUrl.host = null;
-            $scope.newUrl.path = null;
             $scope.addUrlFormMessage = "";
-            $scope.newUrl.protocol = "http";
+            $scope.newUrl = null;
         };
 
         /*-- Show the Remove-URL icons given URL Group ----------------------*/
@@ -242,7 +239,7 @@ angular.module('ninesWeb')
                 // requirements then add the URL
                 if (urlMatch) {
                     // If scheme is https, then notify that it's not yet supported
-                    if (urlMatch[1] === "https://") {
+                    if (urlMatch[1] === "https") {
                         $scope.addUrlFormMessage = "HTTPS is not currently "
                             + "supported. Please use HTTP.";
                         return;
@@ -250,27 +247,27 @@ angular.module('ninesWeb')
 
                     // Create new URL object that will be used for adding to
                     // URLs model
-                    var addUrl = {};
-                    addUrl.protocol = urlMatch[1];
-                    addUrl.name = newUrl.name;
-                    addUrl.host = urlMatch[2];
-                    addUrl.path = urlMatch[3] || "";
+                    var newModelUrl = {};
+                    newModelUrl.protocol = urlMatch[1];
+                    newModelUrl.name = newUrl.name;
+                    newModelUrl.host = urlMatch[2];
+                    newModelUrl.path = urlMatch[3] || "";
 
                     // Initialize object to store status codes and response counts. Add
                     // all status codes currently active in URL Group to responses obj.
-                    addUrl.responses = {};
+                    newModelUrl.responses = {};
                     for (var statusCode in urlGroup.responses) {
-                        addUrl.responses[statusCode] = 0;
+                        newModelUrl.responses[statusCode] = 0;
                     }
 
                     // Add the URL Group ID
-                    addUrl.urlgroup_id = urlGroup._id;
+                    newModelUrl.urlgroup_id = urlGroup._id;
 
                     // Add the new URL to the Urls model
-                    var uploadUrl = new Urls(addUrl);
-                    uploadUrl.$save(function(urlResData) {
+                    newModelUrl = new Urls(newModelUrl);
+                    newModelUrl.$save(function(urlResData) {
                         // Update the local model with the new URL
-                        $scope.urls.push(addUrl);
+                        $scope.urls.push(newModelUrl);
                         // Clear out the form fields and hide the Add URL form
                         $scope.hideAddUrlForm();
                     });
