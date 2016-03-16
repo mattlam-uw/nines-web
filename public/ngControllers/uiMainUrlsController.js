@@ -232,7 +232,7 @@ angular.module('ninesWeb')
                  *  will check for valid schemes and (mostly) valid domains, but
                  *  it will not check for valid paths.
                  */
-                var urlRegEx = /(^https?):\/\/((?:[a-zA-z][a-zA-Z0-9\-]*\.)+[a-zA-Z]+)(\/.+)*$/;
+                var urlRegEx = /(^https?):\/\/((?:[a-zA-z][a-zA-Z0-9\-]*\.)+[a-zA-Z]+)(\/.*)*$/;
                 var urlMatch = newUrl.fullUrl.match(urlRegEx);
 
                 // If the full URL provided satisfies the regular expression
