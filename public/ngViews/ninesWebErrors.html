@@ -32,26 +32,11 @@
                     <td>{{getErrorTime(error.request_datetime)}}</td>
                     <td>{{error.status_code}}</td>
                     <td>{{error.url_name}}</td>
+                    <td>{{error.url}}</td>
                     <td>
-                        {{error.url}}
-                        <!-- Show full request response here if user clicks
-                            'view' link below -->
-                        <div class="error-response-view"
-                             ng-show="currentErrorId === error._id">
-                            <iframe
-                                    ng-src="{{currentErrorResponseUrl}}">
-
-                            </iframe>
-                        </div>
-                    </td>
-                    <td>
-                        <a ng-click="setCurrentError(error)"
-                           ng-hide="currentErrorId === error._id">
+                        <a href="{{errorResponseHtmlUrl}}{{error._id}}"
+                           target="_blank">
                             view
-                        </a>
-                        <a ng-click="clearCurrentError(error)"
-                           ng-show="currentErrorId === error._id">
-                            hide
                         </a>
                     </td>
                 </tr>
