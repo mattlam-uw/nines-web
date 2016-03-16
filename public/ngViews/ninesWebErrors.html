@@ -14,38 +14,48 @@
             Return to Main View
         </a>
     </div>
-    <div class="group-container"
-         ng-repeat="error in errors | orderBy : '-request_datetime'">
-        <div>
-            <span class="summary-label">
-                {{getErrorDate(error.request_datetime)}}
-            </span>
-            <span class="summary-total-request-value">
-                {{getErrorTime(error.request_datetime)}}
-            </span>
-            <span class="summary-label">Status Code: </span>
-            <span class="summary-total-request-value">
-                {{error.status_code}}
-            </span>
-            <span class="summary-label">URL Name: </span>
-            <span class="summary-total-request-value">
-                {{error.url_name}}
-            </span>
-            <span class="summary-label">URL: </span>
-            <span class="summary-total-request-value">
-                {{error.url}}
-            </span>
-            <a ng-click="setCurrentError(error)"
-               ng-hide="currentErrorId === error._id">
-                view
-            </a>
-            <a ng-click="clearCurrentError(error)"
-               ng-show="currentErrorId === error._id">
-                hide
-            </a>
-        </div>
-        <div class="error-response-view" ng-show="currentErrorId === error._id">
-            <iframe ng-src="{{currentErrorResponseUrl}}"></iframe>
-        </div>
+    <div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Status Code</th>
+                    <th>URL Name</th>
+                    <th>URL</th>
+                    <th>View Response</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="error in errors | orderBy : '-request_datetime'">
+                    <td>{{getErrorDate(error.request_datetime)}}</td>
+                    <td>{{getErrorTime(error.request_datetime)}}</td>
+                    <td>{{error.status_code}}</td>
+                    <td>{{error.url_name}}</td>
+                    <td>
+                        {{error.url}}
+                        <!-- Show full request response here if user clicks
+                            'view' link below -->
+                        <div class="error-response-view"
+                             ng-show="currentErrorId === error._id">
+                            <iframe
+                                    ng-src="{{currentErrorResponseUrl}}">
+
+                            </iframe>
+                        </div>
+                    </td>
+                    <td>
+                        <a ng-click="setCurrentError(error)"
+                           ng-hide="currentErrorId === error._id">
+                            view
+                        </a>
+                        <a ng-click="clearCurrentError(error)"
+                           ng-show="currentErrorId === error._id">
+                            hide
+                        </a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </div>
