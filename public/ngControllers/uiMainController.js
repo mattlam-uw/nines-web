@@ -273,7 +273,7 @@ angular.module('ninesWeb')
 
             // Update URLs in this group to be updated such that their 'update'
             // property is set to the URL Group ID
-            setUrlGroupIdForUrlUpdate(urlGroup._id);
+            setUrlUpdateForUrlGroup(urlGroup._id, urlGroup._id);
         };
 
         /*-- Handler for removing selected URLs and availability stats ------*/
@@ -307,7 +307,7 @@ angular.module('ninesWeb')
 
             // Update URLs in this group to be updated such that their 'update'
             // property is set to the URL Group ID
-            setUrlGroupIdForUrlUpdate(urlGroup._id);
+            setUrlUpdateForUrlGroup(urlGroup._id, urlGroup._id);
         };
 
         // Move selected Urls from one URL Group to another
@@ -348,8 +348,7 @@ angular.module('ninesWeb')
 
             // Update URLs in this group to be updated such that their 'update'
             // property is set to the URL Group ID
-            setUrlUpdateForUrlGroup(urlGroup._id, true);
-            setUrlGroupIdForUrlUpdate(urlGroup._id);
+            setUrlUpdateForUrlGroup(urlGroup._id, urlGroup._id);
         };
 
         // Remove the URL Group and all associated URLs
@@ -443,15 +442,22 @@ angular.module('ninesWeb')
 
             // Update URLs in this group to be updated such that their 'update'
             // property is set to the URL Group ID
-            setUrlUpdateForUrlGroup(urlGroup._id, true);
-            setUrlGroupIdForUrlUpdate(urlGroup._id);
+            setUrlUpdateForUrlGroup(urlGroup._id, urlGroup._id);
         };
 
         // Remove the URL Group and all associated URLs
         $scope.resetUrlGroup = function(urlGroup) {
-            
-            // Update the Database to reset the URL Group
-            // Refresh the screen
+
+            // Find the URLs associated with the group
+            var urlIds = getArrUpdateUrlIds(urlGroup._id);
+
+            // Update database to set response data to 0 for urls
+            for (var i = 0; i < urlIds.length; i++) {
+                updateUrlResponseInDb(urlIds[i], (i + 1), urlIds.length);
+            }
+            // Update URLs in database
+            // Update URL Group in database
+            // Update local model ?
         };
 
         /*-------------------------------------------------------------------
@@ -484,6 +490,21 @@ angular.module('ninesWeb')
                     updateUrlGroupTotals();
                 }
             });
+        }
+
+        // Update the specified URL in the database
+        function resetUrlResponses(urlId) {
+            // Identify URL to update in local model
+            var urlInd = null;
+            for (var i = 0; i < $scope.urls.length; i++) {
+                if ($scope.urls[i]._id === urlId) {
+                    urlInd = i;
+                }
+            }
+            // Update the local model URL
+
+            // Update the URL in the database
+
         }
 
         // Updates the urlgroup_id property of a given URL with the ID of the
@@ -707,19 +728,6 @@ angular.module('ninesWeb')
             // Reload the page to recalculate totals and
             // availability metrics
             $route.reload();
-        }
-
-        // Iterates over local Urls model looking for any URL (1) having an
-        // 'update' property set and (2) associated with the urlGroupId. For
-        // these Urls, set the 'update' property to the urlGroupId.
-        function setUrlGroupIdForUrlUpdate(urlGroupId) {
-            for (var i = 0; i < $scope.urls.length; i++) {
-                if ($scope.urls[i].update) {
-                    if ($scope.urls[i].urlgroup_id === urlGroupId) {
-                        $scope.urls[i].update = urlGroupId;
-                    }
-                }
-            }
         }
 
         // Returns array of URL IDs for URLs associated with given URL Group
