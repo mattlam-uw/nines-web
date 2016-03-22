@@ -431,6 +431,28 @@ angular.module('ninesWeb')
             // Remove the URL Group from the local model array
             $scope.urlgroups.splice(urlGroupInd, 1);
         };
+        
+        /*-- Handlers for resetting URL Group --------------------------------*/
+
+        // Open the modal for removing a URL Group
+        $scope.prepResetUrlGroup = function(urlGroup) {
+            $scope.currentUrlGroup = urlGroup;
+            $scope.modalHeaderMsg = "Click 'Reset' to permanently remove"
+                + " all response for all URLs in this group.";
+            $scope.showModalControl = "reset-group";
+
+            // Update URLs in this group to be updated such that their 'update'
+            // property is set to the URL Group ID
+            setUrlUpdateForUrlGroup(urlGroup._id, true);
+            setUrlGroupIdForUrlUpdate(urlGroup._id);
+        };
+
+        // Remove the URL Group and all associated URLs
+        $scope.resetUrlGroup = function(urlGroup) {
+            
+            // Update the Database to reset the URL Group
+            // Refresh the screen
+        };
 
         /*-------------------------------------------------------------------
          Internal functions for Removing URL
@@ -713,7 +735,7 @@ angular.module('ninesWeb')
             return results;
         }
 
-        // Sets the 'update' property for a URL to false for all URLs
+        // Sets the 'update' property for a URL to the given value for all URLs
         // associated with the given urlGroupId
         function setUrlUpdateForUrlGroup(urlGroupId, value) {
             for (var i = 0; i < $scope.urls.length; i++) {

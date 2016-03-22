@@ -284,6 +284,13 @@
                         data-target="#updateUrlsModal">
                     Remove This Group and all URLs
                 </button>
+                <button type="button" class="btn  btn-sm btn-danger"
+                        ng-hide="showControlsUpdateUrl === urlgroup._id"
+                        ng-click="prepReset(urlgroup)"
+                        data-toggle="modal"
+                        data-target="#updateUrlsModal">
+                    Reset this URL Group
+                </button>
             </div>
 
             <!-----------------------------------------------------------------
