@@ -2,9 +2,9 @@
  Nines Web Main UI View Controller
  ----------------------------------------------------------------------------*/
 angular.module('ninesWeb')
-.controller('uiMainCtrl', ['$scope', '$route', 'Urls',
+.controller('uiMainCtrl', ['$scope', '$route', 'Urls', 'ErrorsByUrlGroup',
     'UrlsByUrlGroup', 'UrlGroups', 'numDigits', 'errorThreshold',
-    function($scope, $route, Urls, UrlsByUrlGroup, UrlGroups,
+    function($scope, $route, Urls, ErrorsByUrlGroup, UrlsByUrlGroup, UrlGroups,
              numDigits, errorThreshold) {
 
         /*-------------------------------------------------------------------
@@ -22,10 +22,14 @@ angular.module('ninesWeb')
         // Expose URL name and id to modal form for confirmation of URL removal
         $scope.modalHeaderMsg = "";
 
+        // Determines which controls and elements should appear in a modal window
         $scope.showModalControl = "";
 
+        // Indicates the current URL Group from which action is being undertaken
         $scope.currentUrlGroupId = null;
 
+        // Indicates URL Group to which URL will be moved. Set by code in the
+        // view, and then used by code in this controller
         $scope.moveUrlGroup = null;
 
         // Global variable for storing the value of the markup code for the
@@ -268,7 +272,7 @@ angular.module('ninesWeb')
         $scope.prepRemoveUrls = function(urlGroup) {
             $scope.modalHeaderMsg = "Click 'Remove' to permanently delete"
                                   + " the following URLs";
-            $scope.showModalControl = "remove-groups";
+            $scope.showModalControl = "remove-urls";
             $scope.currentUrlGroup = urlGroup;
 
             // Update URLs in this group to be updated such that their 'update'
@@ -436,8 +440,8 @@ angular.module('ninesWeb')
         // Open the modal for removing a URL Group
         $scope.prepResetUrlGroup = function(urlGroup) {
             $scope.currentUrlGroup = urlGroup;
-            $scope.modalHeaderMsg = "Click 'Reset' to permanently remove"
-                + " all response for all URLs in this group.";
+            $scope.modalHeaderMsg = "Click 'Reset' to zero out all response "
+                + " data for this URL Group and all URLs in this group.";
             $scope.showModalControl = "reset-group";
 
             // Update URLs in this group to be updated such that their 'update'
@@ -451,13 +455,33 @@ angular.module('ninesWeb')
             // Find the URLs associated with the group
             var urlIds = getArrUpdateUrlIds(urlGroup._id);
 
-            // Update database to set response data to 0 for urls
+            // Update local model and database to zero out responses for URLs
             for (var i = 0; i < urlIds.length; i++) {
-                updateUrlResponseInDb(urlIds[i], (i + 1), urlIds.length);
+                resetUrlResponses(urlIds[i]);
             }
-            // Update URLs in database
-            // Update URL Group in database
-            // Update local model ?
+            // Update to zero out responses for URL Groups
+            // First find the URL Group in the local model
+            var urlGroupInd = getUrlGroupLocalModelInd(urlGroup._id);
+
+            // If URL Group was found in local model, then do the updates
+            if (urlGroupInd > -1) {
+
+                // Update the local model
+                $scope.urlgroups[urlGroupInd].responses = { 200: 0 };
+
+                // Update the DB model
+                UrlGroups.update(
+                    {id: urlGroup._id},
+                    {$set: { responses: $scope.urlgroups[urlGroupInd].responses } },
+                    function() {
+                        // Refresh the view
+                        $route.reload();
+                    }
+                );
+
+                // Remove the error records
+                ErrorsByUrlGroup.remove({ id: urlGroup._id }, function(urlGroupData) { });
+            }
         };
 
         /*-------------------------------------------------------------------
@@ -495,15 +519,25 @@ angular.module('ninesWeb')
         // Update the specified URL in the database
         function resetUrlResponses(urlId) {
             // Identify URL to update in local model
-            var urlInd = null;
-            for (var i = 0; i < $scope.urls.length; i++) {
-                if ($scope.urls[i]._id === urlId) {
-                    urlInd = i;
-                }
-            }
+            var urlInd = getUrlLocalModelInd(urlId);
+
             // Update the local model URL
+            $scope.urls[urlInd].responses = { 200: 0 };
 
             // Update the URL in the database
+            Urls.update(
+                { id: urlId },
+                { $set: { responses: $scope.urls[urlInd].responses } },
+                function(urlData) {
+                    /*
+                    if (numGroup === ofTotalGroups) {
+                        if (numUrl === ofTotalUrls) {
+                            $route.reload();
+                        }
+                    }
+                    */
+                }
+            )
 
         }
 
@@ -751,6 +785,26 @@ angular.module('ninesWeb')
                     $scope.urls[i].update = value;
                 }
             }
+        }
+
+        // Returns index for URL in local model having given URL ID
+        function getUrlLocalModelInd(urlId) {
+            for (var i = 0; i < $scope.urls.length; i++) {
+                if ($scope.urls[i]._id === urlId) {
+                    return i;
+                }
+            }
+            return -1;
+        }
+
+        // Returns index for URL Group in local model having given URL Group ID
+        function getUrlGroupLocalModelInd(urlGroupId) {
+            for (var i = 0; i < $scope.urlgroups.length; i++) {
+                if ($scope.urlgroups[i]._id === urlGroupId) {
+                    return i;
+                }
+            }
+            return -1;
         }
     }
 ]);

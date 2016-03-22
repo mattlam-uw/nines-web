@@ -286,7 +286,7 @@
                 </button>
                 <button type="button" class="btn  btn-sm btn-danger"
                         ng-hide="showControlsUpdateUrl === urlgroup._id"
-                        ng-click="prepReset(urlgroup)"
+                        ng-click="prepResetUrlGroup(urlgroup)"
                         data-toggle="modal"
                         data-target="#updateUrlsModal">
                     Reset this URL Group
@@ -339,10 +339,12 @@
                 <form>
                     <div class="modal-body">
                         <div class="modal-body-header"
-                             ng-show="showModalControl == 'remove-group'">
+                             ng-show="showModalControl == 'remove-group' ||
+                                      showModalControl == 'reset-group'">
                             URL Group:
                         </div>
-                        <div ng-show="showModalControl == 'remove-group'">
+                        <div ng-show="showModalControl == 'remove-group' ||
+                                      showModalControl == 'reset-group'">
                             {{currentUrlGroup.name}}
                         </div>
                         <div class="modal-body-header">URLs:</div>
@@ -378,7 +380,7 @@
                         </button>
                         <button type="button" class="btn btn-md btn-danger"
                                 ng-click="removeUrls(currentUrlGroup)"
-                                ng-show="showModalControl == 'remove-groups'"
+                                ng-show="showModalControl == 'remove-urls'"
                                 data-dismiss="modal">
                             Remove
                         </button>
@@ -387,6 +389,12 @@
                                 ng-show="showModalControl == 'remove-group'"
                                 data-dismiss="modal">
                             Remove
+                        </button>
+                        <button type="button" class="btn btn-md btn-danger"
+                                ng-click="resetUrlGroup(currentUrlGroup)"
+                                ng-show="showModalControl == 'reset-group'"
+                                data-dismiss="modal">
+                            Reset
                         </button>
                     </div>
                 </form>

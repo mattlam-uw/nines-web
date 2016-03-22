@@ -7,7 +7,9 @@ angular.module('ninesWeb')
         );
     }])
     .factory('ErrorsByUrlGroup', ['$resource', function($resource) {
-    	return $resource('http://localhost:3000/errors/urlgroup/:id', 
-    		null, {}
+    	return $resource(
+            'http://localhost:3000/errors/urlgroup/:id',
+    		null,
+            { 'update': { 'method': 'PUT' } }
     	);
     }]);
