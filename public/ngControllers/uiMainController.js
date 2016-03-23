@@ -277,7 +277,8 @@ angular.module('ninesWeb')
 
             // Update URLs in this group to be updated such that their 'update'
             // property is set to the URL Group ID
-            setUrlUpdateForUrlGroup(urlGroup._id, urlGroup._id);
+            setUrlGroupIdForUrlUpdate(urlGroup._id);
+            // setUrlUpdateForUrlGroup(urlGroup._id, urlGroup._id);
         };
 
         /*-- Handler for removing selected URLs and availability stats ------*/
@@ -311,7 +312,8 @@ angular.module('ninesWeb')
 
             // Update URLs in this group to be updated such that their 'update'
             // property is set to the URL Group ID
-            setUrlUpdateForUrlGroup(urlGroup._id, urlGroup._id);
+            setUrlGroupIdForUrlUpdate(urlGroup._id);
+            // setUrlUpdateForUrlGroup(urlGroup._id, urlGroup._id);
         };
 
         // Move selected Urls from one URL Group to another
@@ -529,13 +531,7 @@ angular.module('ninesWeb')
                 { id: urlId },
                 { $set: { responses: $scope.urls[urlInd].responses } },
                 function(urlData) {
-                    /*
-                    if (numGroup === ofTotalGroups) {
-                        if (numUrl === ofTotalUrls) {
-                            $route.reload();
-                        }
-                    }
-                    */
+                    // Callback currently doing nothing
                 }
             )
 
@@ -722,13 +718,7 @@ angular.module('ninesWeb')
 
                 // Determine the index of the URL Group in urlgroups local
                 // model
-                var urlGroupInd = -1;
-                for (var j = 0; j < $scope.urlgroups.length &&
-                    urlGroupInd < 0; j++) {
-                    if ($scope.urlgroups[j]._id === urlData.urlgroup_id) {
-                        urlGroupInd = j;
-                    }
-                }
+                var urlGroupInd = getUrlGroupLocalModelInd(urlData.urlgroup_id);
 
                 // For each status code in the responses data for the deleted
                 // URL, check for a matching status code in the responses for
@@ -783,6 +773,21 @@ angular.module('ninesWeb')
             for (var i = 0; i < $scope.urls.length; i++) {
                 if ($scope.urls[i].urlgroup_id === urlGroupId) {
                     $scope.urls[i].update = value;
+                }
+            }
+        }
+
+        /**
+         * Iterates over local Urls model looking for any URL (1) having an
+         * 'update' property set and (2) associated with the urlGroupId. For
+         * these Urls, set the 'update' property to the urlGroupId.
+         **/
+        function setUrlGroupIdForUrlUpdate(urlGroupId) {
+            for (var i = 0; i < $scope.urls.length; i++) {
+                if ($scope.urls[i].update) {
+                    if ($scope.urls[i].urlgroup_id === urlGroupId) {
+                        $scope.urls[i].update = urlGroupId;
+                    }
                 }
             }
         }
