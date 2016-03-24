@@ -32,9 +32,10 @@ angular.module('ninesWeb')
         // view, and then used by code in this controller
         $scope.moveUrlGroup = null;
 
-        // Global variable for storing the value of the markup code for the
-        // leading stat value of an overall availability stat for URL or URL
-        // Group
+        /* Global variable for storing the value of the markup code for the
+         * leading stat value of an overall availability stat for URL or URL
+         * Group
+         */
         var leadStatCode = 0;
 
         /*-------------------------------------------------------------------
@@ -72,9 +73,10 @@ angular.module('ninesWeb')
             // Initialize variables:
             var results = {}; // final results object to be returned
 
-            // If this is being run for URLs (not URL Groups), then add a
-            // 'results' object property for all status codes represented
-            // in URL Group
+            /* If this is being run for URLs (not URL Groups), then add a
+             * 'results' object property for all status codes represented
+             * in URL Group
+             */
             if (urlResponses) {
                 for (var statusCode in urlgroupResponses) {
                     results[statusCode] = 0;
@@ -88,9 +90,10 @@ angular.module('ninesWeb')
                 responseObject = urlResponses;
             }
 
-            // Iterate through the responses for this URL Group or URL and
-            // update the results object status code property with the value
-            // of that of the corresponding status code of response object
+            /* Iterate through the responses for this URL Group or URL and
+             * update the results object status code property with the value
+             * of that of the corresponding status code of response object
+             */
             for (var statusCode in responseObject) {
                 results[statusCode] = responseObject[statusCode];
             }
@@ -98,6 +101,17 @@ angular.module('ninesWeb')
             return results;
         };
 
+        /**
+         * Client provides 'responses' object either from URL Group or from
+         * URL. If the latter, then a null value must be provided for the
+         * urlgroupResponses parameter. This should probably be refactored
+         * to use a flag parameter to indicate whether responses object
+         * belongs to a URL Group or a URL
+         *
+         * @param urlgroupResponses
+         * @param urlResponses
+         * @returns {{}}
+         */
         $scope.getAvailRating = function(urlgroupResponses, urlResponses) {
             var results = {}; // final results object to be returned
             var resTotal = 0; // total number of responses
@@ -110,9 +124,10 @@ angular.module('ninesWeb')
                 responseObject = urlResponses;
             }
 
-            // Iterate over the status code properties in the response object
-            // and calculate the error and overall response totals to be used
-            // to determine the availability rating.
+            /* Iterate over the status code properties in the response object
+             * and calculate the error and overall response totals to be used
+             * to determine the availability rating.
+             */
             for (var statusCode in responseObject) {
                 if (statusCode >= errorThreshold) {
                     errTotal += responseObject[statusCode];
@@ -124,11 +139,12 @@ angular.module('ninesWeb')
             // of digits 'numDigits' in length
             var rating = createAvailRating(errTotal, resTotal, numDigits);
 
-            // An annoying thing with AngularJS (though there must be some
-            // reason for it) -- ng-repeat will not accept an array of values
-            // where all the values are the same. But it will accept an object
-            // where all the property values are the same. So, rather than just
-            // returning the array, we convert to object.
+            /* An annoying thing with AngularJS (though there must be some
+             * reason for it) -- ng-repeat will not accept an array of values
+             * where all the values are the same. But it will accept an object
+             * where all the property values are the same. So, rather than just
+             * returning the array, we convert to object.
+             */
             for (var i = 0; i < rating.length; i++) {
                 results[i] = rating[i];
             }
@@ -142,18 +158,19 @@ angular.module('ninesWeb')
          *  an availability stat for a URL or URL Group. This function will
          *  determine an integer code that will then be fed to another
          *  function (getMarkupValue) to retrieve the appropriate corresponding
-         *  markup string.
+         *  markup string indicating the color.
          */
         $scope.getStatMarkup = function(statNum, value) {
-            // Logic Rules: (Note) The first digit in the availability rating
-            // can determine the markup for all remaining digits. (1) If the
-            // first digit is a '9' then it will be assigned a value of 1.
-            // Following this, the first non-'9' digit in the value and all
-            // digits following it will be assigned a value of 2. (2) If the
-            // first digit is between 5 and 8 (inclusive) then it and all
-            // following digits will receive a value of 2. If the first digit
-            // is less than 5, then it and all following digits will receive a
-            // value of 3.
+            /* Logic Rules: (Note) The first digit in the availability rating
+             * can determine the markup for all remaining digits. (1) If the
+             * first digit is a '9' then it will be assigned a value of 1.
+             * Following this, the first non-'9' digit in the value and all
+             * digits following it will be assigned a value of 2. (2) If the
+             * first digit is between 5 and 8 (inclusive) then it and all
+             * following digits will receive a value of 2. If the first digit
+             * is less than 5, then it and all following digits will receive a
+             * value of 3.
+             */
             if (statNum == 0) {
                 leadStatCode = 1;
                 if (value < 9) {
@@ -194,6 +211,11 @@ angular.module('ninesWeb')
          * responses for the url. The second parameter asks for the total number
          * of responses for the url. The third parameter asks for the number of
          * digits for the resulting availability rating.
+         *
+         * @param errorTotal
+         * @param requestTotal
+         * @param numDigits
+         * @returns {Array}
          */
         function createAvailRating(errorTotal, requestTotal, numDigits) {
 
@@ -217,9 +239,10 @@ angular.module('ninesWeb')
             // Initialize availability rating value variable
             var rating = 0;
 
-            // The multFactor is used to move all digits that are part of the
-            // availability rating to the left of the decimal point, making
-            // division ('/') and rounding easier to execute on the numbers
+            /* The multFactor is used to move all digits that are part of the
+             * availability rating to the left of the decimal point, making
+             * division ('/') and rounding easier to execute on the numbers
+             */
             var multFactor = Math.pow(10, numDigits);
 
             // The divFactor is used to narrow down the next digit in the
@@ -230,12 +253,13 @@ angular.module('ninesWeb')
             // to the left of the decimal point
             rating = (1 - (errorTotal / requestTotal)) * multFactor;
 
-            // Interesting thing here: a perfect score should be 100%, right?
-            // But no system is truly up 100% of the time. If your numbers are
-            // telling you that it is, then you need to increase your sample
-            // size. The next couple of lines convert a perfect score (100%) to
-            // a very near perfect score (e.g. 99.999%). The number of 9s are
-            // determined by the numDigits.
+            /* Interesting thing here: a perfect score should be 100%, right?
+             * But no system is truly up 100% of the time. If your numbers are
+             * telling you that it is, then you need to increase your sample
+             * size. The next couple of lines convert a perfect score (100%) to
+             * a very near perfect score (e.g. 99.999%). The number of 9s are
+             * determined by the numDigits.
+             */
             if (rating === (multFactor)) {
                 rating = multFactor - 1;
             }
@@ -282,12 +306,16 @@ angular.module('ninesWeb')
         };
 
         /*-- Handler for removing selected URLs and availability stats ------*/
-        // This is a bit clunky. It will remove the URLs from the Urls
-        // database model, and it will recalculate the response stats totals
-        // for the affected URL Group. However, in order to get the response
-        // totals recalculated and displayed (without significant dev effort),
-        // a full screen refresh is forced. This causes all of the URL Groups
-        // to collapse to summary view.
+
+        /**
+         * This removes the URLs from the Urls database model and then
+         * recalculates the response stat totals for the affected URL Group.
+         * In order to get the response totals recalculated and displayed
+         * (without significant dev effort), a full screen refresh is forced.
+         * This causes all of the URL Groups to collapse to summary view.
+         *
+         * @param urlGroup
+         */
         $scope.removeUrls = function(urlGroup) {
 
             // Iterate over URLs and (1) add the IDs of those selected for 
@@ -323,11 +351,12 @@ angular.module('ninesWeb')
             // selected for move to an array, and (2) set 'update' flag to false
             var urlIds = getArrUpdateUrlIds(urlGroup._id);
 
-            // Iterate over the new array of IDs for URLs to be moved
-            // and update the database model to set the urlgroup_id property
-            // of each URL to the target URL Group ID. When the last one has
-            // been updated, then recalculate all group totals and refresh
-            // the view
+            /* Iterate over the new array of IDs for URLs to be moved
+             * and update the database model to set the urlgroup_id property
+             * of each URL to the target URL Group ID. When the last one has
+             * been updated, then recalculate all group totals and refresh
+             * the view
+             */
             for (var i = 0; i < urlIds.length; i++) {
                 updateUrlGroupIds(urlIds[i], (i + 1), urlIds.length);
             }
@@ -371,11 +400,12 @@ angular.module('ninesWeb')
             // Remove the URL Group from the database
             removeUrlGroupFromDb(urlGroup._id);
 
-            // Iterate over the urlgroups local model in order to (1) determine
-            // the index of the URL Group being removed, and (2) build an
-            // object to be used to update the view_order values of all
-            // remaining groups such that gaps the the view_order do not emerge
-            // after repeated URL Group removals.
+            /* Iterate over the urlgroups local model in order to (1) determine
+             * the index of the URL Group being removed, and (2) build an
+             * object to be used to update the view_order values of all
+             * remaining groups such that gaps the the view_order do not emerge
+             * after repeated URL Group removals.
+             */
             var urlGroupInd = -1;            // Index of URL Group to remove
             var urlGroupIdsByViewOrder = {}; // Object for updating view_order
             var highestViewOrder = -1;       // Upper limit for view_order vals
@@ -393,17 +423,19 @@ angular.module('ninesWeb')
                         highestViewOrder = currentViewOrder;
                     }
 
-                    // Then, if a property on the object for the current URL
-                    // Group's view_order does not exist, add the property
-                    // and assign a value of an array containing the URL
-                    // Group's ID
+                    /* Then, if a property on the object for the current URL
+                     * Group's view_order does not exist, add the property
+                     * and assign a value of an array containing the URL
+                     * Group's ID
+                     */
                     if (!urlGroupIdsByViewOrder[currentViewOrder]) {
                         urlGroupIdsByViewOrder[currentViewOrder] =
                             [$scope.urlgroups[i]._id];
-                    // If the property on the object does already exist (this
-                    // is a case where two URL Groups had the same view_order
-                    // value -- it shouldn't happen), then add the URL Group
-                    // ID as a second element in the already-existing array.
+                    /* If the property on the object does already exist (this
+                     * is a case where two URL Groups had the same view_order
+                     * value -- it shouldn't happen), then add the URL Group
+                     * ID as a second element in the already-existing array.
+                     */
                     } else {
                         urlGroupIdsByViewOrder[currentViewOrder].push(
                             $scope.urlgroups[i]._id
@@ -412,13 +444,14 @@ angular.module('ninesWeb')
                 }
             }
 
-            // Update the URL Groups database model with new view_order values
-
-            // Starting with a view_order value of 0 and going up through
-            // the view_order upper limit, retrieve the URL Group IDs from the
-            // view_order object in correct order. Use these to update the URL
-            // Group in the database model providing a new view_order value
-            // that eliminates any possible view_order gaps.
+            /* Update the URL Groups database model with new view_order values
+             *
+             * Starting with a view_order value of 0 and going up through
+             * the view_order upper limit, retrieve the URL Group IDs from the
+             * view_order object in correct order. Use these to update the URL
+             * Group in the database model providing a new view_order value
+             * that eliminates any possible view_order gaps.
+             */
             var newViewOrder = 0;
             for (var i = 0; i <= highestViewOrder; i++) {
                 if (urlGroupIdsByViewOrder[i]) {
@@ -495,21 +528,35 @@ angular.module('ninesWeb')
             UrlGroups.remove({ id: urlGroupId }, function(urlGroupData) { });
         }
 
+        /**
+         * Updates the URL Groups database model with the given new view order
+         * value for the given URL Group
+         *
+         * @param urlGroupId
+         * @param newViewOrder
+         */
         function updateUrlGroupViewOrder(urlGroupId, newViewOrder) {
-            console.log ('Updating URL Group ' + urlGroupId + ' with new view order: ' + newViewOrder);
             UrlGroups.update(
                 { id: urlGroupId },
                 { $set: { view_order: newViewOrder} },
                 function(urlData) {
                     // No need to do anything else
-                    console.log('new view order:', newViewOrder);
-                    console.log('urlData:', urlData);
                 }
             )
         }
 
-        // Remove the specified URL from the database and revise the URL Group
-        // totals so that they no longer include the URL response numbers
+        /**
+         * Remove the specified URL from the database. The 'num' and 'ofTotal'
+         * parameters track which of (possibly) multiple URL updates this
+         * represents. All URL Group totals are recalculated when the last URL
+         * is updated. This should be refactored such that the logic that
+         * determines whether to update all URL Group totals is handled at the
+         * client (or higher) level.
+         *
+         * @param urlId
+         * @param num
+         * @param ofTotal
+         */
         function removeUrlsFromDb(urlId, num, ofTotal) {
             Urls.remove({ id: urlId }, function(urlData) {
                 if (num === ofTotal) {
@@ -518,7 +565,12 @@ angular.module('ninesWeb')
             });
         }
 
-        // Update the specified URL in the database
+        /**
+         * Update a URL document in the database to reset the responses object
+         * for the given URL.
+         *
+         * @param urlId
+         */
         function resetUrlResponses(urlId) {
             // Identify URL to update in local model
             var urlInd = getUrlLocalModelInd(urlId);
@@ -537,11 +589,20 @@ angular.module('ninesWeb')
 
         }
 
-        // Updates the urlgroup_id property of a given URL with the ID of the
-        // target URL Group chosen in the view. The 'num' and 'ofTotal'
-        // parameters track which of (possibly) multiple URL updates this
-        // represents. All URL Group totals are recalculated when the last URL
-        // is updated.
+
+        /**
+         * Updates a URL document in the database to set the the urlgroup_id
+         * property of a given URL to the ID of the target URL Group chosen
+         * in the view. The 'num' and 'ofTotal' parameters track which of
+         * (possibly) multiple URL updates this represents. All URL Group
+         * totals are recalculated when the last URL is updated. This should
+         * be refactored such that the logic that determines whether to update
+         * all URL Group totals is handled at the client (or higher) level.
+         *
+         * @param urlId
+         * @param num
+         * @param ofTotal
+         */
         function updateUrlGroupIds(urlId, num, ofTotal) {
             Urls.update(
                 { id: urlId },
@@ -554,8 +615,10 @@ angular.module('ninesWeb')
             )
         }
 
-        // Recalculate status code response totals for all URL Groups and then
-        // refresh the screen to pull the new totals
+        /**
+         * Recalculate status code response totals for all URL Groups and then
+         * refresh the screen to pull the new totals
+         */
         function updateUrlGroupTotals() {       
 
             // Iterate over all URL Groups in the urlgroups local model. Zero
@@ -575,11 +638,22 @@ angular.module('ninesWeb')
             }
         }
 
-        // Recalculates status code response totals for given URL Group. Writes
-        // the resulting totals to the urlgroups database model. Removes any
-        // case where a status code column for a URL Group is all zeroes.
-        // Refreshes the view screen if this is the last URL Group being
-        // recalculated.
+
+        /**
+         * Recalculates status code response totals for given URL Group. Writes
+         * the resulting totals to the urlgroups database model. Removes any
+         * case where a status code column for a URL Group is all zeroes.
+         * Refreshes the view screen if this is the last URL Group being
+         * recalculated.
+         *
+         * This should be refactored such that the logic that determines whether
+         * to update all URL Group totals is handled at the client (or higher)
+         * level.
+         *
+         * @param urlGroup
+         * @param numGroup
+         * @param ofTotalGroups
+         */
         function recalcUrlGroupTotals(urlGroup, numGroup, ofTotalGroups) {
 
             // Query all URLs associated with URL Group in order to get their
@@ -634,17 +708,29 @@ angular.module('ninesWeb')
             });
         }
 
-        // Look at a URL Group to see of there are cases where the response
-        // total for a status code is zero. For all such cases found, remove
-        // that status code from the 'responses' object of both the URL Group
-        // and URLs associated with the URL Group.
+
+        /**
+         * Look at a URL Group to see of there are cases where the response
+         * total for a status code is zero. For all such cases found, remove
+         * that status code from the 'responses' object of both the URL Group
+         * and URLs associated with the URL Group.
+         *
+         * This should be refactored such that the logic that determines whether
+         * to update all URL Group totals is handled at the client (or higher)
+         * level.
+         *
+         * @param urlGroup
+         * @param numGroup
+         * @param ofTotalGroups
+         */
         function removeZeroResponseTotals(urlGroup, numGroup, ofTotalGroups) {
             var zeroTotalStatusCodes = []; // Array for status codes w/zero total
             var updatedGroupResponses = {}; // Replacement 'responses' object
 
-            // Iterate over the status codes in the URL Group 'responses' object
-            // and add the cases of a zero total to the 'zerototal' array while
-            // adding cases of non-zero total to the replacement 'responses' obj.
+            /* Iterate over the status codes in the URL Group 'responses' object
+             * and add the cases of a zero total to the 'zerototal' array while
+             * adding cases of non-zero total to the replacement 'responses' obj.
+             */
             for (var statusCode in urlGroup.responses) {
                 if (urlGroup.responses[statusCode] === 0) {
                     zeroTotalStatusCodes.push(statusCode);
@@ -693,9 +779,23 @@ angular.module('ninesWeb')
             )
         }
 
-        // Update the 'responses' object for the URL with the replacement
-        // 'responses' object. Also refresh the view only when this is the last
-        // URL being updated for the last URL Group being updated
+
+        /**
+         * Update the 'responses' object for the URL with the replacement
+         * 'responses' object. Also refresh the view only when this is the last
+         * URL being updated for the last URL Group being updated
+         *
+         * This should be refactored such that the logic that determines whether
+         * to update all URL Group totals is handled at the client (or higher)
+         * level.
+         *
+         * @param url
+         * @param updatedResponses
+         * @param numGroup
+         * @param ofTotalGroups
+         * @param numUrl
+         * @param ofTotalUrls
+         */
         function updateUrlResponses(url, updatedResponses, numGroup, ofTotalGroups, numUrl, ofTotalUrls) {
             Urls.update(
                 { id: url._id },
@@ -710,8 +810,12 @@ angular.module('ninesWeb')
             )
         }
 
-        // Update the URL Group for a URL to subtract the response stats per
-        // status code for the removed URL from the group total
+        /**
+         * Update the URL Group for a URL to subtract the response stats per
+         * status code for the removed URL from the group total
+         *
+         * @param urlData
+         */
         function updateUrlGroup(urlData) {
             // Don't do anything unless there is data to act on
             if (urlData) {
@@ -720,10 +824,11 @@ angular.module('ninesWeb')
                 // model
                 var urlGroupInd = getUrlGroupLocalModelInd(urlData.urlgroup_id);
 
-                // For each status code in the responses data for the deleted
-                // URL, check for a matching status code in the responses for
-                // the associated URL Group and subtract the URL's status code
-                // response number from the URL Group's.
+                /* For each status code in the responses data for the deleted
+                 * URL, check for a matching status code in the responses for
+                 * the associated URL Group and subtract the URL's status code
+                 * response number from the URL Group's.
+                 */
                 for (var delUrlStatusCode in urlData.responses) {
                     for (var urlGroupStatusCode in
                         $scope.urlgroups[urlGroupInd].responses) {
@@ -746,8 +851,10 @@ angular.module('ninesWeb')
             }
         }
 
-        // Callback for the UrlGroups update call. This just refreshes
-        // the page once the UrlGroups model is updated
+        /**
+         * Callback for the UrlGroups update call. This just refreshes
+         * the page once the UrlGroups model is updated
+         */
         function updateUrlGroupCallback() {
             // Reload the page to recalculate totals and
             // availability metrics
@@ -767,8 +874,13 @@ angular.module('ninesWeb')
             return results;
         }
 
-        // Sets the 'update' property for a URL to the given value for all URLs
-        // associated with the given urlGroupId
+        /**
+         * Sets the 'update' property for a URL to the given value for all URLs
+         * associated with the given urlGroupId
+
+         * @param urlGroupId
+         * @param value
+         */
         function setUrlUpdateForUrlGroup(urlGroupId, value) {
             for (var i = 0; i < $scope.urls.length; i++) {
                 if ($scope.urls[i].urlgroup_id === urlGroupId) {

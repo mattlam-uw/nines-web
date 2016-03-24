@@ -30,7 +30,6 @@ angular.module('ninesWeb')
         $scope.hideAddUrlGroupForm = function() {
             $scope.showFormAddUrlGroup = false;
             $scope.addUrlGroupFormMessage = "";
-            $scope.showFormAddUrl = false;
             $scope.newUrlGroup.name = null;
         }
 
