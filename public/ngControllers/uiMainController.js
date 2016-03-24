@@ -2,10 +2,10 @@
  Nines Web Main UI View Controller
  ----------------------------------------------------------------------------*/
 angular.module('ninesWeb')
-.controller('uiMainCtrl', ['$scope', '$route', 'Urls', 'ErrorsByUrlGroup',
-    'UrlsByUrlGroup', 'UrlGroups', 'numDigits', 'errorThreshold',
-    function($scope, $route, Urls, ErrorsByUrlGroup, UrlsByUrlGroup, UrlGroups,
-             numDigits, errorThreshold) {
+.controller('uiMainCtrl', ['$scope', '$route', 'Urls', 'UrlGroups',
+    'UrlsByUrlGroup', 'ErrorsByUrlGroup', 'numDigits', 'errorThreshold',
+    function($scope, $route, Urls, UrlGroups, UrlsByUrlGroup,
+             ErrorsByUrlGroup, numDigits, errorThreshold) {
 
         /*-------------------------------------------------------------------
          Initialize $scope variables
