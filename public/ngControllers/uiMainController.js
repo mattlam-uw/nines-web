@@ -28,6 +28,10 @@ angular.module('ninesWeb')
         // Indicates the current URL Group from which action is being undertaken
         $scope.currentUrlGroupId = null;
 
+        // URL Group being operated on for URL move, remove or URL Group remove
+        // or reset
+        $scope.currentUrlGroup = null;
+
         // Indicates URL Group to which URL will be moved. Set by code in the
         // view, and then used by code in this controller
         $scope.moveUrlGroup = null;

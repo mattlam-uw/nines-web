@@ -118,16 +118,14 @@
                     <div class="summary-label">
                         Average Availability Rating:
                     </div>
-
-                        <div class="summary-rating-digit"
-                             ng-repeat="(statNum, rating) in getAvailRating(urlgroup.responses)">
-                            <span ng-show="rating === '.'">{{rating}}</span>
-                            <span ng-hide="rating === '.'"
-                                  class="summary-digit {{getStatMarkup(statNum, rating)}}">
-                                {{rating}}
-                            </span>
-                        </div>
-
+                    <div class="summary-rating-digit"
+                         ng-repeat="(statNum, rating) in getAvailRating(urlgroup.responses)">
+                        <span ng-show="rating === '.'">{{rating}}</span>
+                        <span ng-hide="rating === '.'"
+                              class="summary-digit {{getStatMarkup(statNum, rating)}}">
+                            {{rating}}
+                        </span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -216,6 +214,9 @@
             </tbody>
         </table>
 
+        <!---------------------------------------------------------------------
+          Form for selecting URLs to be moved or removed and then triggering modal
+         ---------------------------------------------------------------------->
         <form name="update-url" ng-show="showDetailsUrlGroup && showControlsUpdateUrl">
             <table class="table table-striped table-condensed table-responsive">
                 <thead>
