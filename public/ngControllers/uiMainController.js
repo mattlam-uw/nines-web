@@ -464,7 +464,6 @@ angular.module('ninesWeb')
                             urlGroupIdsByViewOrder[i][j],
                             newViewOrder
                         );
-                        console.log('adding view order of', newViewOrder);
                         newViewOrder += 1;
                     }
                 }

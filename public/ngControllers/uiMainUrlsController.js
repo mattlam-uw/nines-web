@@ -1,7 +1,8 @@
 angular.module('ninesWeb')
 .controller('uiMainUrlsCtrl', ['$scope', 'Urls', 'UrlGroups', 'pingFrequencies',
-    'SharedFuncs',
-    function($scope, Urls, UrlGroups, pingFrequencies, SharedFuncs) {
+    'SharedFuncs', 'InputFieldSizeMaxes',
+    function($scope, Urls, UrlGroups, pingFrequencies, SharedFuncs,
+             InputFieldSizeMaxes) {
 
         /*---------------------------------------------------------------------
          Initialize $scope variables
@@ -17,6 +18,8 @@ angular.module('ninesWeb')
         $scope.showDropdownPingFrequency = false;
         // Provide feedback for add URL form
         $scope.addUrlFormMessage = "";
+        // Provide feedback for rename URL Group form
+        $scope.urlGroupNameMessage = "";
         // Hide the Icons for removing URLS by default
         $scope.showControlsUpdateUrl = "";
         // Variable bound to Rename-URL-Group form for conveying/updating name
@@ -120,6 +123,7 @@ angular.module('ninesWeb')
         $scope.hideUrlGroupRename = function() {
             $scope.showRenameUrlGroup = false;
             $scope.newUrlGroupName = "";
+            $scope.urlGroupNameMessage = "";
         };
 
 
@@ -132,21 +136,41 @@ angular.module('ninesWeb')
          * @param newUrlGroupName
          */
         $scope.renameUrlGroup = function(urlGroupId) {
-            for (var i = 0; i < $scope.urlgroups.length; i++) {
-                if ($scope.urlgroups[i]._id === urlGroupId) {
-                    $scope.urlgroups[i].name = $scope.newUrlGroupName;
+
+            // Give feedback to user if URL Group name is too long
+            if ($scope.newUrlGroupName.length > InputFieldSizeMaxes.urlGroup) {
+                $scope.urlGroupNameMessage = "URL Group names must not exceed " +
+                    InputFieldSizeMaxes.urlGroup + " characters.";
+
+            // New URL Group name is correct length, so add it
+            } else if ($scope.newUrlGroupName.length > 0) {
+
+                $scope.urlGroupNameMessage = "";
+
+                // Add the new URL Group name to the local model
+                for (var i = 0; i < $scope.urlgroups.length; i++) {
+                    if ($scope.urlgroups[i]._id === urlGroupId) {
+                        $scope.urlgroups[i].name = $scope.newUrlGroupName;
+                    }
                 }
+
+                // Add the new URL Group name to the database model
+                UrlGroups.update(
+                    { id: urlGroupId },
+                    { $set: { name: $scope.newUrlGroupName} },
+                    function(urlData) {
+                        // Do nothing else
+                    }
+                );
+
+                $scope.hideUrlGroupRename();
+
+            // Give feedback to user in case where no new URL Group name given
+            } else {
+                $scope.urlGroupNameMessage = "URL Group name must be between" +
+                    " 1 and " + InputFieldSizeMaxes.urlGroup + " characters" +
+                    " in length.";
             }
-
-            UrlGroups.update(
-                { id: urlGroupId },
-                { $set: { name: $scope.newUrlGroupName} },
-                function(urlData) {
-                    // Do nothing else
-                }
-            );
-
-            $scope.hideUrlGroupRename();
         };
 
 
@@ -196,9 +220,6 @@ angular.module('ninesWeb')
                     }
                 }
 
-            } else {
-                console.log("Bad value for 'direction' parameter provided");
-                console.log("'direction' parameter value must be 'up' or 'down");
             }
 
             // Swap view_order values (only if a target was found)

@@ -14,4 +14,9 @@ angular.module('ninesWeb')
 
 // Base URL for full response HTML from full requests executed as follow-ups
 // to header request errors
-.constant("ErrorResponseHtmlUrl", "http://localhost:3000/errors/response/");
+.constant("ErrorResponseHtmlUrl", "http://localhost:3000/errors/response/")
+
+// Max sizes for form input fields
+.constant("InputFieldSizeMaxes", {
+    urlGroup: 30
+});
