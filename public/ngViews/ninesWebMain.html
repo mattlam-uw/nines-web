@@ -52,7 +52,8 @@
 
     <div class="group-container" ng-repeat="urlgroup in urlgroups | orderBy: 'view_order'"
          ng-controller="uiMainUrlsCtrl">
-        <div class="row">
+        <div class="row"
+             ng-hide="showRenameUrlGroup">
             <div class="col-md-2">
                 <h2 class="group-name">{{urlgroup.name}}</h2>
             </div>
@@ -92,6 +93,7 @@
                     </a>
                 </form>
             </div>
+
             <div class="col-md-2">
                 <span class="summary-label">Last Ping:</span>
                 <span class="summary-ping-value">
@@ -129,7 +131,26 @@
                 </div>
             </div>
         </div>
-        <div class="row">
+        <div class="row"
+             ng-show="showRenameUrlGroup">
+            <form class="form-inline urlgroup-rename">
+                <input type="text" class="form-control" id="urlgroup-name"
+                       ng-model="newUrlGroupName" name="urlgroup-name">
+                <div class="form-alert">
+                    <alert ng-show="addUrlFormMessage">{{addUrlFormMessage}}</alert>
+                </div>
+                <button type="submit" class="btn btn-sm btn-primary"
+                        ng-click="renameUrlGroup(urlgroup._id)">
+                    Rename
+                </button>
+                <button class="btn btn-sm btn-default"
+                        ng-click="hideUrlGroupRename()">
+                    Cancel
+                </button>
+            </form>
+        </div>
+        <div class="row"
+             ng-hide="showRenameUrlGroup">
             <div class="show-hide-details col-md-12">
                 <a class="summary-action" type="link"
                    ng-hide="showDetailsUrlGroup"
@@ -140,6 +161,11 @@
                    ng-show="showDetailsUrlGroup"
                    ng-click="showUrlGroupDetails()">
                     Hide Details
+                </a>
+                <a class="summary-action" type="link"
+                   ng-hide="showDetailsUrlGroup"
+                   ng-click="showUrlGroupRename(urlgroup._id, urlgroup.name)">
+                    Rename
                 </a>
                 <span  class="move-label" ng-hide="showDetailsUrlGroup">
                     Move:

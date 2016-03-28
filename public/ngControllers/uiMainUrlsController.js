@@ -11,12 +11,16 @@ angular.module('ninesWeb')
         $scope.showFormAddUrl = false;
         // Hide URL Group details view by default
         $scope.showDetailsUrlGroup = false;
+        // Hide summary view labels and controls except URL Group rename controls
+        $scope.showRenameUrlGroup = false;
         // Hide the Update Ping Frequency controls by default
         $scope.showDropdownPingFrequency = false;
         // Provide feedback for add URL form
         $scope.addUrlFormMessage = "";
         // Hide the Icons for removing URLS by default
         $scope.showControlsUpdateUrl = "";
+        // Variable bound to Rename-URL-Group form for conveying/updating name
+        $scope.newUrlGroupName = "blah";
         // Object bound to Add-URL-Form for conveying form data
         $scope.newUrl = {};
         // Set protocol to "http" by default
@@ -101,6 +105,54 @@ angular.module('ninesWeb')
                 return "not pinged yet";
             }
         };
+
+        /*-------------------------------------------------------------------
+         Handlers for renaming a URL Group
+         --------------------------------------------------------------------*/
+
+        // Show controls for renaming a URL Group
+        $scope.showUrlGroupRename = function(urlGroupId, urlGroupName) {
+            $scope.showRenameUrlGroup = urlGroupId;
+            $scope.newUrlGroupName = urlGroupName;
+        };
+
+        // Hide controls for renaming a URL Group
+        $scope.hideUrlGroupRename = function() {
+            $scope.showRenameUrlGroup = false;
+            $scope.newUrlGroupName = "";
+        };
+
+
+        /**
+         * Update name of given URL Group with given URL Group name. First
+         * update the local model, then update the database model and hide
+         * the URL Group rename controls
+         *
+         * @param urlGroupId
+         * @param newUrlGroupName
+         */
+        $scope.renameUrlGroup = function(urlGroupId) {
+            for (var i = 0; i < $scope.urlgroups.length; i++) {
+                if ($scope.urlgroups[i]._id === urlGroupId) {
+                    $scope.urlgroups[i].name = $scope.newUrlGroupName;
+                }
+            }
+
+            UrlGroups.update(
+                { id: urlGroupId },
+                { $set: { name: $scope.newUrlGroupName} },
+                function(urlData) {
+                    // Do nothing else
+                }
+            );
+
+            $scope.hideUrlGroupRename();
+        };
+
+
+        /*-------------------------------------------------------------------
+         Handlers for moving URL Group up or down in display listing
+         --------------------------------------------------------------------*/
 
         // Move URL Group higher or lower in the order in which it is displayed
         $scope.moveUrlGroup = function(urlGroup, direction) {
