@@ -20,7 +20,7 @@ angular.module('ninesWeb')
         // Hide the Icons for removing URLS by default
         $scope.showControlsUpdateUrl = "";
         // Variable bound to Rename-URL-Group form for conveying/updating name
-        $scope.newUrlGroupName = "blah";
+        $scope.newUrlGroupName = "";
         // Object bound to Add-URL-Form for conveying form data
         $scope.newUrl = {};
         // Set protocol to "http" by default
