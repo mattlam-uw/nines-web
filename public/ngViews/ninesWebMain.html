@@ -63,20 +63,22 @@
                         <label class="summary-label" for="pingFrequency">
                             Ping Frequency:
                         </label>
-                        <select name="pingFrequency"
-                                class="form-control summary-level-control"
-                                id="pingFrequency"
-                                ng-model="urlgroup.ping_frequency"
-                                ng-show="showDropdownPingFrequency">
-                            <option ng-repeat="frequency in frequencies"
-                                    value="{{frequency}}">
-                                {{displayPingFrequency(frequency)}}
-                            </option>
-                        </select>
-                                <span class="summary-ping-value"
-                                      ng-hide="showDropdownPingFrequency">
-                                    {{displayPingFrequency(urlgroup.ping_frequency)}}
-                                </span>
+                        <div class="summary-level-control">
+                            <select name="pingFrequency"
+                                    class="form-control"
+                                    id="pingFrequency"
+                                    ng-model="urlgroup.ping_frequency"
+                                    ng-show="showDropdownPingFrequency">
+                                <option ng-repeat="frequency in frequencies"
+                                        value="{{frequency}}">
+                                    {{displayPingFrequency(frequency)}}
+                                </option>
+                            </select>
+                        </div>
+                        <span class="summary-ping-value"
+                              ng-hide="showDropdownPingFrequency">
+                            {{displayPingFrequency(urlgroup.ping_frequency)}}
+                        </span>
                     </div>
 
                     <a type="button"
@@ -86,7 +88,7 @@
                         Update
                     </a>
                     <a type="button"
-                       class="btn btn-sm btn-default summary-level-control"
+                       class="btn btn-sm btn-default"
                        ng-show="showDropdownPingFrequency"
                        ng-click="updatePingFrequency(urlgroup)">
                         Save
@@ -133,53 +135,59 @@
         </div>
         <div class="row"
              ng-show="showRenameUrlGroup">
-            <form class="form-inline urlgroup-rename">
-                <input type="text" class="form-control" id="urlgroup-name"
-                       ng-model="newUrlGroupName" name="urlgroup-name">
-                <div class="form-alert">
-                    <alert ng-show="addUrlFormMessage">{{addUrlFormMessage}}</alert>
-                </div>
-                <button type="submit" class="btn btn-sm btn-primary"
-                        ng-click="renameUrlGroup(urlgroup._id)">
-                    Rename
-                </button>
-                <button class="btn btn-sm btn-default"
-                        ng-click="hideUrlGroupRename()">
-                    Cancel
-                </button>
-            </form>
+            <div class="col-md-12">
+                    <form class="form-inline urlgroup-rename">
+                        <input type="text"
+                               class="form-control input-lg urlgroup-rename-input"
+                               id="urlgroup-name"
+                               ng-model="newUrlGroupName" name="urlgroup-name">
+                        <button type="submit" class="btn btn-sm btn-primary"
+                                ng-click="renameUrlGroup(urlgroup._id)">
+                            Rename
+                        </button>
+                        <button class="btn btn-sm btn-default"
+                                ng-click="hideUrlGroupRename()">
+                            Cancel
+                        </button>
+                        <span class="form-alert">
+                            <alert ng-show="addUrlFormMessage">{{addUrlFormMessage}}</alert>
+                        </span>
+                    </form>
+            </div>
         </div>
         <div class="row"
              ng-hide="showRenameUrlGroup">
             <div class="show-hide-details col-md-12">
+                <div class="row">
+                <div class="col-md-1">
                 <a class="summary-action" type="link"
                    ng-hide="showDetailsUrlGroup"
                    ng-click="showUrlGroupDetails(urlgroup._id)">
-                    Show Details
-                </a>
+                    Show Details</a>
                 <a class="summary-action" type="link"
                    ng-show="showDetailsUrlGroup"
                    ng-click="showUrlGroupDetails()">
-                    Hide Details
-                </a>
+                    Hide Details</a>
+                </div>
+                <div class="col-md-1">
                 <a class="summary-action" type="link"
                    ng-hide="showDetailsUrlGroup"
                    ng-click="showUrlGroupRename(urlgroup._id, urlgroup.name)">
-                    Rename
-                </a>
+                    Rename</a>
+                </div>
+                <div class="col-md-10">
                 <span  class="move-label" ng-hide="showDetailsUrlGroup">
-                    Move:
-                </span>
+                    Move:</span>
                 <a class="summary-action" type="link"
                    ng-hide="showDetailsUrlGroup"
                    ng-click="moveUrlGroup(urlgroup, 'up')">
-                    Up
-                </a>
+                    Up</a>
                 <a class="summary-action" type="link"
                    ng-hide="showDetailsUrlGroup"
                    ng-click="moveUrlGroup(urlgroup, 'down')">
-                    Down
-                </a>
+                    Down</a>
+                </div>
+                </div>
             </div>
         </div>
         <table ng-show="showDetailsUrlGroup && !showControlsUpdateUrl"
