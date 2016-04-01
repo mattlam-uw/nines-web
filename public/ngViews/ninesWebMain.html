@@ -216,7 +216,7 @@
                     </td>
                     <td>{{url.name}}</td>
                     <td><a href="http://{{url.host}}{{url.path}}" target="_blank">
-                        {{url.host}}{{url.path}}</a>
+                        {{url.protocol}}://{{url.host}}{{url.path}}</a>
                     </td>
 
                     <td ng-repeat="stat in getUrlStats(urlgroup.responses, url.responses)">
