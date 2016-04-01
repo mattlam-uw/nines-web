@@ -692,17 +692,19 @@ angular.module('ninesWeb')
                     {id: urlGroup._id},
                     { $set: { responses: urlGroup.responses } },
                     function() {
-                        // Check for URL Group status code response totals of
-                        // zero. If any are found remove the status code
-                        // response total for both the URL Group and all URLs
-                        // in the group
+                        /* Check for URL Group status code response totals of
+                         * zero. If any are found remove the status code
+                         * response total for both the URL Group and all URLs
+                         * in the group
+                         */
                         removeZeroResponseTotals(urlGroup, numGroup, ofTotalGroups);
 
-                        // Refresh the view screen if this is the last URL
-                        // Group being updated. The reload that is triggered by
-                        // updateUrlResponses() below will almost definitely
-                        // happen after this. So this may be superfluous. But
-                        // for now call it failsafe.
+                        /* Refresh the view screen if this is the last URL
+                         * Group being updated. The reload that is triggered by
+                         * updateUrlResponses() below will almost definitely
+                         * happen after this. So this may be superfluous. But
+                         * for now call it failsafe.
+                         */
                         if (numGroup === ofTotalGroups) {
                             $route.reload();
                         }
