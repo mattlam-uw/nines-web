@@ -311,13 +311,6 @@ angular.module('ninesWeb')
                 // If the full URL provided satisfies the regular expression
                 // requirements then add the URL
                 if (urlMatch) {
-                    // If scheme is https, then notify that it's not yet supported
-                    if (urlMatch[1] === "https") {
-                        $scope.addUrlFormMessage = "HTTPS is not currently "
-                            + "supported. Please use HTTP.";
-                        return;
-                    }
-
                     // Create new URL object that will be used for adding to
                     // URLs model
                     var newModelUrl = {};
