@@ -18,22 +18,22 @@
         <table class="table">
             <thead>
                 <tr>
-                    <th>Date</th>
-                    <th>Time</th>
-                    <th>Status Code</th>
-                    <th>URL Name</th>
-                    <th>URL</th>
-                    <th>View Response</th>
+                    <th class="errors-table-header">Date</th>
+                    <th class="errors-table-header">Time</th>
+                    <th class="errors-table-header">Status Code</th>
+                    <th class="errors-table-header">URL Name</th>
+                    <th class="errors-table-header">URL</th>
+                    <th class="errors-table-header">View Response</th>
                 </tr>
             </thead>
             <tbody>
                 <tr ng-repeat="error in errors | orderBy : '-request_datetime'">
-                    <td>{{getErrorDate(error.request_datetime)}}</td>
-                    <td>{{getErrorTime(error.request_datetime)}}</td>
-                    <td>{{error.status_code}}</td>
-                    <td>{{error.url_name}}</td>
-                    <td>{{error.url}}</td>
-                    <td>
+                    <td class="errors-table-data">{{getErrorDate(error.request_datetime)}}</td>
+                    <td class="errors-table-data">{{getErrorTime(error.request_datetime)}}</td>
+                    <td class="errors-table-data">{{error.status_code}}</td>
+                    <td class="errors-table-data">{{error.url_name}}</td>
+                    <td class="errors-table-data">{{error.url}}</td>
+                    <td class="errors-table-data">
                         <a href="{{errorResponseHtmlUrl}}{{error._id}}"
                            target="_blank">
                             view

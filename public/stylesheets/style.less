@@ -1,6 +1,15 @@
+@screen-background: #000000;
+@group-container-background: @screen-background + #333;
+@group-detail-stripe-light: @group-container-background + #111;
+@group-detail-stripe-dark: @group-container-background + #222;
+@header-text-light: #DCDCDC;
+@header-text-medium: #C0C0C0;
+@header-text-dark: #A9A9A9;
+
 body {
   padding: 50px;
   font: 14px "Tahoma", "Geneva", sans-serif;
+  background-color: @screen-background;
 }
 
 a {
@@ -13,7 +22,7 @@ a.summary-action {
 }
 
 .app-name {
-  color: grey;
+  color: @header-text-dark;
 }
 
 .btn {
@@ -38,7 +47,7 @@ a.summary-action {
   color: red;
 }
 .group-container {
-  background-color: rgba(61, 111, 208, 0.04);
+  background-color: @group-container-background;
   margin-bottom: 10px;
   margin-top: 10px;
   padding-top: 10px;
@@ -48,6 +57,7 @@ a.summary-action {
 
 .group-name {
   letter-spacing: 3px;
+  color: @header-text-light;
 }
 
 h2 {
@@ -62,7 +72,7 @@ iframe {
 
 .page-name {
   font-size: smaller;
-  color: darkgrey;
+  color: @header-text-medium;
 }
 
 .page-title {
@@ -116,6 +126,7 @@ iframe {
 }
 
 .summary-label {
+  color: @header-text-dark;
   font-weight: bolder;
 }
 
@@ -126,13 +137,13 @@ iframe {
 
 .summary-label,
 .summary-total-request-value,
-.summary-total-error-value,
-.summary-ping-value {
+.summary-error-value,
+.summary-value {
   vertical-align: -10px;
 }
 
-.summary-ping-value {
-  color: darkslategray;
+.summary-value {
+  color: @header-text-light;
 }
 
 .summary-rating-digit {
@@ -140,7 +151,7 @@ iframe {
   margin-right: 5px;
 }
 
-.summary-total-error-value {
+.summary-error-value {
   color: firebrick;
 }
 
@@ -150,11 +161,19 @@ iframe {
 }
 
 .table-striped > tbody > tr:nth-child(2n+1) > td, .table-stribed > tbody > tr:nth-child(2n+1) > th {
-  background-color: white;
+  background-color: @group-detail-stripe-light;
 }
 
 .table-striped > tbody > tr:nth-child(2n) > td, .table-stribed > tbody > tr:nth-child(2n) > th {
-  background-color: rgba(61, 111, 208, 0.11);
+  background-color: @group-detail-stripe-dark;
+}
+
+td {
+  color: @header-text-light;
+}
+
+th {
+  color: @header-text-dark;
 }
 
 .urlgroup-rename-input {

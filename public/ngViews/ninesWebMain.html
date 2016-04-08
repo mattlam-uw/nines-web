@@ -75,7 +75,7 @@
                                 </option>
                             </select>
                         </div>
-                        <span class="summary-ping-value"
+                        <span class="summary-value"
                               ng-hide="showDropdownPingFrequency">
                             {{displayPingFrequency(urlgroup.ping_frequency)}}
                         </span>
@@ -98,18 +98,18 @@
 
             <div class="col-md-2">
                 <span class="summary-label">Last Ping:</span>
-                <span class="summary-ping-value">
+                <span class="summary-value">
                     {{getLastPingTime(urlgroup)}}
                 </span>
             </div>
             <div class="col-md-2">
                 <div class="summary-totals">
                     <span class="summary-label">Requests: </span>
-                    <span class="summary-total-request-value">
+                    <span class="summary-value">
                         {{getUrlGroupTotals(urlgroup).resTotal}}
                     </span>
                     <span class="summary-label">Errors: </span>
-                    <span class="summary-total-error-value">
+                    <span class="summary-error-value">
                         <a class="summary-action" type="link"
                            href="#/errors/urlgroup/{{urlgroup._id}}">
                             {{getUrlGroupTotals(urlgroup).errTotal}}
