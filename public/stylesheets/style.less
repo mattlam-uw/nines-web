@@ -2,9 +2,11 @@
 @group-container-background: @screen-background + #333;
 @group-detail-stripe-light: @group-container-background + #111;
 @group-detail-stripe-dark: @group-container-background + #222;
-@header-text-light: #DCDCDC;
-@header-text-medium: #C0C0C0;
-@header-text-dark: #A9A9A9;
+@text-light-gray: #DCDCDC;
+@text-medium-gray: #C0C0C0;
+@text-dark-gray: #A9A9A9;
+@button-primary: lightblue;
+@button-default: @button-primary - #444;
 
 body {
   padding: 50px;
@@ -22,15 +24,21 @@ a.summary-action {
 }
 
 .app-name {
-  color: @header-text-dark;
+  color: @text-dark-gray;
 }
 
 .btn {
   border: none;
 }
 
+.btn-default {
+  background: @button-default;
+  color: @text-light-gray;
+  text-shadow: none;
+}
+
 .btn-primary {
-  background: lightblue;
+  background: @button-primary;
   color: black;
 }
 
@@ -57,7 +65,7 @@ a.summary-action {
 
 .group-name {
   letter-spacing: 3px;
-  color: @header-text-light;
+  color: @text-light-gray;
 }
 
 h2 {
@@ -72,7 +80,7 @@ iframe {
 
 .page-name {
   font-size: smaller;
-  color: @header-text-medium;
+  color: @text-medium-gray;
 }
 
 .page-title {
@@ -126,7 +134,7 @@ iframe {
 }
 
 .summary-label {
-  color: @header-text-dark;
+  color: @text-dark-gray;
   font-weight: bolder;
 }
 
@@ -143,7 +151,7 @@ iframe {
 }
 
 .summary-value {
-  color: @header-text-light;
+  color: @text-light-gray;
 }
 
 .summary-rating-digit {
@@ -156,7 +164,7 @@ iframe {
 }
 
 .summary-total-request-value {
-  color: darkslategray;
+  color: @text-dark-gray;
   margin-right: 10px;
 }
 
@@ -169,11 +177,11 @@ iframe {
 }
 
 td {
-  color: @header-text-light;
+  color: @text-light-gray;
 }
 
 th {
-  color: @header-text-dark;
+  color: @text-dark-gray;
 }
 
 .urlgroup-rename-input {
