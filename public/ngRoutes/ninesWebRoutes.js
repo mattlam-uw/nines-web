@@ -8,6 +8,11 @@ angular.module('ninesWeb').config(function($routeProvider) {
         controller: 'uiMainCtrl'
     }, true);
 
+    $routeProvider.when('/login', {
+        templateUrl: 'ngViews/ninesWebLogin.html',
+        controller: 'uiLoginCtrl'
+    }, true);
+
     // /errors route to show all error responses for a particular URL Group
     $routeProvider.when('/errors/urlgroup/:id', {
         templateUrl: 'ngViews/ninesWebErrors.html',

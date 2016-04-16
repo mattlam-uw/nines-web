@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <form name="login">
+        <div class="form-group">
+            <label for="user-name" class="login-label">User Name</label>
+            <input type="text" class="form-control" id="user-name"
+                   ng-model="User.username" name="user-name">
+            <label for="user-password" class="login-label">Password</label>
+            <input type="password" class="form-control" id="user-password"
+                   ng-model="User.password" name="user-password">
+        </div>
+        <div class="form-alert">
+            <alert ng-show="loginFormMessage">{{addUrlFormMessage}}</alert>
+        </div>
+        <button type="submit" class="btn btn-sm btn-primary"
+                ng-click="login(User)">
+            Login
+        </button>
+    </form>
+</body>
+</html>
