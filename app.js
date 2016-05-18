@@ -9,6 +9,17 @@ var routes = require('./routes/index');
 
 var app = express();
 
+// Configure Passport for authentication
+var passport = require('passport');
+var expressSession = require('express-session');
+app.use(expressSession({ secret: 'meineGeheimniss' }));
+app.use(passport.initialize());
+app.use(passport.session());
+
+// Initialize Passport
+var initPassport = require('./modules/passport/init');
+initPassport(passport);
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
